@@ -43,7 +43,7 @@ build_configuration_name = pyparsing.Word(configuration_start, configutation_bod
 
 # parsing conditional statement expressions
 conditional_expr = pyparsing.Group(pyparsing.Word(pyparsing.alphas) + pyparsing.Suppress('=') + pyparsing.Word(pyparsing.alphanums+'*\"\'_-'))
-conditional_name = pyparsing.Group(pyparsing.delimitedList(conditional_expr, '&'))
+conditional_name = pyparsing.Group(pyparsing.delimitedList(conditional_expr, 'and'))
 
 # keywords
 setting_keyword = 'setting'
