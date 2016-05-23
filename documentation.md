@@ -13,6 +13,7 @@ There are a number of keywords that are reserved for the language to use, they a
 * `if`
 * `use`
 * `and`
+* `inherits`
 
 Additionally it uses the open and close curley braces (`{` and `}`, respectively) to encapsulate scope of structures.
 
@@ -100,6 +101,21 @@ This code will produce the following assignment in the generated xcconfig file:
 
 **Note: When listing values to assign, the `pyconfig` format does NOT support trailing commas on the final list items and may pass linting validation but not generate correctly.**
 
+
+### Inheriting Values
+Additionally there is the option to inherit the values of the previous level that set this variable. To do this, append the `inherits` keyword to the end of the `setting` line of the build setting assignment.
+
+Example:
+
+	setting OTHER_CFLAGS inherits {
+		for * {
+			-Wall
+		}
+	}
+
+Will generate a line in the xcconfig file that reads:
+
+	OTHER_CFLAGS = $(inherited) -Wall
 
 ### Conditional Variables
 In additional to variable substitution, xcconfig files have a built-in way to perform assignment based on a condition determined at build-time. The `pyconfig` language supports this through the keyword `if`. 
