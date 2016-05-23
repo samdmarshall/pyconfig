@@ -138,7 +138,7 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
                         else:
                             uses_configuration_specific_settings = True
                             configuration_name = '_'+configuration_name
-                        output_file.write(base_setting_name + configuration_name + ' = ' + configuration_value_string + '\n')
+                        output_file.write(base_setting_name + configuration_name + ' = ' + inherited_settings + configuration_value_string + '\n')
                     if configuration_type == if_keyword:
                         conditions = configuration[1]
                         assignment_value = configuration[2]
@@ -146,7 +146,7 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
                         for condition in conditions:
                             conditional_key_value_list.append('='.join(condition))
                         conditional_key_value_string = ','.join(conditional_key_value_list)
-                        output_file.write(base_setting_name + '[' + conditional_key_value_string + '] = ' + assignment_value + '\n')
+                        output_file.write(base_setting_name + '[' + conditional_key_value_string + '] = ' + inherited_settings + assignment_value + '\n')
                 if uses_configuration_specific_settings:
                     output_file.write(base_setting_name + ' = ' + inherited_settings + '$(' + base_setting_name + '_$(' + substitution_variable_name + '))' + '\n')
 
