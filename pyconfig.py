@@ -28,8 +28,21 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
+import sys
 import argparse
 import pyparsing
+
+# keywords
+setting_keyword = 'setting'
+use_keyword = 'use'
+for_keyword = 'for'
+if_keyword = 'if'
+include_keyword = 'include'
+inherits_keyword = 'inherits'
+and_keyword = 'and'
+open_brace = '{'
+close_brace = '}'
 
 # build setting Word definition
 setting_body = pyparsing.alphanums + '_'
@@ -43,17 +56,7 @@ build_configuration_name = pyparsing.Word(configuration_start, configutation_bod
 
 # parsing conditional statement expressions
 conditional_expr = pyparsing.Group(pyparsing.Word(pyparsing.alphas) + pyparsing.Suppress('=') + pyparsing.Word(pyparsing.alphanums+'*\"\'_-'))
-conditional_name = pyparsing.Group(pyparsing.delimitedList(conditional_expr, 'and'))
-
-# keywords
-setting_keyword = 'setting'
-use_keyword = 'use'
-for_keyword = 'for'
-if_keyword = 'if'
-include_keyword = 'include'
-inherits_keyword = 'inherits'
-open_brace = '{'
-close_brace = '}'
+conditional_name = pyparsing.Group(pyparsing.delimitedList(conditional_expr, and_keyword))
 
 def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme_name=None):
 
@@ -66,9 +69,9 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
 
     # include "other.xcconfig" # with optional trailing comment
     include_parser = ParseMethod(include_keyword) + pyparsing.dblQuotedString + pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))
-
+    
     # group( comma, separated, values, to be used as assignment, for build configurations )
-    bc_value_parser = pyparsing.Group(pyparsing.Optional(pyparsing.commaSeparatedList))
+    bc_value_parser = pyparsing.Group(pyparsing.Optional(pyparsing.commaSeparatedList.ignore(pyparsing.pythonStyleComment)))
 
     # 
     if_value_parser = pyparsing.Word(pyparsing.alphanums)
@@ -78,6 +81,7 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
 
     #
     for_bc_parser = pyparsing.Keyword(for_keyword) + build_configuration_name + pyparsing.Optional(ParseMethod(open_brace) 
+        + pyparsing.Optional(pyparsing.pythonStyleComment)
         + bc_value_parser 
         + ParseMethod(close_brace))
 
@@ -88,8 +92,8 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
     setting_parser = pyparsing.Group(pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)) + ParseMethod(setting_keyword)
         + build_setting_name 
         + pyparsing.Group(pyparsing.Optional(pyparsing.Keyword(use_keyword) + build_setting_name) + pyparsing.Optional(pyparsing.Keyword(inherits_keyword)))
-        + ParseMethod(open_brace) 
-        + pyparsing.Group(values_parser) 
+        + ParseMethod(open_brace) + pyparsing.Optional(pyparsing.pythonStyleComment)
+        + pyparsing.Group(values_parser) + pyparsing.Optional(pyparsing.pythonStyleComment)
         + ParseMethod(close_brace))
 
     #
@@ -150,10 +154,17 @@ def processFile(should_lint=True, pyconfig_contents="", output_file=None, scheme
                 if uses_configuration_specific_settings:
                     output_file.write(base_setting_name + ' = ' + inherited_settings + '$(' + base_setting_name + '_$(' + substitution_variable_name + '))' + '\n')
 
+def openOutputFileToWrite(input_string):
+    file_path = os.path.expanduser(input_string)
+    parent_path = os.path.dirname(file_path)
+    if os.path.exists(parent_path) == False:
+        os.makedirs(parent_path)
+    return open(file_path, 'w')
+
 # Main
 parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL that makes ')
 parser.add_argument('file', help='Path to the pyconfig file to use to generate a xcconfig file', type=argparse.FileType('r'))
-parser.add_argument('-o', '--output', metavar='file', help='Path to output xcconfig file to write', type=argparse.FileType('w'))
+parser.add_argument('-o', '--output', metavar='file', help='Path to output xcconfig file to write', type=openOutputFileToWrite)
 parser.add_argument('-l', '--lint', help='Validate the syntax of a pyconfig file', action='store_true')
 parser.add_argument('-s', '--scheme', metavar='name', help='Optional argument to supply the scheme name')
 args = parser.parse_args()
