@@ -2,6 +2,8 @@
 
 # Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
+#
+# https://github.com/samdmarshall/pyconfig
 # 
 # Redistribution and use in source and binary forms, with or without modification, 
 # are permitted provided that the following conditions are met:
