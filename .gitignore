@@ -1,1 +1,5 @@
 .DS_Store
+installed_files.txt
+build/
+dist/
+pyconfig.egg-info/
