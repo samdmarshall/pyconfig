@@ -11,8 +11,13 @@ This script was written against system Python (2.7.10) on OS X 10.11.4. It uses 
 
 
 ## Installation
-To install this tool, you must download the `pyconfig.py` script file in this repo. This can be done by cloning the repo from GitHub or by downloading the script file directly. Since this is not a packaged tool that can be installed via `pip` or `brew`, it is recommended that you clone the repo to download the script and keep it up to date.
+Via [homebrew](http://brew.sh):
 
+	$ brew update
+	$ brew tap samdmarshall/formulae
+	$ brew install samdmarshall/formulae/pyconfig --head
+
+Alternatively you can clone the repo and run the `setup.py` file to install.
 
 ## Usage
 To use `pyconfig` to generate an xcconfig file, you will have to pass it an input and the `--output` flag:
