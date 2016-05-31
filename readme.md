@@ -15,7 +15,7 @@ Via [homebrew](http://brew.sh):
 
 	$ brew update
 	$ brew tap samdmarshall/formulae
-	$ brew install samdmarshall/formulae/pyconfig --head
+	$ brew install samdmarshall/formulae/pyconfig --HEAD
 
 Alternatively you can clone the repo and run the `setup.py` file to install.
 
