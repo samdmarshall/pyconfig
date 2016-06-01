@@ -24,8 +24,6 @@ To use `pyconfig` to generate an xcconfig file, you will have to pass it an inpu
 
 	$ ./pyconfig.py <file path to the configuration file> --output <file path to write the xcconfig file>
 
-You must create the intermediary directories if they do not already exist for the xcconfig file to be written to disk.
-
 You can also use `pyconfig` to perform syntax validation on the configuration file by passing the `--lint` flag:
 
 	$ ./pyconfig.py <file path to the configuration file> --lint
