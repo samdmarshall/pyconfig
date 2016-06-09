@@ -29,7 +29,7 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import pyparsing
-import keyword
+from . import pyckeyword
 
 def writeFile(pyconfig_contents=None, output_file=None, scheme_name=None):
 
@@ -54,27 +54,27 @@ def writeFile(pyconfig_contents=None, output_file=None, scheme_name=None):
                 configurations = setting[2]
                 if len(setting[1]) > 0:
                     modifiers = setting[1]
-                    if modifiers[0] == keyword._use:
+                    if modifiers[0] == pyckeyword._use:
                         substitution_variable_name = modifiers[1]
-                    if modifiers[0] == keyword._inherits:
+                    if modifiers[0] == pyckeyword._inherits:
                         inherited_settings = '$(inherited) '
                     if len(modifiers) == 3:
-                        if modifiers[2] == keyword._inherits:
+                        if modifiers[2] == pyckeyword._inherits:
                             inherited_settings = '$(inherited) '
                 for configuration in configurations:
                     configuration_type = configuration[0]
-                    if configuration_type == keyword._for:
+                    if configuration_type == pyckeyword._for:
                         configuration_name = configuration[1]
                         configuration_value_string = ''
                         if len(configuration) > 2:
                             configuration_value_string = ' '.join(configuration[2])
-                        if configuration_name.startswith(keyword._specialCase, 0, 1):
+                        if configuration_name.startswith(pyckeyword._specialCase, 0, 1):
                             configuration_name = ''
                         else:
                             uses_configuration_specific_settings = True
                             configuration_name = '_'+configuration_name
                         output_file.write(base_setting_name + configuration_name + ' = ' + inherited_settings + configuration_value_string + '\n')
-                    if configuration_type == keyword._if:
+                    if configuration_type == pyckeyword._if:
                         conditions = configuration[1]
                         assignment_value = configuration[2]
                         conditional_key_value_list = list()

@@ -33,9 +33,9 @@ import pyparsing
 def parse(should_lint=True, pyconfig_contents=""):
     # by default we want to suppress keywords, except when linting a file, then we want to make sure they are correctly placed
     if should_lint == True:
-        import linter as pyc
+        from . import pyclinter as pyc
     else:
-        import executor as pyc
+        from . import pycexecutor as pyc
 
     # now parse the file's contents
     results = pyc._config.parseString(pyconfig_contents)

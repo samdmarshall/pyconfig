@@ -1,5 +1,13 @@
-# pyconfig
-pyconfig is a tool that allows you to write the contents of your xcconfig files in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
+pyconfig
+========
+
+[![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
+[![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg?maxAge=2592000)](https://circleci.com/gh/samdmarshall/pyconfig)
+[![Python2](https://img.shields.io/badge/Python2-2.7.10-brightgreen.svg)]()
+[![Python3](https://img.shields.io/badge/Python3-3.5.1-brightgreen.svg)]()
+
+
+`pyconfig` is a tool that allows you to write the contents of your `xcconfig` files in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
 
 ## Contributing and Code of Conduct

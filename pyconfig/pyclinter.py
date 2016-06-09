@@ -28,20 +28,20 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import word
 import pyparsing
-import keyword
+from . import pycword
+from . import pyckeyword
 
 # parsing conditional statement expressions
 _conditionalExpr = pyparsing.Group(
-    word._conditionalValue 
-    + pyparsing.Suppress(keyword._equals) 
-    + word._conditionalComparator
+    pycword._conditionalValue 
+    + pyparsing.Suppress(pyckeyword._equals) 
+    + pycword._conditionalComparator
 )
-_conditionalName = pyparsing.Group(pyparsing.delimitedList(_conditionalExpr, keyword._and))
+_conditionalName = pyparsing.Group(pyparsing.delimitedList(_conditionalExpr, pyckeyword._and))
 
 # include "other.xcconfig" # with optional trailing comment
-_include = pyparsing.Suppress(keyword._include) + pyparsing.dblQuotedString + pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))
+_include = pyparsing.Keyword(pyckeyword._include) + pyparsing.dblQuotedString + pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))
 
 # group( comma, separated, values, to be used as assignment, for build configurations )
 _bc_value = pyparsing.Group(pyparsing.Optional(pyparsing.commaSeparatedList.ignore(pyparsing.pythonStyleComment)))
@@ -50,24 +50,24 @@ _bc_value = pyparsing.Group(pyparsing.Optional(pyparsing.commaSeparatedList.igno
 _if_value = pyparsing.Word(pyparsing.alphanums)
 
 #
-_if_cond = pyparsing.Keyword(keyword._if) + _conditionalName + pyparsing.Optional(pyparsing.Suppress(keyword._openBrace) + _if_value + pyparsing.Suppress(keyword._closeBrace))
+_if_cond = pyparsing.Keyword(pyckeyword._if) + _conditionalName + pyparsing.Optional(pyparsing.Keyword(pyckeyword._openBrace) + _if_value + pyparsing.Keyword(pyckeyword._closeBrace))
 
 #
-_for_bc = pyparsing.Keyword(keyword._for) + word._buildConfigurationName + pyparsing.Optional(pyparsing.Suppress(keyword._openBrace) 
+_for_bc = pyparsing.Keyword(pyckeyword._for) + pycword._buildConfigurationName + pyparsing.Optional(pyparsing.Keyword(pyckeyword._openBrace) 
     + pyparsing.Optional(pyparsing.pythonStyleComment)
     + _bc_value 
-    + pyparsing.Suppress(keyword._closeBrace))
+    + pyparsing.Keyword(pyckeyword._closeBrace))
 
 #
 _values = pyparsing.delimitedList(pyparsing.Group(_for_bc), pyparsing.Empty()) ^ pyparsing.delimitedList(pyparsing.Group(_if_cond), pyparsing.Empty())
 
 #
-_setting = pyparsing.Group(pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)) + pyparsing.Suppress(keyword._setting)
-    + word._buildSettingName 
-    + pyparsing.Group(pyparsing.Optional(pyparsing.Keyword(keyword._use) + word._buildSettingName) + pyparsing.Optional(pyparsing.Keyword(keyword._inherits)))
-    + pyparsing.Suppress(keyword._openBrace) + pyparsing.Optional(pyparsing.pythonStyleComment)
+_setting = pyparsing.Group(pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)) + pyparsing.Keyword(pyckeyword._setting)
+    + pycword._buildSettingName 
+    + pyparsing.Group(pyparsing.Optional(pyparsing.Keyword(pyckeyword._use) + pycword._buildSettingName) + pyparsing.Optional(pyparsing.Keyword(pyckeyword._inherits)))
+    + pyparsing.Keyword(pyckeyword._openBrace) + pyparsing.Optional(pyparsing.pythonStyleComment)
     + pyparsing.Group(_values) + pyparsing.Optional(pyparsing.pythonStyleComment)
-    + pyparsing.Suppress(keyword._closeBrace))
+    + pyparsing.Keyword(pyckeyword._closeBrace))
 
 #
 _config = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)) + pyparsing.Optional(pyparsing.delimitedList(_include, pyparsing.Empty())) + pyparsing.delimitedList(_setting, pyparsing.Empty())

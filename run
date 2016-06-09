@@ -12,8 +12,20 @@ if [[ -e ./setup.py ]]; then
 		find pyconfig -name "*.pyc" | xargs  rm -rf
 	fi
 	
-	if [[ "$1" == "build" ]] || [[ "$2" == "build" ]]; then
-		python ./setup.py install --user --record ./installed_files.txt
+	if [[ "$1" == "build" ]]; then
+		if [[ "$2" == "3" ]]; then
+			python3 ./setup.py install --record ./installed_files.txt
+		else
+			python ./setup.py install --user --record ./installed_files.txt
+		fi
+	fi
+	
+	if [[ "$1" == "clean" ]] && [[ "$2" == "build" ]]; then
+		if [[ "$3" == "3" ]]; then
+			python3 ./setup.py install --record ./installed_files.txt
+		else
+			python ./setup.py install --user --record ./installed_files.txt
+		fi
 	fi
 else
 	echo "Please run this script from the directory it is in!"

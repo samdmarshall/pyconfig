@@ -31,8 +31,8 @@
 from pyconfig.version import __version__ as PYCONFIG_VERSION
 import os
 import argparse
-import interpreter
-import serializer
+from . import pycinterpreter
+from . import pycserializer
 
 def openOutputFileToWrite(input_string):
     file_path = os.path.expanduser(input_string)
@@ -75,10 +75,10 @@ def main():
     	
     pyconfig_contents = args.file.read()
     
-    parsed_contents = interpreter.parse(args.lint, pyconfig_contents)
+    parsed_contents = pycinterpreter.parse(args.lint, pyconfig_contents)
     
     if args.lint == False:
-        serializer.writeFile(parsed_contents, args.output, args.scheme)
+        pycserializer.writeFile(parsed_contents, args.output, args.scheme)
     	
     args.file.close()
     	
