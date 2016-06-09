@@ -1,3 +1,7 @@
 machine:
   python:
     version: 2.7.10
+
+test:
+  override:
+    - pyconfig tests/test.pyconfig --output tests/test.xcconfig

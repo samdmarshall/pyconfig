@@ -1,0 +1,63 @@
+# these are some places you can put comments
+include "root.xcconfig" # like here
+include "codesign.xcconfig"
+
+
+# or here
+setting PODS_ROOT {
+	for * {
+		${SRCROOT}/Pods
+	}
+}
+	
+# and here
+setting HEADER_SEARCH_PATHS {
+	for * {
+		$(inherited),
+		"${PODS_ROOT}/Headers/Public", #asdaasdas
+		"${PODS_ROOT}/Headers/Public/AFNetworking",
+		"${PODS_ROOT}/Headers/Public/Mantle",
+		"${PODS_ROOT}/Headers/Public/CocoaLumberjack",
+		"${PODS_ROOT}/Headers/Public/MBProgressHUD",
+		"${PODS_ROOT}/Headers/Public/Crashlytics"
+	}
+} # but not inside of the `setting` declarations
+
+setting OTHER_LDFLAGS {
+	for Debug { 
+		-framework "Reveal"
+	}
+	for Release
+	#testing
+}
+	
+setting OTHER_CFLAGS use WRAPPER_EXTENSION {
+	for app {
+		-Wall
+	}
+	for xctest {
+		-Wall,
+		-Werror
+	}
+}
+
+setting PRODUCT_NAME {
+	if arch=i386 {
+		MacApp32
+	}
+	if arch=x86_64 {
+		MacApp64
+	}
+	if arch=*86* {
+		IntelApp
+	}
+	if arch=i386 and sdk=iphone {
+		SimulatorApp
+	}
+}
+
+setting FOO inherits {
+	for * {
+		$(BAR)
+	}
+}
