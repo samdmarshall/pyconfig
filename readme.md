@@ -54,7 +54,7 @@ When using the `--scheme` flag, a new variable will be written to the generated 
 
 
 ## Syntax
-One of the greatest benefits to using `xcconfig` files are part of your build process is that they make the configuration of build settings be represented inside of a human-readable plain-text file rather than being part of the Xcode project's `pbxproj` file. For the documentation on the DSL syntax please refer to the [wiki](docs/).
+One of the greatest benefits to using `xcconfig` files are part of your build process is that they make the configuration of build settings be represented inside of a human-readable plain-text file rather than being part of the Xcode project's `pbxproj` file. For the documentation on the DSL syntax please refer to the [wiki](../../wiki).
 
 # Future Plans
 I hope to be able to further enhance the capabilities of this tool to make the management of the `xcconfig` files easy and understandable to newcomers. There are some additional tweaks to the syntax that I would like to add, including the ability to add comments anywhere in the configuration files. If you have an idea as to how to better extend this tool you should open a new issue to discuss it.
