@@ -13,7 +13,7 @@ pyconfig
 This project and related material has a Code of Conduct that is listed in the [contributing.md](./contributing.md) file. This must be read and adhered to when interacting with this project. Additionally this code is released under a 3-clause BSD license that you can read [here](./LICENSE).
 
 
-## Requirements [![Python2](https://img.shields.io/badge/Python2-2.7.10-brightgreen.svg)]() [![Python3](https://img.shields.io/badge/Python3-3.5.0-brightgreen.svg)]()
+## Requirements ![Python2](https://img.shields.io/badge/Python2-2.7.10-brightgreen.svg) ![Python3](https://img.shields.io/badge/Python3-3.5.0-brightgreen.svg)
 This tool is built and tested against Python 2.7.10 and 3.5.0. 
 
    Module | Version
