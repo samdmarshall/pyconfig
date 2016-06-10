@@ -3,10 +3,6 @@ machine:
     version: 2.7.10
 
 dependencies:
-  pre:
-    - if [ $CIRCLE_NODE_INDEX == "1" ] ; then pyenv global 3.5.0 ; fi
-
-test:
   override:
-    - pyconfig tests/test.pyconfig --output tests/test.xcconfig:
-      parallel: true
+    - pip install tox tox-pyenv
+    - pyenv local 2.7.10 3.0 3.5.0
