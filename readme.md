@@ -3,8 +3,8 @@ pyconfig
 
 [![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
 [![homebrew](https://img.shields.io/badge/homebrew-HEAD-orange.svg)](https://github.com/samdmarshall/homebrew-formulae)
-[![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg?maxAge=2592000)](https://circleci.com/gh/samdmarshall/pyconfig)
-
+[![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg)](https://circleci.com/gh/samdmarshall/pyconfig)
+<!-- [![CircleCI](https://circleci.com/gh/samdmarshall/pyconfig.svg?style=svg)](https://circleci.com/gh/samdmarshall/pyconfig) -->
 
 `pyconfig` is a tool that allows you to write the contents of your `xcconfig` files in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
@@ -31,7 +31,7 @@ Via [homebrew](http://brew.sh):
 	$ brew tap samdmarshall/formulae
 	$ brew install samdmarshall/formulae/pyconfig --HEAD
 
-Alternatively you can clone the repo and run the `setup.py` file to install.
+Alternatively you can clone the repo and run the `make build2` to install under Python 2, and `make build3` to install under Python 3.
 
 ## Usage
 To use `pyconfig` to generate an xcconfig file, you will have to pass it an input and the `--output` flag:
