@@ -14,11 +14,12 @@ check:
 	@type $(TOX_CMD) >/dev/null 2>&1 || echo "Please install tox"
 
 clean: check
-	touch $(INSTALLED_FILES_RECORD) ; \
-	cat $(INSTALLED_FILES_RECORD) | xargs rm -rf ; \
-	rm -rdf ./pyconfig.egg-info ; \
-	rm -rdf ./build ; \
-	rm -rdf ./dist ;
+	@echo "Removing existing installation..."
+	@touch $(INSTALLED_FILES_RECORD)
+	@cat $(INSTALLED_FILES_RECORD) | xargs rm -rf
+	@rm -rdf ./pyconfig.egg-info
+	@rm -rdf ./build
+	@rm -rdf ./dist
 	
 build2: check
 	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
