@@ -9,4 +9,5 @@ dependencies:
 
 test:
   override:
-    - pyconfig tests/test.pyconfig --output tests/test.xcconfig
+    - pyconfig tests/test.pyconfig --output tests/test.xcconfig: # note the colon
+      parallel: true
