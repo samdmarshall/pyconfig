@@ -4,10 +4,9 @@ machine:
 
 dependencies:
   pre:
-    - pyenv local 2.7.10 3.5.0
+    - pyenv global 2.7.10 3.5.0
     - if [ $CIRCLE_NODE_INDEX == "1" ] ; then pyenv global 3.5.0 ; fi
 
 test:
   override:
-    - pyconfig tests/test.pyconfig --output tests/test.xcconfig: # note the colon
-      parallel: true
+    - pyconfig tests/test.pyconfig --output tests/test.xcconfig
