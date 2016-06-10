@@ -2,9 +2,8 @@ pyconfig
 ========
 
 [![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
+[![homebrew](https://img.shields.io/badge/homebrew-HEAD-orange.svg)](https://github.com/samdmarshall/homebrew-formulae)
 [![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg?maxAge=2592000)](https://circleci.com/gh/samdmarshall/pyconfig)
-[![Python2](https://img.shields.io/badge/Python2-2.7.10-brightgreen.svg)]()
-[![Python3](https://img.shields.io/badge/Python3-3.5.1-brightgreen.svg)]()
 
 
 `pyconfig` is a tool that allows you to write the contents of your `xcconfig` files in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
@@ -14,8 +13,15 @@ pyconfig
 This project and related material has a Code of Conduct that is listed in the [contributing.md](./contributing.md) file. This must be read and adhered to when interacting with this project. Additionally this code is released under a 3-clause BSD license that you can read [here](./LICENSE).
 
 
-## Requirements
-This script was written against system Python (2.7.10) on OS X 10.11.4. It uses two modules: `argparse` and `pyparsing`. Both of these come as part of the system Python installation for OS X, but you will have to install them yourself if necessary on other systems. Both of these modules can be accquired through `pip install`.
+## Requirements [![Python2](https://img.shields.io/badge/Python2-2.7.10-brightgreen.svg)]() [![Python3](https://img.shields.io/badge/Python3-3.5.0-brightgreen.svg)]()
+This tool is built and tested against Python 2.7.10 and 3.5.0. 
+
+   Module | Version
+----------|--------
+pyparsing | >=2.0.3
+ argparse | >=1.1
+
+Note: Both of these come as part of the system Python installation for OS X, but you will have to install them yourself if necessary on other systems. Both of these modules can be accquired through `pip install`.
 
 
 ## Installation
