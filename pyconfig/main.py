@@ -35,27 +35,13 @@ from . import pycinterpreter
 from . import pycserializer
 from . import pycfinder
 
-#def openOutputFileToWrite(input_string):
-#    file_path = os.path.expanduser(input_string)
-#    parent_path = os.path.dirname(file_path)
-#    if os.path.exists(parent_path) == False:
-#        os.makedirs(parent_path)
-#    return open(file_path, 'w')
-
 # Main
 def main():
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(
         'file', 
         help='Path to the pyconfig file to use to generate a xcconfig file',
-#        type=argparse.FileType('r')
     )
-#    parser.add_argument(
-#        '-o', '--output', 
-#        metavar='file', 
-#        help='Path to output xcconfig file to write', 
-#        type=openOutputFileToWrite
-#    )
     parser.add_argument(
         '-l', '--lint', 
         help='Validate the syntax of a pyconfig file', 
