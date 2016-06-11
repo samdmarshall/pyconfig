@@ -1,3 +1,5 @@
+export "export_test.xcconfig"
+
 # these are some places you can put comments
 include "root.xcconfig" # like here
 include "codesign.xcconfig"

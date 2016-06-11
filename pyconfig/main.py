@@ -33,13 +33,14 @@ import os
 import argparse
 from . import pycinterpreter
 from . import pycserializer
+from . import pycfinder
 
-def openOutputFileToWrite(input_string):
-    file_path = os.path.expanduser(input_string)
-    parent_path = os.path.dirname(file_path)
-    if os.path.exists(parent_path) == False:
-        os.makedirs(parent_path)
-    return open(file_path, 'w')
+#def openOutputFileToWrite(input_string):
+#    file_path = os.path.expanduser(input_string)
+#    parent_path = os.path.dirname(file_path)
+#    if os.path.exists(parent_path) == False:
+#        os.makedirs(parent_path)
+#    return open(file_path, 'w')
 
 # Main
 def main():
@@ -47,14 +48,14 @@ def main():
     parser.add_argument(
         'file', 
         help='Path to the pyconfig file to use to generate a xcconfig file',
-        type=argparse.FileType('r')
+#        type=argparse.FileType('r')
     )
-    parser.add_argument(
-        '-o', '--output', 
-        metavar='file', 
-        help='Path to output xcconfig file to write', 
-        type=openOutputFileToWrite
-    )
+#    parser.add_argument(
+#        '-o', '--output', 
+#        metavar='file', 
+#        help='Path to output xcconfig file to write', 
+#        type=openOutputFileToWrite
+#    )
     parser.add_argument(
         '-l', '--lint', 
         help='Validate the syntax of a pyconfig file', 
@@ -72,18 +73,20 @@ def main():
         version=PYCONFIG_VERSION
     )
     args = parser.parse_args()
-    	
-    pyconfig_contents = args.file.read()
     
-    parsed_contents = pycinterpreter.parse(args.lint, pyconfig_contents)
+    found_pyconfig_files = pycfinder.locateConfigs(args.file)
     
-    if args.lint == False:
-        pycserializer.writeFile(parsed_contents, args.output, args.scheme)
-    	
-    args.file.close()
-    	
-    if args.output != None:
-        args.output.close()
+    for pyconfig_file_path in found_pyconfig_files:
+        pyconfig_file = open(pyconfig_file_path, 'r')
+        
+        pyconfig_contents = pyconfig_file.read()
+        
+        parsed_contents = pycinterpreter.parse(args.lint, pyconfig_contents)
+        
+        if args.lint == False:
+            pycserializer.writeFile(parsed_contents, pyconfig_file.name, args.scheme)
+        	
+        pyconfig_file.close()
 
 if __name__ == "__main__":
     main()
