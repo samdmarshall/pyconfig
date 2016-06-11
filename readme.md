@@ -35,7 +35,7 @@ Alternatively you can clone the repo and run the `make build2` to install under 
 ## Usage
 To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it an input and the `--output` flag:
 
-	$ pyconfig <file path to the configuration file> --output <file path to write the .xcconfig file>
+	$ pyconfig <file path to the configuration file>
 
 You can also use `pyconfig` to perform syntax validation on the configuration file by passing the `--lint` flag:
 
@@ -45,7 +45,7 @@ Doing this should raise any of the major syntax errors and print out nothing if 
 
 There is an additional flag that allows you to pass in an additional variable at execution of the script to represent the name of the scheme you are running. This feature exists to allow the generation of the `.xcconfig` files to be added as a pre-build script phase to an Xcode scheme to re-define the build settings as necessary.
 
-	$ pyconfig <file path to the configuration file> --output <file path to write the xcconfig file> --scheme <name of scheme>
+	$ pyconfig <file path to the configuration file> --scheme <name of scheme>
 
 When using the `--scheme` flag, a new variable will be written to the generated `.xcconfig` file as:
 
