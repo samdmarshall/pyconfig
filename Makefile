@@ -21,12 +21,12 @@ clean: check
 	@rm -rdf ./build
 	@rm -rdf ./dist
 	
-build2: check
+build2: clean
 	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
 	
-build3: check
+build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 
-test: check
+test: 
 	$(TOX)
 
