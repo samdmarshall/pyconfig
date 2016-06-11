@@ -33,7 +33,7 @@ Via [homebrew](http://brew.sh):
 Alternatively you can clone the repo and run the `make build2` to install under Python 2, and `make build3` to install under Python 3.
 
 ## Usage
-To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it an input and the `--output` flag:
+To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it an input:
 
 	$ pyconfig <file path to the configuration file>
 
