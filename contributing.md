@@ -76,7 +76,9 @@ available at [http://contributor-covenant.org/version/1/4][version]
 
 ---
 
-# Opening Issues
+# Submitting Issues
+Before submitting new issues please check the wiki and search the issues list to see if someone hasn't already opened the same issue. Labels should be used as a way to categorize the type of the issue, check out the list of labels available [here](https://github.com/samdmarshall/pyconfig/labels). If you are filing a bug report or enhancement request on a particular file that you include that file's name in square brackets as part of the issue name to help categorize and group similar work. For example, if there is a problem with `pycparser.py` then the issue's name should start with `[pycparser]`.
+
 
 ## Bug Reports
 
@@ -92,7 +94,9 @@ NOTE: when creating the sample project that reproduces the issue it must be enti
 ---
 
 # Submitting Pull Requests
-Pull requests are very welcome to this project, however I have a couple of guidelines that should be followed when submitting a pull request.
+Please make branch names `brief-description` and include a full description of what the fixes and features are included.
 
-## Branching
-Please make branch names `develop/brief-description` and include a full description of what the fixes and features are included. All commits should be run through the clang-format first, not following opening the PR. 
+
+
+
+You made it! If you have finished reading the contributing guide then you can put 🌈 in your issue or pull request to acknowledge that you have read this document and have done your best to adhere to it.
