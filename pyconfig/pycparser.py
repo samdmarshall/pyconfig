@@ -31,6 +31,13 @@
 import pyparsing
 from . import pycword
 from . import pyckeyword
+import sys
+
+if sys.version_info >= (3, 0):
+    def unichr(c):
+        return chr(c)
+    def xrange(n):
+        return range(n)
 
 unicodePrintables = u''.join(unichr(c) for c in xrange(65536) if not unichr(c).isspace())
 
