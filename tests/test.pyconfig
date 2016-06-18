@@ -69,3 +69,7 @@ setting PRODUCT_NAME {
 		XING α
 	}
 }
+
+setting PROVISIONING_PROFILE {
+	for *
+}
