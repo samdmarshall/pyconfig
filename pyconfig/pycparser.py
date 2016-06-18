@@ -32,6 +32,22 @@ import pyparsing
 from . import pycword
 from . import pyckeyword
 
+unicodePrintables = u''.join(unichr(c) for c in xrange(65536) if not unichr(c).isspace())
+
+_commaSeparatedItem = pyparsing.Combine(                     \
+    pyparsing.OneOrMore(                                     \
+        pyparsing.Word(unicodePrintables, excludeChars=',')  \
+        + pyparsing.Optional( pyparsing.Word(" \t")          \
+        + ~pyparsing.Literal(",")                            \
+        + ~pyparsing.LineEnd()                               \
+        )                                                    \
+    )                                                        \
+).streamline()
+
+_genericCSVList = pyparsing.delimitedList(                                                  \
+    pyparsing.Optional( pyparsing.quotedString.copy() | _commaSeparatedItem, default="")    \
+)
+
 # export path of the current pyconfig file
 _export = pyparsing.Group(                \
     pyparsing.Keyword(pyckeyword._export) \
@@ -64,7 +80,7 @@ _conditionalName = pyparsing.Group(pyparsing.delimitedList(_conditionalExpr, pyc
 
 # group( comma, separated, values, to be used as assignment, for build configurations )
 _bc_value = pyparsing.Group(                                                                \
-    pyparsing.Optional(pyparsing.commaSeparatedList.ignore(pyparsing.pythonStyleComment))   \
+    pyparsing.Optional(_genericCSVList.ignore(pyparsing.pythonStyleComment))   \
 )
 
 # 

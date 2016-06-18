@@ -63,3 +63,9 @@ setting FOO inherits {
 		$(BAR)
 	}
 }
+
+setting PRODUCT_NAME {
+	for XING {
+		XING α
+	}
+}
