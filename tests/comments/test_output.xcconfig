@@ -1,0 +1,20 @@
+// TEST DATA
+// TEST DATA
+#include "root.xcconfig"
+#include "codesign.xcconfig"
+PODS_ROOT = ${SRCROOT}/Pods
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/Mantle" "${PODS_ROOT}/Headers/Public/CocoaLumberjack" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/Crashlytics"
+OTHER_LDFLAGS_Debug = -framework "Reveal"
+OTHER_LDFLAGS_Release = 
+OTHER_LDFLAGS = $(OTHER_LDFLAGS_$(CONFIGURATION))
+OTHER_CFLAGS_app = -Wall
+OTHER_CFLAGS_xctest = -Wall -Werror
+OTHER_CFLAGS = $(OTHER_CFLAGS_$(WRAPPER_EXTENSION))
+PRODUCT_NAME[arch=i386] = MacApp32
+PRODUCT_NAME[arch=x86_64] = MacApp64
+PRODUCT_NAME[arch=*86*] = IntelApp
+PRODUCT_NAME[arch=i386,sdk=iphone] = SimulatorApp
+FOO = $(inherited) $(BAR)
+PRODUCT_NAME_XING = XING α
+PRODUCT_NAME = $(PRODUCT_NAME_$(CONFIGURATION))
+PROVISIONING_PROFILE = 

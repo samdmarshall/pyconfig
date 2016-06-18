@@ -42,13 +42,18 @@ def openOutputFileToWrite(input_string):
 
 def writeFile(pyconfig_contents=None, config_file_path=None, scheme_name=None):
 
-    if pyconfig_contents and config_file_path:
+    if config_file_path:
         
         output_file_path = os.path.dirname(config_file_path)
-        if pyconfig_contents[0][0] == pyckeyword._export:
-            relative_path = pyconfig_contents[0][1][1:-1]
-            output_file_path = os.path.join(output_file_path, relative_path)
-        else:
+        
+        use_default_export = True
+        if len(pyconfig_contents) > 0:
+            if pyconfig_contents[0][0] == pyckeyword._export:
+                relative_path = pyconfig_contents[0][1][1:-1]
+                output_file_path = os.path.join(output_file_path, relative_path)
+                use_default_export = False
+                
+        if use_default_export:
             name, extension = os.path.splitext(config_file_path)
             output_file_path = name + '.xcconfig'
         

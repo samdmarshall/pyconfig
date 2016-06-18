@@ -1,0 +1,3 @@
+setting PROVISIONING_PROFILE {
+	for *
+}

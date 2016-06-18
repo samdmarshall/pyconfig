@@ -6,3 +6,5 @@ pyconfig.egg-info/
 .tox
 *.xcconfig
 
+# make sure to include the static test output data
+!*_output.xcconfig

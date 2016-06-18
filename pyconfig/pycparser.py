@@ -149,6 +149,8 @@ _config = pyparsing.Suppress(                                \
         pyparsing.delimitedList(_include, pyparsing.Empty()) \
     )                                                        \
 )                                                            \
-+ pyparsing.Group(                                           \
-    pyparsing.delimitedList(_setting, pyparsing.Empty())     \
++ pyparsing.Optional(                                        \
+    pyparsing.Group(                                         \
+        pyparsing.delimitedList(_setting, pyparsing.Empty()) \
+    )                                                        \
 )

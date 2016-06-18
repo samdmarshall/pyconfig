@@ -1,0 +1,9 @@
+setting OTHER_CFLAGS use WRAPPER_EXTENSION {
+	for app {
+		-Wall
+	}
+	for xctest {
+		-Wall,
+		-Werror
+	}
+}
