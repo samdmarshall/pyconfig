@@ -1,0 +1,3 @@
+// TEST DATA
+// TEST DATA
+FOO = $(inherited) $(BAR)

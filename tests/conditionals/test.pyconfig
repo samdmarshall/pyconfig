@@ -1,0 +1,14 @@
+setting PRODUCT_NAME {
+	if arch=i386 {
+		MacApp32
+	}
+	if arch=x86_64 {
+		MacApp64
+	}
+	if arch=*86* {
+		IntelApp
+	}
+	if arch=i386 and sdk=iphone {
+		SimulatorApp
+	}
+}
