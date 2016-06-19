@@ -99,4 +99,6 @@ Please make branch names `brief-description` and include a full description of w
 
 
 
-You made it! If you have finished reading the contributing guide then you can put 🌈 in your issue or pull request to acknowledge that you have read this document and have done your best to adhere to it.
+
+
+You made it! If you have finished reading the contributing guide then you can put 🌈 in your issue or pull request to acknowledge that you have read this document and have done your best to adhere
