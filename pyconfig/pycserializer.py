@@ -75,6 +75,8 @@ def writeFile(pyconfig_contents=None, config_file_path=None, scheme_name=None):
                         uses_configuration_specific_settings = False
                         inherited_settings = ''
                         substitution_variable_name = 'CONFIGURATION'
+                        additional_values = ''
+                        write_as_additional_values = False
                         build_setting_name = item[1]
                         modifiers = item[2]
                         configurations = item[3]
@@ -87,16 +89,28 @@ def writeFile(pyconfig_contents=None, config_file_path=None, scheme_name=None):
                         for config in configurations:
                             configuration_type = config[0]
                             if configuration_type == pyckeyword._for:
+                                should_write = True
                                 configuration_name = config[1]
                                 configuration_value_string = ''
                                 if len(config) > 2:
                                     configuration_value_string = ' '.join(config[2])
                                 if configuration_name.startswith(pyckeyword._specialCase, 0, 1):
-                                    configuration_name = ''
+                                    if len(configurations) > 1:
+                                        list_of_non_default_assignments = list(filter(lambda setting_configuration: not setting_configuration[1].startswith(pyckeyword._specialCase, 0, 1), configurations))
+                                        contains_other_configurations = (len(list_of_non_default_assignments) > 0)
+                                        if contains_other_configurations == True:
+                                            write_as_additional_values = True
+                                            additional_values += ' '+configuration_value_string
+                                            should_write = False
+                                        else:
+                                            configuration_name = ''
+                                    else:
+                                        configuration_name = ''
                                 else:
                                     uses_configuration_specific_settings = True
                                     configuration_name = '_' + configuration_name
-                                output_file.write(build_setting_name + configuration_name + ' = ' + inherited_settings + configuration_value_string + '\n')
+                                if should_write == True:
+                                    output_file.write(build_setting_name + configuration_name + ' = ' + inherited_settings + configuration_value_string + '\n')
                             if configuration_type == pyckeyword._if:
                                 conditions = config[1]
                                 assignment_value = config[2]
@@ -106,4 +120,4 @@ def writeFile(pyconfig_contents=None, config_file_path=None, scheme_name=None):
                                 conditional_key_value_string = ','.join(conditional_key_value_list)
                                 output_file.write(build_setting_name + '[' + conditional_key_value_string + '] = ' + inherited_settings + assignment_value + '\n')
                         if uses_configuration_specific_settings:
-                            output_file.write(build_setting_name + ' = ' + inherited_settings + '$(' + build_setting_name + '_$(' + substitution_variable_name + '))' + '\n')
+                            output_file.write(build_setting_name + ' = ' + inherited_settings + '$(' + build_setting_name + '_$(' + substitution_variable_name + '))' + additional_values + '\n')
