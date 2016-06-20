@@ -28,7 +28,7 @@ Via [homebrew](http://brew.sh):
 
 	$ brew update
 	$ brew tap samdmarshall/formulae
-	$ brew install samdmarshall/formulae/pyconfig --HEAD
+	$ brew install samdmarshall/formulae/pyconfig
 
 Alternatively you can clone the repo and run the `make build2` to install under Python 2, and `make build3` to install under Python 3.
 
