@@ -21,6 +21,7 @@ clean: check
 	@rm -rdf ./pyconfig.egg-info
 	@rm -rdf ./build
 	@rm -rdf ./dist
+	@rm -rdf ./pyconfig/*.pyc
 	
 build2: clean
 	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
