@@ -30,8 +30,26 @@
 
 import pyparsing
 from . import pycparser
+from . import pycdependent
 
-def parse(should_lint=True, pyconfig_contents=""):
+def CreateGraphNodes(pyconfig_path_list=[]):
+    parsed_configs = set()
+    
+    for pyconfig_file_path in pyconfig_path_list:
+        pyconfig_file = open(pyconfig_file_path, 'r')
+        
+        pyconfig_contents = pyconfig_file.read()
+        
+        parsed_contents = parse(pyconfig_contents)
+        
+        node = pycdependent.DependentNode(parsed_contents, pyconfig_file.name)
+        parsed_configs.add(node)
+        	
+        pyconfig_file.close()
+    
+    return parsed_configs
+
+def parse(pyconfig_contents=""):
 
     # now parse the file's contents
     results = pycparser._config.parseString(pyconfig_contents)

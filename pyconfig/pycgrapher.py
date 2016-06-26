@@ -28,25 +28,27 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
-import string
-from . import pyclogger
+def TraverseGraphNodes(graph_nodes=[]):
+    graph_list = list()
+    visited = set()
+    root_nodes_array = list(filter(lambda node: len(node.parents) == 0, graph_nodes))
+    for root_node in root_nodes_array:
+        graph_list.append(root_node)
+        visited.add(root_node)
+    child_nodes = WalkGraphNodes(visited, root_nodes_array)
+    graph_list.extend(child_nodes)
+    visited.update(set(child_nodes))
+    return graph_list
 
-def locateConfigs(fs_path):
-    found_configs = list()
-    if os.path.isdir(fs_path):
-        for root, dirs, files in os.walk(fs_path, followlinks=True):
-            for dir_name in dirs:
-                relative_path = os.path.join(root, dir_name)
-                found_configs.extend(locateConfigs(relative_path))
-            for file_name in files:
-                relative_path = os.path.join(root, file_name)
-                full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
-                name, extension = os.path.splitext(file_name)
-                if extension == '.pyconfig':
-                    pyclogger.logger.get().info('Found "%s"' % relative_path)
-                    found_configs.append(full_path)
-    else:
-        full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
-        found_configs.append(full_path)
-    return found_configs
+def WalkGraphNodes(visited=set(), nodes_with_children=[]):
+    child_nodes = list()
+    for node in nodes_with_children:
+        valid_nodes_array = list(filter(lambda filtered_node: filtered_node not in visited, node.children))
+        for valid_node in valid_nodes_array:
+            visited.add(valid_node)
+            located_child_nodes = WalkGraphNodes(visited, [valid_node])
+            child_nodes.extend(located_child_nodes)
+    
+    return child_nodes
+    
+        

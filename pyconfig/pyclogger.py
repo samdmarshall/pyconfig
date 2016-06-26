@@ -28,25 +28,39 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
-import string
-from . import pyclogger
+import logging
 
-def locateConfigs(fs_path):
-    found_configs = list()
-    if os.path.isdir(fs_path):
-        for root, dirs, files in os.walk(fs_path, followlinks=True):
-            for dir_name in dirs:
-                relative_path = os.path.join(root, dir_name)
-                found_configs.extend(locateConfigs(relative_path))
-            for file_name in files:
-                relative_path = os.path.join(root, file_name)
-                full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
-                name, extension = os.path.splitext(file_name)
-                if extension == '.pyconfig':
-                    pyclogger.logger.get().info('Found "%s"' % relative_path)
-                    found_configs.append(full_path)
-    else:
-        full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
-        found_configs.append(full_path)
-    return found_configs
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances.keys():
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class logger(object):
+    __metaclass__ = Singleton
+    _internal_logger = None
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    @staticmethod
+    def get():
+        if logger._internal_logger == None:
+            logger._internal_logger = logging.getLogger('com.pewpewthespells.py.logging_helper')
+            logger._internal_logger.setLevel(logging.INFO)
+
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.INFO)
+
+            # create formatter
+            formatter = logging.Formatter('[%(levelname)s]: %(message)s')
+
+            # add formatter to ch
+            ch.setFormatter(formatter)
+
+            # add ch to logger
+            logger._internal_logger.addHandler(ch)
+        return logger._internal_logger
