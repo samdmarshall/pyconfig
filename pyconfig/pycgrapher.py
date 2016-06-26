@@ -28,27 +28,28 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import pyparsing
-from . import pycparser
-from . import pycdependent
-from . import pyclogger
+def TraverseGraphNodes(graph_nodes=[]):
+    graph_list = list()
+    visited = set()
+    root_nodes_array = list(filter(lambda node: len(node.parents) == 0, graph_nodes))
+    for root_node in root_nodes_array:
+        graph_list.append(root_node)
+        visited.add(root_node)
+    child_nodes = WalkGraphNodes(visited, root_nodes_array)
+    graph_list.extend(child_nodes)
+    visited.update(set(child_nodes))
+    return graph_list
 
-def CreateGraphNodes(pyconfig_path_list=[]):
-    parsed_configs = set()
+def WalkGraphNodes(visited=set(), nodes_with_children=[]):
+    child_nodes = list()
+    for node in nodes_with_children:
+        valid_nodes_array = list(filter(lambda filtered_node: filtered_node not in visited, node.children))
+        for valid_node in valid_nodes_array:
+            child_nodes.append(valid_node)
+            visited.add(valid_node)
+            located_child_nodes = WalkGraphNodes(visited, [valid_node])
+            child_nodes.extend(located_child_nodes)
     
-    for pyconfig_file_path in pyconfig_path_list:
-        pyconfig_file = open(pyconfig_file_path, 'r')
-        
-        pyconfig_contents = pyconfig_file.read()
-        
-        pyclogger.logger.get().info('Parsing %s ...' % pyconfig_file_path)
-        
-        # now parse the file's contents
-        parsed_contents = pycparser._config.parseString(pyconfig_contents)
-        
-        node = pycdependent.DependentNode(parsed_contents, pyconfig_file.name)
-        parsed_configs.add(node)
-        	
-        pyconfig_file.close()
+    return child_nodes
     
-    return parsed_configs
+        

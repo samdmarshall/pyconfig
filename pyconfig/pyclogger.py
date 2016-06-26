@@ -28,27 +28,39 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import pyparsing
-from . import pycparser
-from . import pycdependent
-from . import pyclogger
+import logging
 
-def CreateGraphNodes(pyconfig_path_list=[]):
-    parsed_configs = set()
-    
-    for pyconfig_file_path in pyconfig_path_list:
-        pyconfig_file = open(pyconfig_file_path, 'r')
-        
-        pyconfig_contents = pyconfig_file.read()
-        
-        pyclogger.logger.get().info('Parsing %s ...' % pyconfig_file_path)
-        
-        # now parse the file's contents
-        parsed_contents = pycparser._config.parseString(pyconfig_contents)
-        
-        node = pycdependent.DependentNode(parsed_contents, pyconfig_file.name)
-        parsed_configs.add(node)
-        	
-        pyconfig_file.close()
-    
-    return parsed_configs
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances.keys():
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class logger(object):
+    __metaclass__ = Singleton
+    _internal_logger = None
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    @staticmethod
+    def get():
+        if logger._internal_logger == None:
+            logger._internal_logger = logging.getLogger('com.pewpewthespells.py.logging_helper')
+            logger._internal_logger.setLevel(logging.INFO)
+
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.INFO)
+
+            # create formatter
+            formatter = logging.Formatter('[%(levelname)s]: %(message)s')
+
+            # add formatter to ch
+            ch.setFormatter(formatter)
+
+            # add ch to logger
+            logger._internal_logger.addHandler(ch)
+        return logger._internal_logger

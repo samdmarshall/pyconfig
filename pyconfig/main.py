@@ -34,6 +34,8 @@ import argparse
 from . import pycinterpreter
 from . import pycserializer
 from . import pycfinder
+from . import pycgrapher
+from . import pycdependent
 
 # Main
 def main():
@@ -62,17 +64,17 @@ def main():
     
     found_pyconfig_files = pycfinder.locateConfigs(args.file)
     
-    for pyconfig_file_path in found_pyconfig_files:
-        pyconfig_file = open(pyconfig_file_path, 'r')
-        
-        pyconfig_contents = pyconfig_file.read()
-        
-        parsed_contents = pycinterpreter.parse(args.lint, pyconfig_contents)
-        
-        if args.lint == False:
-            pycserializer.writeFile(parsed_contents, pyconfig_file.name, args.scheme)
-        	
-        pyconfig_file.close()
+    parsed_configs = pycinterpreter.CreateGraphNodes(found_pyconfig_files)
+    
+    for node in parsed_configs:
+        node.resolvePaths(parsed_configs)
+    mapped_nodes = pycgrapher.TraverseGraphNodes(parsed_configs)
+    
+    if args.lint == False:
+        for current_config in mapped_nodes:
+            pycserializer.writeFile(current_config, args.scheme)
+                
+            
 
 if __name__ == "__main__":
     main()
