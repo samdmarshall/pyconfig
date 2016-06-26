@@ -72,7 +72,7 @@ def main():
     
     if args.lint == False:
         for current_config in mapped_nodes:
-            pycserializer.writeFile(current_config.config, current_config.name, args.scheme)
+            pycserializer.writeFile(current_config, args.scheme)
                 
             
 

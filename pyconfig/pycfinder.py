@@ -44,7 +44,7 @@ def locateConfigs(fs_path):
                 full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
                 name, extension = os.path.splitext(file_name)
                 if extension == '.pyconfig':
-                    pyclogger.logger.get().info('Found "%s"' % relative_path)
+                    pyclogger.logger.get().info('Found %s' % relative_path)
                     found_configs.append(full_path)
     else:
         full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))

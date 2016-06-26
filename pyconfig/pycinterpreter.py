@@ -31,6 +31,7 @@
 import pyparsing
 from . import pycparser
 from . import pycdependent
+from . import pyclogger
 
 def CreateGraphNodes(pyconfig_path_list=[]):
     parsed_configs = set()
@@ -40,7 +41,10 @@ def CreateGraphNodes(pyconfig_path_list=[]):
         
         pyconfig_contents = pyconfig_file.read()
         
-        parsed_contents = parse(pyconfig_contents)
+        pyclogger.logger.get().info('Parsing %s ...' % pyconfig_file_path)
+        
+        # now parse the file's contents
+        parsed_contents = pycparser._config.parseString(pyconfig_contents)
         
         node = pycdependent.DependentNode(parsed_contents, pyconfig_file.name)
         parsed_configs.add(node)
@@ -48,10 +52,3 @@ def CreateGraphNodes(pyconfig_path_list=[]):
         pyconfig_file.close()
     
     return parsed_configs
-
-def parse(pyconfig_contents=""):
-
-    # now parse the file's contents
-    results = pycparser._config.parseString(pyconfig_contents)
-    
-    return results

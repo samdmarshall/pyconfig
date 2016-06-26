@@ -45,6 +45,7 @@ def WalkGraphNodes(visited=set(), nodes_with_children=[]):
     for node in nodes_with_children:
         valid_nodes_array = list(filter(lambda filtered_node: filtered_node not in visited, node.children))
         for valid_node in valid_nodes_array:
+            child_nodes.append(valid_node)
             visited.add(valid_node)
             located_child_nodes = WalkGraphNodes(visited, [valid_node])
             child_nodes.extend(located_child_nodes)
