@@ -6,7 +6,7 @@ try:
         print('This software requires that you be running at least Python 2.7')
         sys.exit()
     else:
-        install_dependency_list = ['argparse', 'sys', 'os', 'pyparsing']
+        install_dependency_list = ['argparse', 'sys', 'os', 'pyparsing', 'logging']
         found_modules = {}
         for dependency in install_dependency_list:
             try:
@@ -55,7 +55,11 @@ try:
         author = 'Samantha Marshall',
         author_email = 'hello@pewpewthespells.com',
         license = 'BSD 3-Clause',
-        packages = [ 'pyconfig' ],
+        packages = [ 
+            'pyconfig',
+            'pyconfig/Helpers',
+            'pyconfig/Helpers/pyLoggingHelper/Logger'
+        ],
         entry_points = { 'console_scripts': ['pyconfig = pyconfig:main'] },
         zip_safe = False,
         **install_requires_dict
