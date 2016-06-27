@@ -36,6 +36,7 @@ from . import pycserializer
 from . import pycfinder
 from . import pycgrapher
 from . import pycdependent
+from .Helpers import Logger
 
 # Main
 def main():
@@ -60,7 +61,15 @@ def main():
         action='version',
         version=PYCONFIG_VERSION
     )
+    parser.add_argument(
+        '-q', '--quiet',
+        help='Silences all logging output',
+        required=False,
+        action='store_true'
+    )
     args = parser.parse_args()
+    
+    Logger.isSilent(args.quiet)
     
     found_pyconfig_files = pycfinder.locateConfigs(args.file)
     

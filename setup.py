@@ -61,6 +61,7 @@ try:
             'pyconfig/Helpers/pyLoggingHelper/Logger'
         ],
         entry_points = { 'console_scripts': ['pyconfig = pyconfig:main'] },
+        test_suite = 'tests.pyconfig_test',
         zip_safe = False,
         **install_requires_dict
     )

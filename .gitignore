@@ -3,9 +3,10 @@ installed_files.txt
 build/
 dist/
 pyconfig.egg-info/
-.tox
+.tox/
 *.xcconfig
 *.pyc
+__pycache__/
 
 # make sure to include the static test output data
 !*_output.xcconfig

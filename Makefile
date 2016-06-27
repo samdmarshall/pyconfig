@@ -12,7 +12,6 @@ check:
 	@type $(PYTHON2_CMD) >/dev/null 2>&1 || echo "Please install Python 2"
 	@type $(PYTHON3_CMD) >/dev/null 2>&1 || echo "Please install Python 3"
 	@type $(TOX_CMD) >/dev/null 2>&1 || echo "Please install tox"
-	@chmod +x ./test_runner.py
 
 clean: check
 	@echo "Removing existing installation..."
@@ -21,9 +20,10 @@ clean: check
 	@rm -rdf ./pyconfig.egg-info
 	@rm -rdf ./build
 	@rm -rdf ./dist
-	@rm -rdf ./pyconfig/*.pyc
-	@rm -rdf ./pyconfig/Helpers/*.pyc
-	@rm -rdf ./pyconfig/Helpers/pyLoggingHelper/Logger/*.pyc
+	@rm -rdf ./.tox
+	@rm -rdf ./tests/__pycache__
+	@find . -name "*.pyc" -print0 | xargs -0 rm -rdf
+	
 	
 build2: clean
 	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
