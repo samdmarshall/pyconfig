@@ -22,6 +22,8 @@ clean: check
 	@rm -rdf ./build
 	@rm -rdf ./dist
 	@rm -rdf ./pyconfig/*.pyc
+	@rm -rdf ./pyconfig/Helpers/*.pyc
+	@rm -rdf ./pyconfig/Helpers/pyLoggingHelper/Logger/*.pyc
 	
 build2: clean
 	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
