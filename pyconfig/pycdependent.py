@@ -30,7 +30,7 @@
 
 import os
 from . import pyckeyword
-from . import pyclogger
+from .Helpers import Logger
 
 class DependentNode(object):
     def __init__(self, contents, name):
@@ -70,7 +70,7 @@ class DependentNode(object):
                     parent_config_in_graph.children.add(self)
                     self.parents.add(parent_config_in_graph)
                 else:
-                    pyclogger.logger.get().warn('Could not find an included pyconfig with export name of "%s"!' % exported_name)
+                    Logger.write().warn('Could not find an included pyconfig with export name of "%s"!' % exported_name)
 
             
             

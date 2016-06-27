@@ -28,10 +28,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import sys
 import pyparsing
 from . import pycword
 from . import pyckeyword
-import sys
 
 if sys.version_info >= (3, 0):
     def unichr(c):
