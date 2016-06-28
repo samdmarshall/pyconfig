@@ -129,3 +129,4 @@ def writeFile(config_node=None, scheme_name=None):
                                     output_file.write(build_setting_name + '[' + conditional_key_value_string + '] = ' + inherited_settings + assignment_value + '\n')
                             if uses_configuration_specific_settings:
                                 output_file.write(build_setting_name + ' = ' + inherited_settings + '$(' + build_setting_name + '_$(' + substitution_variable_name + '))' + additional_values + '\n')
+            output_file.close()

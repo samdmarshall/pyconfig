@@ -39,7 +39,7 @@ from . import pycdependent
 from .Helpers import Logger
 
 # Main
-def main():
+def main(argv):
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(
         'file', 
@@ -67,7 +67,7 @@ def main():
         required=False,
         action='store_true'
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     
     Logger.isSilent(args.quiet)
     
@@ -86,4 +86,4 @@ def main():
             
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
