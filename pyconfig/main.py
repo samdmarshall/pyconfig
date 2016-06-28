@@ -37,7 +37,7 @@ from . import pycserializer
 from . import pycfinder
 from . import pycgrapher
 from . import pycdependent
-from .Helpers import Logger
+from .Helpers.Logger import Logger
 
 # Main
 def main(argv=sys.argv[1:]):

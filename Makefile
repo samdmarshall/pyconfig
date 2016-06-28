@@ -25,6 +25,7 @@ clean: check
 	@rm -rdf .coverage
 	@rm -rdf ./htmlcov
 	@find . -name "*.pyc" -print0 | xargs -0 rm -rdf
+	@find . -name "__pycache__" -type d -print0 | xargs -0 rm -rdf
 	
 	
 build2: clean

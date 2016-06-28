@@ -30,7 +30,7 @@
 
 import os
 import string
-from .Helpers import Logger
+from .Helpers.Logger import Logger
 
 def locateConfigs(fs_path):
     found_configs = list()

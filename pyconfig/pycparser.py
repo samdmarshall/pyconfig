@@ -56,25 +56,22 @@ _genericCSVList = pyparsing.delimitedList(                                      
     pyparsing.Optional( pyparsing.quotedString.copy() | _commaSeparatedItem, default="")    \
 )
 
+def KeywordWithDoubleQuotedParameter(keyword):
+    return pyparsing.Group(                   \
+        pyparsing.Keyword(keyword)            \
+        + pyparsing.dblQuotedString           \
+        + pyparsing.Suppress(                 \
+            pyparsing.ZeroOrMore(             \
+                pyparsing.pythonStyleComment  \
+            )                                 \
+        )                                     \
+    )
+
 # export path of the current pyconfig file
-_export = pyparsing.Group(                \
-    pyparsing.Keyword(pyckeyword._export) \
-    + pyparsing.dblQuotedString           \
-    + pyparsing.Suppress(                 \
-        pyparsing.ZeroOrMore(             \
-            pyparsing.pythonStyleComment  \
-        )                                 \
-    )                                     \
-)
+_export = KeywordWithDoubleQuotedParameter(pyckeyword._export)
 
 # include "other.xcconfig" # with optional trailing comment
-_include = pyparsing.Group(                                \
-    pyparsing.Keyword(pyckeyword._include)                 \
-    + pyparsing.dblQuotedString                            \
-    + pyparsing.Suppress(                                  \
-        pyparsing.ZeroOrMore(pyparsing.pythonStyleComment) \
-    )                                                      \
-)
+_include = KeywordWithDoubleQuotedParameter(pyckeyword._include)
 
 # parsing conditional statement expressions
 _conditionalExpr = pyparsing.Group(                       \

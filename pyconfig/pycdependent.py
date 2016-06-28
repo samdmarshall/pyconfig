@@ -30,7 +30,7 @@
 
 import os
 from . import pyckeyword
-from .Helpers import Logger
+from .Helpers.Logger import Logger
 
 class DependentNode(object):
     def __init__(self, contents, name):

@@ -31,7 +31,7 @@
 import pyparsing
 from . import pycparser
 from . import pycdependent
-from .Helpers import Logger
+from .Helpers.Logger import Logger
 
 def CreateGraphNodes(pyconfig_path_list=[]):
     parsed_configs = set()

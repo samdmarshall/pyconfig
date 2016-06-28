@@ -32,7 +32,7 @@ from pyconfig.version import __version__ as PYCONFIG_VERSION
 import os
 import pyparsing
 from . import pyckeyword
-from .Helpers import Logger
+from .Helpers.Logger import Logger
 
 def openOutputFileToWrite(input_string):
     file_path = os.path.expanduser(input_string)

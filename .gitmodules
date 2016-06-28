@@ -1,6 +1,3 @@
 [submodule "docs"]
 	path = docs
 	url = https://github.com/samdmarshall/pyconfig.wiki.git
-[submodule "pyconfig/Helpers/pyLoggingHelper"]
-	path = pyconfig/Helpers/pyLoggingHelper
-	url = git@github.com:samdmarshall/pyLoggingHelper.git
