@@ -9,9 +9,9 @@ PYTHON3 := $(shell command -v $(PYTHON3_CMD) 2> /dev/null)
 TOX := $(shell command -v $(TOX_CMD) 2> /dev/null)
 
 install-tools:
-	./tools/hooks-config.py
+	python ./tools/hooks-config.py
 
-check:
+check: install-tools
 	@type $(PYTHON2_CMD) >/dev/null 2>&1 || echo "Please install Python 2"
 	@type $(PYTHON3_CMD) >/dev/null 2>&1 || echo "Please install Python 3"
 	@type $(TOX_CMD) >/dev/null 2>&1 || echo "Please install tox"
@@ -37,7 +37,7 @@ build2: clean
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 
-test:
+test: clean
 	$(TOX)
 ifdef CIRCLE_BRANCH
 ifeq ($(CIRCLE_BRANCH),develop)
