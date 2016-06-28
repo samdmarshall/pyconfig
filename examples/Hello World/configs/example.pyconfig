@@ -1,0 +1,6 @@
+
+setting IPHONEOS_DEPLOYMENT_TARGET {
+	for * {
+		7.0
+	}
+}
