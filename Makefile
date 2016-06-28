@@ -22,6 +22,8 @@ clean: check
 	@rm -rdf ./dist
 	@rm -rdf ./.tox
 	@rm -rdf ./tests/__pycache__
+	@rm -rdf .coverage
+	@rm -rdf ./htmlcov
 	@find . -name "*.pyc" -print0 | xargs -0 rm -rdf
 	
 	
