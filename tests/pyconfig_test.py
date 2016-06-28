@@ -1,19 +1,8 @@
 import os
 import sys
 import string
-import subprocess
 import unittest
-
-def make_call(call_args):
-    error = 0
-    output = ''
-    try:
-        output = subprocess.check_output(call_args)
-        error = 0
-    except subprocess.CalledProcessError as e:
-        output = e.output
-        error = e.returncode
-    return output
+import pyconfig
 
 test_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests')
 
@@ -21,7 +10,7 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
     test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
     test_generated_output = os.path.join(test_pyconfig_path, test_file_name+'.xcconfig')
     test_expected_output = os.path.join(test_pyconfig_path, test_file_name+'_output.xcconfig')
-    result = make_call(('pyconfig', '-q', test_pyconfig_path))
+    pyconfig.main(['-q', test_pyconfig_path])
     with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
         generated_lines = generated.readlines()[2:]
         expected_lines = expected.readlines()[2:]
