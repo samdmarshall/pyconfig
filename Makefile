@@ -31,6 +31,11 @@ build2: clean
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 
-test: 
+test:
 	$(TOX)
+ifdef CIRCLE_BRANCH
+ifeq ($(CIRCLE_BRANCH),develop)
+	codeclimate-test-reporter --token 1b415a3f064b44dcefd71011b2d1208eca337c51017a7059b3c60cf31e21f026
+endif
+endif
 

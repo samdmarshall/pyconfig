@@ -1,6 +1,4 @@
 machine:
-  environment:
-    CODECLIMATE_REPO_TOKEN: 1b415a3f064b44dcefd71011b2d1208eca337c51017a7059b3c60cf31e21f026 codeclimate-test-reporter
   python:
     version: 2.7.10
 
@@ -14,6 +12,6 @@ dependencies:
     - pip install tox tox-pyenv codeclimate-test-reporter
     - pyenv local 2.7.10 3.5.0
 
-#test:
-#  override:
-#    - make test
+test:
+  override:
+    - make test
