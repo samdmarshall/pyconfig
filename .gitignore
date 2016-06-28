@@ -4,6 +4,7 @@ build/
 dist/
 pyconfig.egg-info/
 .tox/
+.coverage
 *.xcconfig
 *.pyc
 __pycache__/
