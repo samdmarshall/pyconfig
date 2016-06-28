@@ -1,1 +1,1 @@
-__version__ = "1.0.1 (git@github.com:samdmarshall/pyconfig.git @ 4d953d8)"
+__version__ = "1.0.1 (git@github.com:samdmarshall/pyconfig.git @ 1b6fade)"
