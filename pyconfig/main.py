@@ -28,8 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from pyconfig.version import __version__ as PYCONFIG_VERSION
+from .version import __version__ as PYCONFIG_VERSION
 import os
+import sys
 import argparse
 from . import pycinterpreter
 from . import pycserializer
@@ -39,7 +40,7 @@ from . import pycdependent
 from .Helpers import Logger
 
 # Main
-def main(argv):
+def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(
         'file', 
@@ -82,8 +83,6 @@ def main(argv):
     if args.lint == False:
         for current_config in mapped_nodes:
             pycserializer.writeFile(current_config, args.scheme)
-                
-            
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
