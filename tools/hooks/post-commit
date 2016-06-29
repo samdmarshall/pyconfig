@@ -1,33 +1,12 @@
-#!/usr/bin/python
-
-try:
-	import os
-	import subprocess
-	def make_call(call_args):
-		error = 0
-		output = ''
-		try:
-			output = subprocess.check_output(call_args)
-			error = 0
-		except subprocess.CalledProcessError as e:
-			output = e.output
-			error = e.returncode
-		return output
-
-	install_path = make_call(('git', 'rev-parse', '--show-toplevel')).decode('utf-8').strip('\n')
-	os.chdir(install_path)
-	temp_file = os.path.join(install_path, '.commit')
-	if os.path.exists(temp_file):
-		commit_hash = make_call(('git', 'rev-parse', '--short', 'HEAD')).decode('utf-8').strip('\n')
-		remote_origin = make_call(('git', 'ls-remote', '--get-url')).decode('utf-8').strip('\n')
-		versions_path = os.path.join(install_path, 'pyconfig/version_info.py')
-		if len(commit_hash) > 0 and len(remote_origin) > 0:
-			fd = open(versions_path, 'w')
-			fd.write('remote_origin = "'+remote_origin+'"\n')
-			fd.write('commit_hash = "'+commit_hash+'"\n')
-			fd.close()
-		make_call(('git', 'add', './pyconfig/version_info.py'))
-		make_call(('git', 'commit', '--amend', '-C', 'HEAD', '--no-verify'))
-		os.remove(temp_file)
-except ImportError as e:
-	raise e
+#!/bin/sh
+git_path=`git rev-parse --show-toplevel`
+pushd $git_path
+if [ -e .commit ]; then
+	commit_hash=`git rev-parse --short HEAD`
+	remote_origin=`git ls-remote --get-url`
+	echo "remote_origin = $remote_origin\ncommit_hash = $commit_hash" > ./pyconfig/version_info.py
+	rm .commit
+	git add ./pyconfig/version_info.py
+	git commit --amend -C HEAD --no-verify
+fi
+popd
