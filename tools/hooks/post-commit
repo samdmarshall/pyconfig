@@ -7,6 +7,6 @@ if [ -e .commit ]; then
 	echo "remote_origin = $remote_origin\ncommit_hash = $commit_hash" > ./pyconfig/version_info.py
 	rm .commit
 	git add ./pyconfig/version_info.py
-	git commit --amend -C HEAD --no-verify
+	git commit --amend -C HEAD --no-verify --no-edit
 fi
 popd

@@ -1,2 +1,2 @@
 remote_origin = git@github.com:samdmarshall/pyconfig.git
-commit_hash = 63dff5a
+commit_hash = fb32949
