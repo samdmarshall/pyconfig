@@ -1,5 +1,4 @@
 #!/bin/sh
-echo $PWD
 git_path=`git rev-parse --show-toplevel`
 pushd $git_path
 touch .commit
