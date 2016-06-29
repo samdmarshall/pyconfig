@@ -16,7 +16,8 @@ try:
 
 	install_path = make_call(('git', 'rev-parse', '--show-toplevel')).decode('utf-8').strip('\n')
 	os.chdir(install_path)
-	if os.path.exists('./.commit'):
+	temp_file = os.path.join(install_path, '.commit')
+	if os.path.exists(temp_file):
 		commit_hash = make_call(('git', 'rev-parse', '--short', 'HEAD')).decode('utf-8').strip('\n')
 		remote_origin = make_call(('git', 'ls-remote', '--get-url')).decode('utf-8').strip('\n')
 		versions_path = os.path.join(install_path, 'pyconfig/version_info.py')
@@ -27,6 +28,6 @@ try:
 			fd.close()
 		make_call(('git', 'add', './pyconfig/version_info.py'))
 		make_call(('git', 'commit', '--amend', '-C', 'HEAD', '--no-verify'))
-#		os.remove('./.commit')
+#		os.remove(temp_file)
 except ImportError as e:
 	raise e
