@@ -9,7 +9,7 @@ PYTHON3 := $(shell command -v $(PYTHON3_CMD) 2> /dev/null)
 TOX := $(shell command -v $(TOX_CMD) 2> /dev/null)
 
 install-tools:
-	python ./tools/hooks-config.py
+	@python ./tools/hooks-config.py
 
 check: install-tools
 	@type $(PYTHON2_CMD) >/dev/null 2>&1 || echo "Please install Python 2"
