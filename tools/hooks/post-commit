@@ -27,6 +27,6 @@ try:
 			fd.close()
 		make_call(('git', 'add', './pyconfig/version_info.py'))
 		make_call(('git', 'commit', '--amend', '-C', 'HEAD', '--no-verify'))
-		os.remove('./.commit')
+#		os.remove('./.commit')
 except ImportError as e:
 	raise e
