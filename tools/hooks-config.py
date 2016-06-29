@@ -11,7 +11,7 @@ import shutil
 # occur in the root and be copied over.
 base_git_hooks_path = '.git/hooks/'
 base_tools_hooks_path = './tools/hooks/'
-hooks = [ 'pre-commit' ]
+hooks = [ 'pre-commit', 'post-commit' ]
 
 for hook in hooks:
     tools_hook_path = os.path.join(base_tools_hooks_path, hook)

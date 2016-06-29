@@ -1,28 +1,6 @@
-#!/usr/bin/python
+#!/bin/sh
 
-try:
-	import os
-	import subprocess
-	def make_call(call_args):
-		error = 0
-		output = ''
-		try:
-			output = subprocess.check_output(call_args)
-			error = 0
-		except subprocess.CalledProcessError as e:
-			output = e.output
-			error = e.returncode
-		return output
-
-	install_path = make_call(('git', 'rev-parse', '--show-toplevel')).decode('utf-8').strip('\n')
-	os.chdir(install_path)
-	commit_hash = make_call(('git', 'rev-parse', '--short', 'HEAD')).decode('utf-8').strip('\n')
-	remote_origin = make_call(('git', 'ls-remote', '--get-url')).decode('utf-8').strip('\n')
-	versions_path = os.path.join(install_path, 'pyconfig/version.py')
-	if len(commit_hash) > 0 and len(remote_origin) > 0:
-		fd = open(versions_path, 'w')
-		fd.write('__version__ = "'+module_version+' ('+remote_origin+' @ '+commit_hash+')"')
-		fd.close()
-	make_call(('git', 'add', './pyconfig/version.py'))
-except ImportError as e:
-	raise e
+git_path=`git rev-parse --show-toplevel`
+pushd $git_path
+touch .commit
+popd
