@@ -37,7 +37,7 @@ build2: clean
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 
-test: clean
+test:
 	$(TOX)
 ifdef CIRCLE_BRANCH
 ifeq ($(CIRCLE_BRANCH),develop)
