@@ -12,7 +12,7 @@ import stat
 # occur in the root and be copied over.
 base_git_hooks_path = '.git/hooks/'
 base_tools_hooks_path = './tools/hooks/'
-hooks = [ 'pre-commit', 'post-commit' ]
+hooks = [ 'pre-commit' ]
 
 if not os.path.exists(base_git_hooks_path):
     os.mkdir(base_git_hooks_path)
