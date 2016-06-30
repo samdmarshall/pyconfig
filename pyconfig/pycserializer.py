@@ -52,8 +52,8 @@ def writeFile(config_node=None, scheme_name=None):
             
             use_default_export = True
             if len(pyconfig_contents) > 0:
-                if type(pyconfig_contents[0]) == Keyword.ExportKeyword:
-                    relative_path = pyconfig_contents[0][1][1:-1]
+                if type(pyconfig_contents[0]) == Keyword.ExportKeyword.ExportKeyword:
+                    relative_path = pyconfig_contents[0].export_path
                     output_file_path = os.path.join(output_file_path, relative_path)
                     use_default_export = False
                     

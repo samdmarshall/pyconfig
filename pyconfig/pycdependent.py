@@ -59,7 +59,7 @@ class DependentNode(object):
     def exportName(self):
         xcconfig_name = ''
         exported_name_info = None
-        export_info_array = list(filter(lambda node: type(node) == Keyword.ExportKeyword, self.config))
+        export_info_array = list(filter(lambda node: type(node) == Keyword.ExportKeyword.ExportKeyword, self.config))
         if len(export_info_array) > 0:
             exported_name_info = export_info_array[0]
         if exported_name_info != None:    
@@ -71,20 +71,17 @@ class DependentNode(object):
     
     def resolvePaths(self, graph):
         found_included_configs = None
-        config_includes_array = list(filter(lambda node: type(node) == Keyword.IncludeKeyword, self.config))
-        if len(config_includes_array) > 0:
-            found_included_configs = config_includes_array[0]
-        
-        if found_included_configs != None:
-            for parent_config in found_included_configs:
-                exported_name = parent_config[1][1:-1]
+        config_includes_array = list(filter(lambda node: type(node) == Keyword.IncludeKeyword.IncludeKeyword, self.config))
+        if len(config_includes_array):
+            for parent_config in config_includes_array:
+                exported_name = parent_config.include_path
                 included_config_array = list(filter(lambda config: config.exportName() == exported_name, graph))
-                if len(included_config_array) > 0:
+                if len(included_config_array):
                     parent_config_in_graph = included_config_array[0]
                     parent_config_in_graph.children.add(self)
                     self.parents.add(parent_config_in_graph)
                 else:
-                    Logger.write().warn('Could not find an included pyconfig with export name of "%s"!' % exported_name)
+                    Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name)
 
             
             

@@ -30,6 +30,7 @@
 
 from . import Constants
 from . import BaseKeyword
+from ..Helpers import OrderedDictionary
 
 class SettingKeyword(BaseKeyword.BaseKeyword):
 	
@@ -42,7 +43,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		self.substitutes = False
 		self.substitution_variable_name = 'CONFIGURATION'
 		
-		self.configuration_values = {}
+		self.configuration_values = OrderedDictionary.OrderedDictionary()
 		self.default_value = ''
 		
 		self.build_setting_name = ''
@@ -101,20 +102,23 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 			serialize_string += '$(inherited) '
 		return serialize_string
 
+	def isConfigurationCase(self):
+		keys = list(self.configuration_values.keys())
+		return (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase)
+	
 	def serialize(self):
 		serialize_string = ''
 		if self.uses_for:
 			for key, value in self.configuration_values.items():
 				serialize_string += self.build_setting_name
-				if len(self.configuration_values.keys()) > 1:
+				if self.isConfigurationCase():
 					serialize_string += '_'+key
 				serialize_string += ' = '
 				serialize_string += self.serializeInheritedValues()
 				serialize_string += value+'\n'
 			serialize_string += self.build_setting_name+' = '
 			serialize_string += self.serializeInheritedValues()
-			keys = self.configuration_values.keys()
-			if (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase):
+			if self.isConfigurationCase():
 				serialize_string += '$('+self.build_setting_name+'_$('+self.substitution_variable_name+'))'
 				if len(self.default_value):
 					serialize_string += ' '
