@@ -48,53 +48,60 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		
 		self.build_setting_name = ''
 	
+	def consumeForStatement(self, statement):
+		configuration_name = statement[1]
+		value = ''
+		if len(statement) == 3:
+			value = statement[2]
+		if configuration_name != Constants._specialCase:
+			self.configuration_values[configuration_name] = ' '.join(value)
+		else:
+			self.default_value = ' '.join(value)
+		
+	def consumeIfStatement(self, statement):
+		conditions = statement[1]
+		assignment_value = statement[2]
+		conditional_key_value_list = list()
+		for condition in conditions:
+			conditional_key_value_list.append('='.join(condition))
+		conditional_key_value_string = ','.join(conditional_key_value_list)
+		self.configuration_values[conditional_key_value_string] = assignment_value
+	
 	def consume(self, parsed_item=[]):
-		if parsed_item[0] == Constants._setting:
-			self.build_setting_name = parsed_item[1]
-			modifiers = parsed_item[2]
-			configurations = parsed_item[3]
+		if parsed_item[0] != Constants._setting: # pragma: no cover
+			raise ValueError('SettingKeyword can only consume parsed build setting elements!')
 			
-			if len(modifiers):
-				if modifiers[0] == Constants._use:
-					self.substitutes = True
-					self.substitution_variable_name = modifiers[1]
-				if modifiers[0] == Constants._inherits \
-					or (len(modifiers) == 3 and modifiers[2] == Constants._inherits):
-						self.inherits = True
+		self.build_setting_name = parsed_item[1]
+		modifiers = parsed_item[2]
+		configurations = parsed_item[3]
+		
+		if len(modifiers):
+			if modifiers[0] == Constants._use:
+				self.substitutes = True
+				self.substitution_variable_name = modifiers[1]
+			if modifiers[-1] == Constants._inherits:
+					self.inherits = True
+		
+		keywords_used = list()
+		for setting_configuration in configurations:
+			keywords_used.append(setting_configuration[0])
+		
+		keyword_used = set(keywords_used)
+		if len(keyword_used) > 1: # pragma: no cover
+			raise ValueError('More than one type of assignment was used for the build setting "%s"' % self.build_setting_name)
+		
+		used_keyword_in_assignemnt = next(iter(keyword_used))
+		self.uses_if = (used_keyword_in_assignemnt == Constants._if)
+		self.uses_for = (used_keyword_in_assignemnt == Constants._for)
 			
-			keywords_used = list()
-			for setting_configuration in configurations:
-				keywords_used.append(setting_configuration[0])
+		for setting_configuration in configurations:
+			configuration_type = setting_configuration[0]
 			
-			keyword_used = set(keywords_used)
-			if len(keyword_used) > 1:
-				raise ValueError('More than one type of assignment was used for the build setting "%s"' % self.build_setting_name)
+			if configuration_type == Constants._for:
+				self.consumeForStatement(setting_configuration)
 			
-			used_keyword_in_assignemnt = next(iter(keyword_used))
-			self.uses_if = (used_keyword_in_assignemnt == Constants._if)
-			self.uses_for = (used_keyword_in_assignemnt == Constants._for)
-				
-			for setting_configuration in configurations:
-				configuration_type = setting_configuration[0]
-				
-				if configuration_type == Constants._for:
-					configuration_name = setting_configuration[1]
-					value = ''
-					if len(setting_configuration) == 3:
-						value = setting_configuration[2]
-					if configuration_name != Constants._specialCase:
-						self.configuration_values[configuration_name] = ' '.join(value)
-					else:
-						self.default_value = ' '.join(value)
-				
-				if configuration_type == Constants._if:
-					conditions = setting_configuration[1]
-					assignment_value = setting_configuration[2]
-					conditional_key_value_list = list()
-					for condition in conditions:
-						conditional_key_value_list.append('='.join(condition))
-					conditional_key_value_string = ','.join(conditional_key_value_list)
-					self.configuration_values[conditional_key_value_string] = assignment_value
+			if configuration_type == Constants._if:
+				self.consumeIfStatement(setting_configuration)
 
 	def serializeInheritedValues(self):
 		serialize_string = ''
@@ -106,16 +113,28 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		keys = list(self.configuration_values.keys())
 		return (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase)
 	
+	def serializeForStatement(self, key, value):
+		serialize_string = ''
+		serialize_string += self.build_setting_name
+		if self.isConfigurationCase():
+			serialize_string += '_'+key
+		serialize_string += ' = '
+		serialize_string += self.serializeInheritedValues()
+		serialize_string += value+'\n'
+		return serialize_string
+		
+	def serializeIfStatement(self, key, value):
+		serialize_string = ''
+		serialize_string += self.build_setting_name+'['+key+']'+' = '
+		serialize_string += self.serializeInheritedValues()
+		serialize_string += value+'\n'
+		return serialize_string
+	
 	def serialize(self):
 		serialize_string = ''
 		if self.uses_for:
 			for key, value in self.configuration_values.items():
-				serialize_string += self.build_setting_name
-				if self.isConfigurationCase():
-					serialize_string += '_'+key
-				serialize_string += ' = '
-				serialize_string += self.serializeInheritedValues()
-				serialize_string += value+'\n'
+				serialize_string += self.serializeForStatement(key, value)
 			serialize_string += self.build_setting_name+' = '
 			serialize_string += self.serializeInheritedValues()
 			if self.isConfigurationCase():
@@ -127,7 +146,5 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		
 		if self.uses_if:
 			for key, value in self.configuration_values.items():
-				serialize_string += self.build_setting_name+'['+key+']'+' = '
-				serialize_string += self.serializeInheritedValues()
-				serialize_string += value+'\n'
+				serialize_string += self.serializeIfStatement(key, value)
 		return serialize_string

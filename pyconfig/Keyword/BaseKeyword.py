@@ -30,14 +30,14 @@
 
 class BaseKeyword(object):
     
-    def __init__(self):
+    def __init__(self): # pragma: no cover
         pass
 
-    def serialize(self):
+    def serialize(self): # pragma: no cover
         return ''
 
-    def consume(self, parsed_item=[]):
+    def consume(self, parsed_item=[]): # pragma: no cover
         pass
 
-    def deserialize(self, xcconfig_line=''):
+    def deserialize(self, xcconfig_line=''): # pragma: no cover
         pass

@@ -45,7 +45,7 @@ class OrderedDictionary(collections.MutableMapping):
             self.key_storage.append(key)
         self.store[key] = value
 
-    def __delitem__(self, key):
+    def __delitem__(self, key): # pragma: no cover
         if key in self.key_storage:
             self.key_storage.remove(key)
         del self.store[key]
@@ -56,15 +56,15 @@ class OrderedDictionary(collections.MutableMapping):
     def __len__(self):
         return self.key_storage.__len__()
     
-    def __str__(self):
+    def __str__(self): # pragma: no cover
         return self.store.__str__()
     
-    def __contains__(self, item):
+    def __contains__(self, item): # pragma: no cover
         return item in self.key_storage
     
-    def __getattr__(self, attrib):
+    def __getattr__(self, attrib): # pragma: no cover
         return getattr(self.store, attrib)
 
-    def __keytransform__(self, key):
+    def __keytransform__(self, key): # pragma: no cover
         return key
             

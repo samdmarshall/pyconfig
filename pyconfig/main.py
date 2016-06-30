@@ -80,9 +80,9 @@ def main(argv=sys.argv[1:]):
         node.resolvePaths(parsed_configs)
     mapped_nodes = pycgrapher.TraverseGraphNodes(parsed_configs)
     
-    if args.lint == False:
+    if not args.lint:
         for current_config in mapped_nodes:
             pycserializer.writeFile(current_config, args.scheme)
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     main()
