@@ -28,5 +28,24 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import version_info
-__version__ = '1.0.2 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'
+from . import Constants
+
+from . import BaseKeyword
+from . import ExportKeyword
+from . import IncludeKeyword
+from . import SettingKeyword
+
+
+kTypeResolver = {
+    Constants._export: ExportKeyword.ExportKeyword,
+    Constants._include: IncludeKeyword.IncludeKeyword,
+    Constants._setting: SettingKeyword.SettingKeyword,
+}
+
+def ResolveKeywordType(parsed_keyword):
+    result = BaseKeyword
+    if len(parsed_keyword):
+        parsed_keyword_type = parsed_keyword[0]
+        if parsed_keyword_type in kTypeResolver.keys():
+            result = kTypeResolver[parsed_keyword_type]
+    return result

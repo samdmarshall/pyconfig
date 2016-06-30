@@ -10,6 +10,7 @@ pyconfig.egg-info/
 __pycache__/
 htmlcov
 .commit
+.eggs
 
 # make sure to include the static test output data
 !*_output.xcconfig

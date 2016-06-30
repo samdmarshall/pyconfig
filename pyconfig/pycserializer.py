@@ -31,7 +31,7 @@
 from pyconfig.version import __version__ as PYCONFIG_VERSION
 import os
 import pyparsing
-from . import pyckeyword
+from . import Keyword
 from .Helpers.Logger import Logger
 
 def openOutputFileToWrite(input_string):
@@ -52,7 +52,7 @@ def writeFile(config_node=None, scheme_name=None):
             
             use_default_export = True
             if len(pyconfig_contents) > 0:
-                if pyconfig_contents[0][0] == pyckeyword._export:
+                if type(pyconfig_contents[0]) == Keyword.ExportKeyword:
                     relative_path = pyconfig_contents[0][1][1:-1]
                     output_file_path = os.path.join(output_file_path, relative_path)
                     use_default_export = False
@@ -72,61 +72,8 @@ def writeFile(config_node=None, scheme_name=None):
             if scheme_name != None:
                 output_file.write('SCHEME_NAME = ' + scheme_name + '\n')
             
-            for item_array in pyconfig_contents:
-                if item_array[0] == pyckeyword._export:
-                    continue
-                else:
-                    for item in item_array:
-                        if item[0] == pyckeyword._include:
-                            output_file.write('#include ' + item[1] + '\n')
-                        if item[0] == pyckeyword._setting:
-                            uses_configuration_specific_settings = False
-                            inherited_settings = ''
-                            substitution_variable_name = 'CONFIGURATION'
-                            additional_values = ''
-                            write_as_additional_values = False
-                            build_setting_name = item[1]
-                            modifiers = item[2]
-                            configurations = item[3]
-                            if len(modifiers) > 0:
-                                if modifiers[0] == pyckeyword._use:
-                                    substitution_variable_name = modifiers[1]
-                                if modifiers[0] == pyckeyword._inherits \
-                                    or (len(modifiers) == 3 and modifiers[2] == pyckeyword._inherits):
-                                    inherited_settings = '$(inherited) '
-                            for config in configurations:
-                                configuration_type = config[0]
-                                if configuration_type == pyckeyword._for:
-                                    should_write = True
-                                    configuration_name = config[1]
-                                    configuration_value_string = ''
-                                    if len(config) > 2:
-                                        configuration_value_string = ' '.join(config[2])
-                                    if configuration_name.startswith(pyckeyword._specialCase, 0, 1):
-                                        if len(configurations) > 1:
-                                            list_of_non_default_assignments = list(filter(lambda setting_configuration: not setting_configuration[1].startswith(pyckeyword._specialCase, 0, 1), configurations))
-                                            contains_other_configurations = (len(list_of_non_default_assignments) > 0)
-                                            if contains_other_configurations == True:
-                                                write_as_additional_values = True
-                                                additional_values += ' '+configuration_value_string
-                                                should_write = False
-                                            else:
-                                                configuration_name = ''
-                                        else:
-                                            configuration_name = ''
-                                    else:
-                                        uses_configuration_specific_settings = True
-                                        configuration_name = '_' + configuration_name
-                                    if should_write == True:
-                                        output_file.write(build_setting_name + configuration_name + ' = ' + inherited_settings + configuration_value_string + '\n')
-                                if configuration_type == pyckeyword._if:
-                                    conditions = config[1]
-                                    assignment_value = config[2]
-                                    conditional_key_value_list = list()
-                                    for condition in conditions:
-                                        conditional_key_value_list.append('='.join(condition))
-                                    conditional_key_value_string = ','.join(conditional_key_value_list)
-                                    output_file.write(build_setting_name + '[' + conditional_key_value_string + '] = ' + inherited_settings + assignment_value + '\n')
-                            if uses_configuration_specific_settings:
-                                output_file.write(build_setting_name + ' = ' + inherited_settings + '$(' + build_setting_name + '_$(' + substitution_variable_name + '))' + additional_values + '\n')
+            for item in pyconfig_contents:
+                line_string = item.serialize()
+                output_file.write(line_string)
+
             output_file.close()

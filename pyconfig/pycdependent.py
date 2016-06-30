@@ -29,14 +29,28 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
-from . import pyckeyword
+from . import Keyword
 from .Helpers.Logger import Logger
 
 class DependentNode(object):
     def __init__(self, contents, name):
         self.parents = set()
         self.children = set()
-        self.config = contents
+        flat_contents = list()
+        starting_index = 0
+        if len(contents):
+            if contents[0][0] == Keyword.Constants._export:
+                flat_contents.append(contents[0])
+                starting_index = 1
+        for item in contents[starting_index:]:
+            flat_contents.extend(item)
+        parsed_contents = list()
+        for item in flat_contents:
+            ResolvedType = Keyword.Resolver.ResolveKeywordType(item)
+            resolved_item = ResolvedType()
+            resolved_item.consume(item)
+            parsed_contents.append(resolved_item)
+        self.config = parsed_contents
         self.name = name
     
     def __repr__(self):
@@ -45,7 +59,7 @@ class DependentNode(object):
     def exportName(self):
         xcconfig_name = ''
         exported_name_info = None
-        export_info_array = list(filter(lambda node: node[0][0] == pyckeyword._export, self.config))
+        export_info_array = list(filter(lambda node: type(node) == Keyword.ExportKeyword, self.config))
         if len(export_info_array) > 0:
             exported_name_info = export_info_array[0]
         if exported_name_info != None:    
@@ -57,7 +71,7 @@ class DependentNode(object):
     
     def resolvePaths(self, graph):
         found_included_configs = None
-        config_includes_array = list(filter(lambda node: node[0][0] == pyckeyword._include, self.config))
+        config_includes_array = list(filter(lambda node: type(node) == Keyword.IncludeKeyword, self.config))
         if len(config_includes_array) > 0:
             found_included_configs = config_includes_array[0]
         

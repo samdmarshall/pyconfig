@@ -28,5 +28,17 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import version_info
-__version__ = '1.0.2 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'
+from . import Constants
+from . import BaseKeyword
+
+class ExportKeyword(BaseKeyword.BaseKeyword):
+	
+	def __init__(self):
+		self.export_path = None
+	
+	def consume(self, parsed_item=[]):
+		if parsed_item[0] == Constants._export:
+			self.export_path = parsed_item[1][1:-1]
+
+	def serialize(self):
+		return ''

@@ -29,7 +29,7 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import pyparsing
-from . import pyckeyword
+from . import Keyword
 
 # build setting Word definition
 _settingBody = pyparsing.alphanums+'_'
@@ -37,7 +37,7 @@ _settingStart = pyparsing.alphas
 _buildSettingName = pyparsing.Word(_settingStart, _settingBody)
 
 # 
-_directAssignment = pyparsing.Word(pyckeyword._specialCase)
+_directAssignment = pyparsing.Word(Keyword.Constants._specialCase)
 
 # build configuration Word definition
 _configutationBody = pyparsing.alphanums+'_'
