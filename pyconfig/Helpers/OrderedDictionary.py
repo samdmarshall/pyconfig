@@ -28,5 +28,43 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import version_info
-__version__ = '1.0.2 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'
+import collections
+
+class OrderedDictionary(collections.MutableMapping):
+
+    def __init__(self, *args, **kwargs):
+        self.store = dict()
+        self.key_storage = list()
+        self.update(dict(*args, **kwargs))  # use the free update to set keys
+
+    def __getitem__(self, key):
+        return self.store[key]
+
+    def __setitem__(self, key, value):
+        if key not in self.key_storage:
+            self.key_storage.append(key)
+        self.store[key] = value
+
+    def __delitem__(self, key):
+        if key in self.key_storage:
+            self.key_storage.remove(key)
+        del self.store[key]
+
+    def __iter__(self):
+        return self.key_storage.__iter__()
+
+    def __len__(self):
+        return self.key_storage.__len__()
+    
+    def __str__(self):
+        return self.store.__str__()
+    
+    def __contains__(self, item):
+        return item in self.key_storage
+    
+    def __getattr__(self, attrib):
+        return getattr(self.store, attrib)
+
+    def __keytransform__(self, key):
+        return key
+            

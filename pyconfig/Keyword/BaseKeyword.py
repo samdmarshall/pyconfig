@@ -28,5 +28,16 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import version_info
-__version__ = '1.0.2 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'
+class BaseKeyword(object):
+    
+    def __init__(self):
+        pass
+
+    def serialize(self):
+        return ''
+
+    def consume(self, parsed_item=[]):
+        pass
+
+    def deserialize(self, xcconfig_line=''):
+        pass

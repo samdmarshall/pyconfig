@@ -17,8 +17,6 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
         generated.close()
         expected.close()
         if generated_lines != expected_lines:
-            print('Generated: '+str(generated_lines))
-            print('Expected: '+str(expected_lines))
             test.assertEqual(generated_lines, expected_lines)
 
 class pyconfigTestCases(unittest.TestCase):

@@ -31,7 +31,8 @@ try:
         license = 'BSD 3-Clause',
         packages = [ 
             'pyconfig',
-            'pyconfig/Helpers'
+            'pyconfig/Helpers',
+            'pyconfig/Keyword',
         ],
         entry_points = { 'console_scripts': ['pyconfig = pyconfig:main'] },
         test_suite = 'tests.pyconfig_test',
