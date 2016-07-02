@@ -64,4 +64,11 @@ report: check
 	$(COVERAGE) html 
 
 danger: check
+ifdef CIRCLE_BUILD_NUM
+	$(DANGER) --verbose
+else
 	$(DANGER) local --verbose
+endif
+	
+	
+ci: test report danger

@@ -4,19 +4,12 @@ machine:
   ruby:
     version: 2.1.3
 
-checkout:
-    post:
-    - git submodule sync
-    - git submodule update --init
-
 dependencies:
   override:
-    - bundle install
+    - gem install danger
     - pip install tox tox-pyenv codeclimate-test-reporter
     - pyenv local 2.7.10 3.5.0
 
 test:
   override:
-    - make test
-    - make report
-    - bundle exec danger
+    - make ci
