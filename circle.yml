@@ -19,4 +19,5 @@ test:
   override:
     - make test
     - make report
+    - export DANGER_GITHUB_API_TOKEN = 5e94e727bcc91e7ff681e2995af2a0c4961404de
     - bundle exec danger

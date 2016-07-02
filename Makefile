@@ -1,5 +1,4 @@
 INSTALLED_FILES_RECORD := ./installed_files.txt
-DANGER_GITHUB_API_TOKEN := 5e94e727bcc91e7ff681e2995af2a0c4961404de
 
 PYTHON2_CMD := python
 PYTHON3_CMD := python3
