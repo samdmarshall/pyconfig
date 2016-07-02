@@ -63,7 +63,7 @@ report: check
 	$(COVERAGE) report
 	$(COVERAGE) html
 ifdef CIRCLE_ARTIFACTS
-	cp ./htmlcov $(CIRCLE_ARTIFACTS)
+	cp -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
 
 danger: check
