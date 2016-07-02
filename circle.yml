@@ -4,7 +4,7 @@ machine:
   ruby:
     version: 2.1.0
   environment:
-    DANGER_GITHUB_API_TOKEN: 5e94e727bcc91e7ff681e2995af2a0c4961404de
+    DANGER_GITHUB_API_TOKEN: 937089100bed6f79c1fd4dd629deae421e18e5cd
 
 checkout:
     post:
