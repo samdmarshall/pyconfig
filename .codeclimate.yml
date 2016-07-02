@@ -19,7 +19,7 @@ exclude_paths:
 - tests/
 - tools/
 - hidden-files/
-- *.md
-- *.yml
-- *.ini
+- "*.md"
+- "*.yml"
+- "*.ini"
 - Makefile
