@@ -15,6 +15,8 @@ warn("Changes to build files") if modified_files.include?("Makefile") || modifie
 # Fail if changes to License or CoC
 fail("Do not modify the license or Code of Conduct") if modified_files.include?("LICENSE") || modified_files.include?("contributing.md")
 
+fail("PR needs labels", sticky: true) if pr_labels.empty?
+
 username = ENV['CIRCLE_PROJECT_USERNAME']
 project_name = ENV['CIRCLE_PROJECT_REPONAME']
 build_number = ENV['CIRCLE_BUILD_NUM']
