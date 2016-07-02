@@ -3,8 +3,6 @@ machine:
     version: 2.7.10
   ruby:
     version: 2.1.3
-  environment:
-    DANGER_GITHUB_API_TOKEN: 937089100bed6f79c1fd4dd629deae421e18e5cd
 
 checkout:
     post:
