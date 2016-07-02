@@ -9,11 +9,6 @@ engines:
       - python
   FIXME:
     enabled: true
-		config:
-			strings:
-			- FIXME
-			- BUG
-			- TODO
 
 ratings:
   paths:
