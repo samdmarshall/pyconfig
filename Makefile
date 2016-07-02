@@ -61,7 +61,10 @@ endif
 
 report: check
 	$(COVERAGE) report
-	$(COVERAGE) html 
+	$(COVERAGE) html
+ifdef CIRCLE_ARTIFACTS
+	cp ./htmlcov $(CIRCLE_ARTIFACTS)
+endif 
 
 danger: check
 ifdef CIRCLE_BUILD_NUM
