@@ -68,7 +68,7 @@ endif
 
 danger: check
 ifdef CIRCLE_BUILD_NUM
-	$(DANGER) --verbose
+	$(DANGER)
 else
 	$(DANGER) local --verbose
 endif
