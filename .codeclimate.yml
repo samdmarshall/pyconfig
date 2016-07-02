@@ -1,0 +1,19 @@
+engines:
+	radon:
+		enabled: true
+	
+	duplication:
+		enabled: true
+		config:
+			languages:
+			- python
+	FIXME:
+		enabled: true
+	
+ratings:
+	paths:
+	- pyconfig/
+
+exclude_paths:
+- examples/
+- tests/
