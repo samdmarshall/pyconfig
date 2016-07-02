@@ -8,13 +8,26 @@ warn("PR is classed as Work in Progress") if pr_title.include? "[WIP]"
 # Warn when there is a big PR
 warn("Big PR") if lines_of_code > 50
 
-# Warn when the makefile sees changes
-warn("Changes to build files") if modified_files.include?("Makefile") || modified_files.include?("Gemfile") || modified_files.include?("Dangerfile")
+def didModify(files_array)
+  did_modify_files = false
+  files_array.each do |file_name|
+    if modified_files.include?(file_name) || deleted_files.include?(file_name)
+      did_modify_files = true
+    end
+  end
+  return did_modify_files
+end
+
+# Warn when the build system files see changes
+build_files = ["Makefile", "Gemfile", "Dangerfile", "circle.yml", ".codeclimate.yml", "tox.ini"]
+warn("Changes to build files") if didModify(build_files)
 
 
 # Fail if changes to License or CoC
-fail("Do not modify the license or Code of Conduct") if modified_files.include?("LICENSE") || modified_files.include?("contributing.md")
+special_files = ["LICENSE", "contributing.md", "contributing/code-of-conduct.md"]
+fail("Do not modify the license or Code of Conduct") if didModify(special_files)
 
+# put labels on PRs
 fail("PR needs labels", sticky: true) if pr_labels.empty?
 
 username = ENV['CIRCLE_PROJECT_USERNAME']
