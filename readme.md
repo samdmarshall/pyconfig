@@ -2,10 +2,9 @@ pyconfig
 ========
 
 [![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
-[![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg)](https://circleci.com/gh/samdmarshall/pyconfig)
 [![Code Climate](https://img.shields.io/codeclimate/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig/coverage)
-<!-- [![CircleCI](https://circleci.com/gh/samdmarshall/pyconfig.svg?style=svg)](https://circleci.com/gh/samdmarshall/pyconfig) -->
+[![CircleCI](https://circleci.com/gh/samdmarshall/pyconfig.svg?style=svg)](https://circleci.com/gh/samdmarshall/pyconfig)
 
 `pyconfig` is a tool that allows you to write the contents of your [`.xcconfig` files](http://pewpewthespells.com/blog/xcconfig_guide.html) in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
