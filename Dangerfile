@@ -22,7 +22,6 @@ end
 build_files = ["Makefile", "Gemfile", "Dangerfile", "circle.yml", ".codeclimate.yml", "tox.ini"]
 warn("Changes to build files") if didModify(build_files)
 
-
 # Fail if changes to License or CoC
 special_files = ["LICENSE", "contributing.md", "contributing/code-of-conduct.md"]
 fail("Do not modify the license or Code of Conduct") if didModify(special_files)
