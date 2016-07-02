@@ -9,9 +9,12 @@ checkout:
 
 dependencies:
   override:
+    - bundle install
     - pip install tox tox-pyenv codeclimate-test-reporter
     - pyenv local 2.7.10 3.5.0
 
 test:
   override:
     - make test
+    - make report
+    - bundle exec danger
