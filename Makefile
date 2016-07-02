@@ -67,6 +67,7 @@ ifdef CIRCLE_ARTIFACTS
 endif 
 
 danger: check
+	@echo "DANGER_GITHUB_API_TOKEN=$DANGER_GITHUB_API_TOKEN"
 ifdef CIRCLE_BUILD_NUM
 	$(DANGER)
 else
