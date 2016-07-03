@@ -6,8 +6,7 @@ machine:
 
 dependencies:
   override:
-    - gem install danger
-    - pip install tox tox-pyenv codeclimate-test-reporter
+    - make install-deps
     - pyenv local 2.7.10 3.5.0
 
 test:
