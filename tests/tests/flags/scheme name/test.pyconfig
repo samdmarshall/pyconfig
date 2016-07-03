@@ -1,0 +1,11 @@
+setting PRODUCT_NAME use SCHEME_NAME {
+	for MyAppDev {
+		Developer Build
+	}
+	for MyAppEnterprise {
+		Enterprise Build
+	}
+	for MyAppProduction {
+		App Store Build
+	}
+}

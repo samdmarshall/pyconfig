@@ -1,0 +1,7 @@
+// TEST DATA
+// TEST DATA
+SCHEME_NAME = MyAppDebug
+PRODUCT_NAME_MyAppDev = Developer Build
+PRODUCT_NAME_MyAppEnterprise = Enterprise Build
+PRODUCT_NAME_MyAppProduction = App Store Build
+PRODUCT_NAME = $(PRODUCT_NAME_$(SCHEME_NAME))
