@@ -32,12 +32,11 @@ from .version import __version__ as PYCONFIG_VERSION
 import os
 import sys
 import argparse
-from . import pycinterpreter
-from . import pycserializer
-from . import pycfinder
-from . import pycgrapher
-from . import pycdependent
+from .Interpreter import Consumer
+from .Graph import Searcher
+from .Graph import Grapher
 from .Helpers.Logger import Logger
+from .Serializer import Serializer
 
 # Main
 def main(argv=sys.argv[1:]):
@@ -72,17 +71,17 @@ def main(argv=sys.argv[1:]):
     
     Logger.isSilent(args.quiet)
     
-    found_pyconfig_files = pycfinder.locateConfigs(args.file)
+    found_pyconfig_files = Searcher.locateConfigs(args.file)
     
-    parsed_configs = pycinterpreter.CreateGraphNodes(found_pyconfig_files)
+    parsed_configs = Consumer.CreateGraphNodes(found_pyconfig_files)
     
     for node in parsed_configs:
         node.resolvePaths(parsed_configs)
-    mapped_nodes = pycgrapher.TraverseGraphNodes(parsed_configs)
+    mapped_nodes = Grapher.TraverseNodes(parsed_configs)
     
     if not args.lint:
         for current_config in mapped_nodes:
-            pycserializer.writeFile(current_config, args.scheme)
+            Serializer.writeFile(current_config, args.scheme)
 
 if __name__ == "__main__": # pragma: no cover
     main()

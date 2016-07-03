@@ -28,23 +28,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import Constants
-from . import BaseKeyword
-from . import ExportKeyword
-from . import IncludeKeyword
-from . import SettingKeyword
+from . import XCLineItem
+from . import Include
+from . import Comment
+from . import KeyValue
 
-
-kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword,
-    Constants._include: IncludeKeyword.IncludeKeyword,
-    Constants._setting: SettingKeyword.SettingKeyword,
-}
-
-def ResolveKeywordType(parsed_keyword):
-    result = BaseKeyword
-    if len(parsed_keyword):
-        parsed_keyword_type = parsed_keyword[0]
-        if parsed_keyword_type in kTypeResolver.keys():
-            result = kTypeResolver[parsed_keyword_type]
-    return result
+def ResolveLineType(line):
+    type_ = XCLineItem.XCLineItem
+    if line.startswith('//'):
+        type_ = Comment.Comment
+    elif line.startswith('#include'):
+        type_ = Include.Include
+    else:
+        offset = KeyValue.FindKeyValueAssignmentOffset(line, 0)
+        if 0 < offset < len(line):
+            type_ = KeyValue.KeyValue
+    return type_

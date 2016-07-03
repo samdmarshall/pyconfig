@@ -63,6 +63,8 @@ try:
             'pyconfig',
             'pyconfig/Helpers',
             'pyconfig/Keyword',
+            'pyconfig/Serializer',
+            'pyconfig/Deserializer',
         ],
         entry_points = { 
             'console_scripts': [ 'pyconfig = pyconfig:main' ] 

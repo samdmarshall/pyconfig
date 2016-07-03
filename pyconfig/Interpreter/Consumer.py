@@ -28,23 +28,27 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import Constants
-from . import BaseKeyword
-from . import ExportKeyword
-from . import IncludeKeyword
-from . import SettingKeyword
+import pyparsing
+from . import LangParser
+from . import Dependent
+from ..Helpers.Logger import Logger
 
-
-kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword,
-    Constants._include: IncludeKeyword.IncludeKeyword,
-    Constants._setting: SettingKeyword.SettingKeyword,
-}
-
-def ResolveKeywordType(parsed_keyword):
-    result = BaseKeyword
-    if len(parsed_keyword):
-        parsed_keyword_type = parsed_keyword[0]
-        if parsed_keyword_type in kTypeResolver.keys():
-            result = kTypeResolver[parsed_keyword_type]
-    return result
+def CreateGraphNodes(pyconfig_path_list=[]):
+    parsed_configs = set()
+    
+    for pyconfig_file_path in pyconfig_path_list:
+        pyconfig_file = open(pyconfig_file_path, 'r')
+        
+        pyconfig_contents = pyconfig_file.read()
+        
+        Logger.write().info('Parsing %s ...' % pyconfig_file_path)
+        
+        # now parse the file's contents
+        parsed_contents = LangParser._config.parseString(pyconfig_contents)
+        
+        node = Dependent.DependentNode(parsed_contents, pyconfig_file.name)
+        parsed_configs.add(node)
+        	
+        pyconfig_file.close()
+    
+    return parsed_configs

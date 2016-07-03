@@ -28,11 +28,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from pyconfig.version import __version__ as PYCONFIG_VERSION
 import os
 import pyparsing
-from . import Keyword
-from .Helpers.Logger import Logger
+from ..version import __version__ as PYCONFIG_VERSION
+from .. import Keyword
+from ..Helpers.Logger import Logger
 
 def openOutputFileToWrite(input_string):
     file_path = os.path.expanduser(input_string)
