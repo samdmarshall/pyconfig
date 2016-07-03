@@ -55,6 +55,7 @@ CAT_CMD := cat
 PIP_CMD := pip
 CCTREPORTER_CMD := codeclimate-test-reporter
 UNAME_CMD := uname
+EXIT_CMD := exit
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -78,12 +79,13 @@ CAT := $(shell command -v $(CAT_CMD) 2> /dev/null)
 PIP := $(shell command -v $(PIP_CMD) 2> /dev/null)
 CCTREPORTER := $(shell command -v $(CCTREPORTER_CMD) 2> /dev/null)
 UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
+EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
-USER_FLAG = --user
+USER_FLAG := --user
 else
-USER_FLAG = 
+USER_FLAG := 
 endif
 
 # Targets
@@ -93,7 +95,7 @@ endif
 checkfor = @$(PRINTF) "Checking for $1..."; \
 if [ -z `$(WHICH) $1` ]; then \
 $(PRINTF) " no\n"; \
-exit 1;\
+$(EXIT) 1;\
 else \
 $(PRINTF) " yes\n"; \
 fi
@@ -113,12 +115,12 @@ check:
 	$(call checkfor,$(COVERAGE_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
-	@echo "============================"
+	@$(PRINTF) "============================\n"
 
 # --- 
 
-pipinstall = @pip install $1 $(USER_FLAG)
-geminstall = @gem install $1 $(USER_FLAG)
+pipinstall = @$(PIP) install $1 $(USER_FLAG)
+geminstall = @$(GEM) install $1 $(USER_FLAG)
 
 install-deps: 
 	$(call checkfor,$(PYTHON2_CMD))
@@ -130,21 +132,24 @@ install-deps:
 	$(call pipinstall,$(CCTREPORTER_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
+	@$(PRINTF) "============================\n"
 
 # --- 
 
 # this is for installing any tools that we don't already have
+
 install-tools: check
 	@$(PRINTF) "Installing git hooks..."
-	@$(PYTHON) ./tools/hooks-config.py
+	@$(PYTHON2) ./tools/hooks-config.py
 	@$(PRINTF) " done!\n"
+	@$(PRINTF) "============================\n"
 
 # --- 
 
 removeall=$(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
 clean: check
-	@$(PRINTF) "Removing existing installation...\n"
+	@$(PRINTF) "Removing existing installation..."
 	@$(TOUCH) $(INSTALLED_FILES_RECORD)
 	@$(CAT) $(INSTALLED_FILES_RECORD) | $(XARGS) $(removeall)
 	@$(removeall) ./pyconfig.egg-info
@@ -156,17 +161,20 @@ clean: check
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
-	@echo "============================"
+	@$(PRINTF) " done!\n"
+	@$(PRINTF) "============================\n"
 	
 # --- 
 	
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
+	@$(PRINTF) "============================\n"
 	
 # --- 
 	
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
+	@$(PRINTF) "============================\n"
 
 # --- 
 
@@ -177,6 +185,7 @@ ifeq ($(CIRCLE_BRANCH),develop)
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
 endif
 endif
+	@$(PRINTF) "============================\n"
 
 # --- 
 
@@ -186,6 +195,7 @@ report: check
 ifdef CIRCLE_ARTIFACTS
 	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
+	@$(PRINTF) "============================\n"
 
 # --- 
 
@@ -196,6 +206,7 @@ ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
 else
 	$(DANGER) local --verbose
 endif
+	@$(PRINTF) "============================\n"
 	
 # --- 
 
