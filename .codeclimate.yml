@@ -23,3 +23,10 @@ exclude_paths:
 - "*.yml"
 - "*.ini"
 - Makefile
+- Dangerfile
+- Gemfile
+- LICENSE
+- pyc.py
+- contributing/
+- docs/
+- setup.py
