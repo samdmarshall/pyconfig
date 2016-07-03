@@ -54,6 +54,7 @@ CP_CMD := cp
 CAT_CMD := cat
 PIP_CMD := pip
 CCTREPORTER_CMD := codeclimate-test-reporter
+UNAME_CMD := uname
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -76,6 +77,14 @@ CP := $(shell command -v $(CP_CMD) 2> /dev/null)
 CAT := $(shell command -v $(CAT_CMD) 2> /dev/null)
 PIP := $(shell command -v $(PIP_CMD) 2> /dev/null)
 CCTREPORTER := $(shell command -v $(CCTREPORTER_CMD) 2> /dev/null)
+UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
+
+SYSTEM := $(shell $(UNAME) -s)
+ifeq ($(SYSTEM),Darwin)
+USER_FLAG = --user
+else
+USER_FLAG = 
+endif
 
 # Targets
 
@@ -108,8 +117,8 @@ check:
 
 # --- 
 
-pipinstall = @pip install $1 --user
-geminstall = @gem install $1 --user
+pipinstall = @pip install $1 $(USER_FLAG)
+geminstall = @gem install $1 $(USER_FLAG)
 
 install-deps: 
 	$(call checkfor,$(PYTHON2_CMD))
@@ -152,7 +161,7 @@ clean: check
 # --- 
 	
 build2: clean
-	$(PYTHON2) ./setup.py install --user --record $(INSTALLED_FILES_RECORD)
+	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
 	
 # --- 
 	
