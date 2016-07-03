@@ -17,14 +17,16 @@
 <details>
  <summary>Summary Goes Here</summary>
 ```
+...crash report trace goes here...
 ```
 </details>
 
 ---
 
-**Sample `pyconfig` File**:
+**Sample File**:
 <details>
  <summary>`sample.pyconfig`</summary>
 ```
+...sample.pyconfig contents go here...
 ```
 </details>
