@@ -67,6 +67,9 @@ class pyconfigTestCases(unittest.TestCase):
         
     def test_export_with_keyword(self):
         LoadTestDirectoryAndTestWithName(self, 'export/with-export', 'defaults')
+    
+    def test_export_with_keyword_and_include(self):
+        LoadTestDirectoryAndTestWithName(self, 'export/with-export-and-include', 'defaults')
         
     def test_export_without_keyword(self):
         LoadTestDirectoryAndTestWithName(self, 'export/without-export', 'test')

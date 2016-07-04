@@ -1,0 +1,5 @@
+setting LONE_SETTING {
+	for * {
+		v_v
+	}
+}

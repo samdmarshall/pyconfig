@@ -29,7 +29,10 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
-from .. import Keyword
+from ..Keyword import ExportKeyword
+from ..Keyword import IncludeKeyword
+from ..Keyword import Constants
+from ..Keyword import Resolver
 from ..Helpers.Logger import Logger
 
 class DependentNode(object):
@@ -39,14 +42,14 @@ class DependentNode(object):
         flat_contents = list()
         starting_index = 0
         if len(contents):
-            if contents[0][0] == Keyword.Constants._export:
+            if contents[0][0] == Constants._export:
                 flat_contents.append(contents[0])
                 starting_index = 1
         for item in contents[starting_index:]:
             flat_contents.extend(item)
         parsed_contents = list()
         for item in flat_contents:
-            ResolvedType = Keyword.Resolver.ResolveKeywordType(item)
+            ResolvedType = Resolver.ResolveKeywordType(item)
             resolved_item = ResolvedType()
             resolved_item.consume(item)
             parsed_contents.append(resolved_item)
@@ -62,11 +65,13 @@ class DependentNode(object):
     def exportName(self):
         xcconfig_name = ''
         exported_name_info = None
-        export_info_array = self.filterContentsByType(Keyword.ExportKeyword.ExportKeyword)
-        if len(export_info_array) > 0:
+        export_info_array = self.filterContentsByType(ExportKeyword.ExportKeyword)
+        if len(export_info_array):
             exported_name_info = export_info_array[0]
-        if exported_name_info != None:    
-            xcconfig_name = exported_name_info[1]
+            if len(export_info_array) > 1: # pragma: no cover
+                Logger.write().error('More than one export keyword per file in %s !' % self.name)
+        if exported_name_info:
+            xcconfig_name = exported_name_info.export_path
         else:
             file_name = os.path.splitext(os.path.basename(self.name))[0]
             xcconfig_name = file_name + '.xcconfig'
@@ -74,7 +79,7 @@ class DependentNode(object):
     
     def resolvePaths(self, graph):
         found_included_configs = None
-        config_includes_array = self.filterContentsByType(Keyword.IncludeKeyword.IncludeKeyword)
+        config_includes_array = self.filterContentsByType(IncludeKeyword.IncludeKeyword)
         if len(config_includes_array):
             for parent_config in config_includes_array:
                 exported_name = parent_config.include_path
@@ -83,7 +88,7 @@ class DependentNode(object):
                     parent_config_in_graph = included_config_array[0]
                     parent_config_in_graph.children.add(self)
                     self.parents.add(parent_config_in_graph)
-                else:
+                else: # pragma: no cover
                     Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name)
 
             

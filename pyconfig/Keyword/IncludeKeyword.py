@@ -38,10 +38,10 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
 	
 	def consume(self, parsed_item=[]):
 		if parsed_item[0] == Constants._include:
-			self.include_path = parsed_item[1]
+			self.include_path = parsed_item[1][1:-1]
 
 	def serialize(self):
 		serialized_string = ''
 		if self.include_path:
-			serialized_string += '#include '+self.include_path+'\n'
+			serialized_string += '#include "'+self.include_path+'"\n'
 		return serialized_string
