@@ -31,6 +31,7 @@
 from ..Settings import TypeConstants
 from ..Settings import Builtin
 from ..Settings import Runtime
+from ..Keyword import SettingKeyword
 from ..Helpers.Logger import Logger
 
 class Engine(object):
@@ -43,7 +44,9 @@ class Engine(object):
         self.__namespace_table = {}
     
     def process(self, configuration):
-        Logger.write().info('Analyzing %s...' % configuration.name)
-        for config_item in configuration.config:
-            
+        Logger.write().info('Analyzing %s ...' % configuration.name)
+        self.__namespace_table[configuration.name] = {}
+        for item in configuration.config:
+            if type(item) is SettingKeyword.SettingKeyword:
+                self.__namespace_table[configuration.name][item.build_setting_name] = item
             
