@@ -28,23 +28,24 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import pyparsing
 from . import Constants
-from . import BaseKeyword
-from . import ExportKeyword
-from . import IncludeKeyword
-from . import SettingKeyword
 
+# build setting Word definition
+_settingBody = pyparsing.alphanums+'_'
+_settingStart = pyparsing.alphas
+_buildSettingName = pyparsing.Word(_settingStart, _settingBody)
 
-kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword,
-    Constants._include: IncludeKeyword.IncludeKeyword,
-    Constants._setting: SettingKeyword.SettingKeyword,
-}
+# 
+_directAssignment = pyparsing.Word(Constants._specialCase)
 
-def ResolveKeywordType(parsed_keyword):
-    result = BaseKeyword
-    if len(parsed_keyword):
-        parsed_keyword_type = parsed_keyword[0]
-        if parsed_keyword_type in kTypeResolver.keys():
-            result = kTypeResolver[parsed_keyword_type]
-    return result
+# build configuration Word definition
+_configutationBody = pyparsing.alphanums+'_'
+_configurationStart = pyparsing.alphas
+_buildConfigurationName = pyparsing.Word(_configurationStart, _configutationBody) ^ _directAssignment
+
+# conditional value
+_conditionalValue = pyparsing.Word(pyparsing.alphas)
+
+# conditional comparator
+_conditionalComparator = pyparsing.Word(pyparsing.alphanums+'*\"\'_-')

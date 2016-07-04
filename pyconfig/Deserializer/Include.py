@@ -28,23 +28,25 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import Constants
-from . import BaseKeyword
-from . import ExportKeyword
-from . import IncludeKeyword
-from . import SettingKeyword
+import os
+from . import XCLineItem
 
-
-kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword,
-    Constants._include: IncludeKeyword.IncludeKeyword,
-    Constants._setting: SettingKeyword.SettingKeyword,
-}
-
-def ResolveKeywordType(parsed_keyword):
-    result = BaseKeyword
-    if len(parsed_keyword):
-        parsed_keyword_type = parsed_keyword[0]
-        if parsed_keyword_type in kTypeResolver.keys():
-            result = kTypeResolver[parsed_keyword_type]
-    return result
+class Include(XCLineItem): # pragma: no cover
+    
+    def __init__(self, line):
+        super(Include, self).__init__(line)
+    
+    def includePath(self, base_path):
+        quote_start = self.contents.find('"') + 1
+        path = self.contents[quote_start:]
+        quote_end = path.find('"')
+        path = path[:quote_end]
+        if path.startswith('<DEVELOPER_DIR>'):
+            developer_directory = os.environ.get('DEVELOPER_DIR')
+            if not developer_directory:
+                print('Could not find defined environment variable "DEVELOPER_DIR"!')
+                raise Exception
+            path = path.replace('<DEVELOPER_DIR>', developer_directory, 1)
+        if path[0] != '/':
+            path = os.path.join(base_path, path)
+        return os.path.normpath(path)

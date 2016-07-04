@@ -30,3 +30,4 @@
 
 from . import Constants
 from . import Resolver
+from . import Words

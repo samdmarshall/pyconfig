@@ -29,8 +29,8 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
-from . import Keyword
-from .Helpers.Logger import Logger
+from .. import Keyword
+from ..Helpers.Logger import Logger
 
 class DependentNode(object):
     def __init__(self, contents, name):

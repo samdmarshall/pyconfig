@@ -28,27 +28,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import pyparsing
-from . import pycparser
-from . import pycdependent
-from .Helpers.Logger import Logger
+from . import XCLineItem
+from . import Include
+from . import Comment
+from . import KeyValue
 
-def CreateGraphNodes(pyconfig_path_list=[]):
-    parsed_configs = set()
-    
-    for pyconfig_file_path in pyconfig_path_list:
-        pyconfig_file = open(pyconfig_file_path, 'r')
-        
-        pyconfig_contents = pyconfig_file.read()
-        
-        Logger.write().info('Parsing %s ...' % pyconfig_file_path)
-        
-        # now parse the file's contents
-        parsed_contents = pycparser._config.parseString(pyconfig_contents)
-        
-        node = pycdependent.DependentNode(parsed_contents, pyconfig_file.name)
-        parsed_configs.add(node)
-        	
-        pyconfig_file.close()
-    
-    return parsed_configs
+def ResolveLineType(line): # pragma: no cover
+    type_ = XCLineItem.XCLineItem
+    if line.startswith('//'):
+        type_ = Comment.Comment
+    elif line.startswith('#include'):
+        type_ = Include.Include
+    else:
+        offset = KeyValue.FindKeyValueAssignmentOffset(line, 0)
+        if 0 < offset < len(line):
+            type_ = KeyValue.KeyValue
+    return type_

@@ -28,24 +28,25 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import pyparsing
-from . import Keyword
+import os
+import string
+from ..Helpers.Logger import Logger
 
-# build setting Word definition
-_settingBody = pyparsing.alphanums+'_'
-_settingStart = pyparsing.alphas
-_buildSettingName = pyparsing.Word(_settingStart, _settingBody)
-
-# 
-_directAssignment = pyparsing.Word(Keyword.Constants._specialCase)
-
-# build configuration Word definition
-_configutationBody = pyparsing.alphanums+'_'
-_configurationStart = pyparsing.alphas
-_buildConfigurationName = pyparsing.Word(_configurationStart, _configutationBody) ^ _directAssignment
-
-# conditional value
-_conditionalValue = pyparsing.Word(pyparsing.alphas)
-
-# conditional comparator
-_conditionalComparator = pyparsing.Word(pyparsing.alphanums+'*\"\'_-')
+def locateConfigs(fs_path):
+    found_configs = list()
+    if os.path.isdir(fs_path):
+        for root, dirs, files in os.walk(fs_path, followlinks=True):
+            for dir_name in dirs:
+                relative_path = os.path.join(root, dir_name)
+                found_configs.extend(locateConfigs(relative_path))
+            for file_name in files:
+                relative_path = os.path.join(root, file_name)
+                full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
+                name, extension = os.path.splitext(file_name)
+                if extension == '.pyconfig':
+                    Logger.write().info('Found %s' % relative_path)
+                    found_configs.append(full_path)
+    else:
+        full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
+        found_configs.append(full_path)
+    return found_configs

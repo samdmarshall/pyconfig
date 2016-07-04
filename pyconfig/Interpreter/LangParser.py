@@ -30,8 +30,7 @@
 
 import sys
 import pyparsing
-from . import pycword
-from . import Keyword
+from .. import Keyword
 
 if sys.version_info >= (3, 0):
     def unichr(c):
@@ -74,10 +73,10 @@ _export = KeywordWithDoubleQuotedParameter(Keyword.Constants._export)
 _include = KeywordWithDoubleQuotedParameter(Keyword.Constants._include)
 
 # parsing conditional statement expressions
-_conditionalExpr = pyparsing.Group(                       \
-    pycword._conditionalValue                             \
-    + pyparsing.Suppress(Keyword.Constants._equals)       \
-    + pycword._conditionalComparator                      \
+_conditionalExpr = pyparsing.Group(                             \
+    Keyword.Words._conditionalValue                             \
+    + pyparsing.Suppress(Keyword.Constants._equals)             \
+    + Keyword.Words._conditionalComparator                      \
 )
 
 _conditionalName = pyparsing.Group(pyparsing.delimitedList(_conditionalExpr, Keyword.Constants._and))
@@ -104,7 +103,7 @@ _if_cond = pyparsing.Keyword(Keyword.Constants._if)     \
 
 #
 _for_bc = pyparsing.Keyword(Keyword.Constants._for)           \
-+ pycword._buildConfigurationName                             \
++ Keyword.Words._buildConfigurationName                       \
 + pyparsing.Optional(                                         \
     pyparsing.Suppress(Keyword.Constants._openBrace)          \
     + pyparsing.Optional(pyparsing.pythonStyleComment)        \
@@ -125,16 +124,17 @@ _values = pyparsing.delimitedList(    \
 _setting = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))                 \
 + pyparsing.Group(                                                                                \
     pyparsing.Keyword(Keyword.Constants._setting)                                                 \
-    + pycword._buildSettingName                                                                   \
+    + Keyword.Words._buildSettingName                                                             \
     + pyparsing.Group(                                                                            \
-        pyparsing.Optional(pyparsing.Keyword(Keyword.Constants._use) + pycword._buildSettingName) \
+        pyparsing.Optional(pyparsing.Keyword(Keyword.Constants._use)                              \
+        + Keyword.Words._buildSettingName)                                                        \
         + pyparsing.Optional(pyparsing.Keyword(Keyword.Constants._inherits))                      \
     )                                                                                             \
     + pyparsing.Suppress(Keyword.Constants._openBrace)                                            \
     + pyparsing.Optional(pyparsing.pythonStyleComment)                                            \
     + pyparsing.Group(_values)                                                                    \
     + pyparsing.Optional(pyparsing.pythonStyleComment)                                            \
-    + pyparsing.Suppress(Keyword.Constants._closeBrace)                                             \
+    + pyparsing.Suppress(Keyword.Constants._closeBrace)                                           \
 )
 
 # composing the configuration file parser
