@@ -78,6 +78,12 @@ def main(argv=sys.argv[1:]):
         action='store_true'
     )
     parser.add_argument(
+        '--dry-run',
+        help='Runs normally except will not write out a file',
+        default=False,
+        action='store_true'
+    )
+    parser.add_argument(
         '-v', '--verbose',
         help='Adds verbosity to logging output',
         default=False,
@@ -100,7 +106,7 @@ def main(argv=sys.argv[1:]):
     for current_config in mapped_nodes:
         if not args.no_analyze:
             analyzer_engine.process(current_config)
-        if not args.lint:
+        if (not args.lint) or args.dry_run:
             Serializer.writeFile(current_config, args.scheme)
 
 if __name__ == "__main__": # pragma: no cover
