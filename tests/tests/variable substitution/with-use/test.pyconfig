@@ -1,9 +1,9 @@
 setting OTHER_CFLAGS use WRAPPER_EXTENSION {
-	for app {
-		-Wall
-	}
+	for app
 	for xctest {
-		-Wall,
 		-Werror
+	}
+	for * {
+		-Wall
 	}
 }

@@ -28,8 +28,8 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import re
-from . import XCLineItem
+import re # pragma: no cover
+from . import XCLineItem # pragma: no cover
 
 class KeyValue(XCLineItem): # pragma: no cover
     

@@ -28,10 +28,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import XCLineItem
-from . import Include
-from . import Comment
-from . import KeyValue
+from . import XCLineItem # pragma: no cover
+from . import Include # pragma: no cover
+from . import Comment # pragma: no cover
+from . import KeyValue # pragma: no cover
 
 def ResolveLineType(line): # pragma: no cover
     type_ = XCLineItem.XCLineItem

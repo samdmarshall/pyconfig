@@ -28,9 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
-import sys
-from . import Resolver
+import os # pragma: no cover
+import sys # pragma: no cover
+from . import Resolver # pragma: no cover
 
 class xcconfig(object): # pragma: no cover
     
