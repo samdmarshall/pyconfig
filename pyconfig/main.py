@@ -37,6 +37,7 @@ from .Graph import Searcher
 from .Graph import Grapher
 from .Helpers.Logger import Logger
 from .Serializer import Serializer
+from .Analyzer import Engine
 
 # Main
 def main(argv=sys.argv[1:]):
@@ -79,8 +80,10 @@ def main(argv=sys.argv[1:]):
         node.resolvePaths(parsed_configs)
     mapped_nodes = Grapher.TraverseNodes(parsed_configs)
     
-    if not args.lint:
-        for current_config in mapped_nodes:
+    analyzer_engine = Engine.Engine()
+    for current_config in mapped_nodes:
+        analyzer_engine.process(current_config)
+        if not args.lint:
             Serializer.writeFile(current_config, args.scheme)
 
 if __name__ == "__main__": # pragma: no cover
