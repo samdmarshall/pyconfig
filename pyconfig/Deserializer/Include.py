@@ -31,7 +31,7 @@
 import os
 from . import XCLineItem
 
-class Include(XCLineItem):
+class Include(XCLineItem): # pragma: no cover
     
     def __init__(self, line):
         super(Include, self).__init__(line)

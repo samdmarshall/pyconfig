@@ -28,7 +28,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class XCLineItem(object):
+class XCLineItem(object): # pragma: no cover
     
     def __init__(self, line):
         line_end = line.find('//')

@@ -32,7 +32,7 @@ import os
 import sys
 from . import Resolver
 
-class xcconfig(object):
+class xcconfig(object): # pragma: no cover
     
     def __init__(self, path):
         self.path = path

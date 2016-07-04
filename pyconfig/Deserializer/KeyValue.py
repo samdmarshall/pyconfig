@@ -31,7 +31,7 @@
 import re
 from . import XCLineItem
 
-class KeyValue(XCLineItem):
+class KeyValue(XCLineItem): # pragma: no cover
     
     def __init__(self, line):
         super(KeyValue, self).__init__(line)

@@ -30,7 +30,7 @@
 
 from . import XCLineItem
 
-class Comment(XCLineItem):
+class Comment(XCLineItem): # pragma: no cover
     
     def __init__(self, line):
         super(Comment, self).__init__(line)

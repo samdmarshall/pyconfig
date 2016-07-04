@@ -33,7 +33,7 @@ from . import Include
 from . import Comment
 from . import KeyValue
 
-def ResolveLineType(line):
+def ResolveLineType(line): # pragma: no cover
     type_ = XCLineItem.XCLineItem
     if line.startswith('//'):
         type_ = Comment.Comment
