@@ -36,11 +36,13 @@ import pyconfig
 
 test_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests')
 
-def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_name, additional_flags=[]):
+def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_name, additional_flags=[], override=False):
     test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
     test_generated_output = os.path.join(test_pyconfig_path, test_file_name+'.xcconfig')
     test_expected_output = os.path.join(test_pyconfig_path, test_file_name+'_output.xcconfig')
-    args = ['-q', test_pyconfig_path]
+    args = ['-q']
+    if not override:
+        args.append(test_pyconfig_path)
     args.extend(additional_flags)
     pyconfig.main(args)
     with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
@@ -85,6 +87,17 @@ class pyconfigTestCases(unittest.TestCase):
         
     def test_variable_substitution_without_use(self):
         LoadTestDirectoryAndTestWithName(self, 'variable substitution/without-use', 'test')
+    
+    def test_search_direct_file(self):
+        test_pyconfig_path_sub = 'search/direct-file'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        direct_file_path = os.path.join(test_pyconfig_path, 'test.pyconfig')
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path_sub, 'test', [direct_file_path], True)
+    
+    def test_search_directory_path(self):
+        test_pyconfig_path_sub = 'search/directory'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test-dir/test', [test_pyconfig_path], True)
     
     def test_flags_scheme_name(self):
         LoadTestDirectoryAndTestWithName(self, 'flags/scheme name', 'test', ['--scheme', 'MyAppDebug'])
