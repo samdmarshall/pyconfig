@@ -34,6 +34,38 @@ from ..Settings import Runtime
 from ..Keyword import SettingKeyword
 from ..Helpers.Logger import Logger
 
+def findPreviousDefinition(kv_array, index, setting_key):
+    previous_definition_indexes = []
+    for idx, (key, value) in kv_array[:index]:
+        setting_values = list(value.keys())
+        if setting_key in setting_values:
+            previous_definition_indexes.append(idx)
+        
+    return previous_defintion_indexes
+
+def findDuplicates(dictionary):
+    results = {}
+    
+    settings_set = set()
+    snapshot_of_dict = list(dictionary.items())
+    for key, value in snapshot_of_dict:
+        setting_values = list(value.keys())
+        duplicates = settings_set.intersection(setting_values)
+        if len(duplicates):
+            current_index = snapshot_of_dict.index((key, value))
+            for item in duplicates:
+                previous_definitions = findPreviousDefinition(snapshot_of_dict, current_index, item)
+                previous_definitions.append(current_index)
+                results[item] = previous_definitions
+    snapshot_of_results = list(results.items())
+    for key, value in snapshot_of_results:
+        file_names = []
+        for index in value:
+            configuration = snapshot_of_dict[index]
+            file_names.append(configuration.name)
+        results[key] = file_names
+    return results
+
 class Engine(object):
     
     def __init__(self):
@@ -49,4 +81,6 @@ class Engine(object):
         for item in configuration.config:
             if type(item) is SettingKeyword.SettingKeyword:
                 self.__namespace_table[configuration.name][item.build_setting_name] = item
-            
+        duplicate_results = findDuplicates(self.__namespace_table)
+        for key, value in list(duplicate_results.items()):
+            Logger.write().warning('Found duplicate defintion for "%s" in files: %s' % (key, str(value)))
