@@ -40,7 +40,7 @@ def findPreviousDefinition(kv_array, index, setting_key):
         setting_values = list(value.keys())
         if setting_key in setting_values:
             # TODO: add code here to perform a check of the additional properties to see if one substitutes the variable name vs a conditional assignment
-            previous_definition_indexes.append(configuration.name)
+            previous_definition_indexes.append(configuration)
         
     return previous_defintion_indexes
 
@@ -55,7 +55,7 @@ def findDuplicates(dictionary):
             current_index = snapshot_of_dict.index((configuration, values))
             for item in duplicates:
                 previous_definitions = findPreviousDefinition(snapshot_of_dict, current_index, item)
-                previous_definitions.append(configuration.name)
+                previous_definitions.append(configuration)
                 results[item] = previous_definitions
     return results
 
@@ -66,7 +66,13 @@ class Engine(object):
         self.__type_table = TypeConstants.ConstantLookupTable
         self.__builtin_table = Builtin.BuiltinLookupTable
         self.__runtime_table = Runtime.RuntimeLookupTable
-        self.__namespace_table = {}
+        self.__namespace_table = dict()
+    
+    def runInitializer(self, configuration):
+        self.__namespace_table[configuration.name] = dict()
+        for item in configuration.config:
+            if type(item) is SettingKeyword.SettingKeyword:
+                self.__namespace_table[configuration.name][item.build_setting_name] = item
     
     def runDuplicates(self):
         duplicate_results = findDuplicates(self.__namespace_table)
@@ -75,9 +81,6 @@ class Engine(object):
     
     def process(self, configuration):
         Logger.write().info('Analyzing %s ...' % configuration.name)
-        self.__namespace_table[configuration.name] = {}
-        for item in configuration.config:
-            if type(item) is SettingKeyword.SettingKeyword:
-                self.__namespace_table[configuration.name][item.build_setting_name] = item
+        self.runInitializer(configuration)
         self.runDuplicates()
         

@@ -88,6 +88,8 @@ else
 USER_FLAG := 
 endif
 
+DISPLAY_SEPARATOR := $(PRINTF) "============================\n"
+
 # Targets
 
 # --- 
@@ -115,7 +117,7 @@ check:
 	$(call checkfor,$(COVERAGE_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -131,8 +133,9 @@ install-deps:
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
 	$(call checkfor,$(GEM_CMD))
+	$(DISPLAY_SEPARATOR)
 	$(call geminstall,$(DANGER_CMD))
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -142,7 +145,7 @@ install-tools: check
 	@$(PRINTF) "Installing git hooks..."
 	@$(PYTHON2) ./tools/hooks-config.py
 	@$(PRINTF) " done!\n"
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -162,19 +165,19 @@ clean: check
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
 	@$(PRINTF) " done!\n"
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 	
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 	
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -185,7 +188,7 @@ ifeq ($(CIRCLE_BRANCH),develop)
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
 endif
 endif
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -195,7 +198,7 @@ report: check
 ifdef CIRCLE_ARTIFACTS
 	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -206,7 +209,7 @@ ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
 else
 	$(DANGER) local --verbose
 endif
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 

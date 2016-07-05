@@ -64,6 +64,13 @@ class Logger(object):
         Logger._internal_logger.addHandler(ch)
 
     @staticmethod
+    def isVerbose(verbose_logging=False):
+        if Logger._internal_logger == None:
+            Logger.SetupLogger()
+        if not verbose_logging:
+            Logger._internal_logger.setLevel(logging.WARNING)
+    
+    @staticmethod
     def isSilent(should_quiet=False):
         if Logger._internal_logger == None:
             Logger.SetupLogger()

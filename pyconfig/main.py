@@ -43,21 +43,30 @@ from .Analyzer import Engine
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(
-        'file', 
+        'file',
+        metavar='<path>', 
         help='Path to the pyconfig file to use to generate a xcconfig file',
     )
     parser.add_argument(
         '-l', '--lint', 
-        help='Validate the syntax of a pyconfig file', 
+        help='Validate the syntax of a pyconfig file, THIS OPTION IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE',
+        default=False,
+        action='store_true'
+    )
+    parser.add_argument(
+        '--no-analyze',
+        help='Skips the step of analyzing the pyconfig files before writing to disk',
+        default=False,
         action='store_true'
     )
     parser.add_argument(
         '-s', '--scheme', 
-        metavar='name', 
+        metavar='name',
+        action='store',
         help='Optional argument to supply the scheme name'
     )
     parser.add_argument(
-        '-v', '--version',
+        '--version',
         help='Displays the version information',
         action='version',
         version=PYCONFIG_VERSION
@@ -65,11 +74,18 @@ def main(argv=sys.argv[1:]):
     parser.add_argument(
         '-q', '--quiet',
         help='Silences all logging output',
-        required=False,
+        default=False,
+        action='store_true'
+    )
+    parser.add_argument(
+        '-v', '--verbose',
+        help='Adds verbosity to logging output',
+        default=False,
         action='store_true'
     )
     args = parser.parse_args(argv)
-    
+
+    Logger.isVerbose(args.verbose)
     Logger.isSilent(args.quiet)
     
     found_pyconfig_files = Searcher.locateConfigs(args.file)
@@ -82,7 +98,8 @@ def main(argv=sys.argv[1:]):
     
     analyzer_engine = Engine.Engine()
     for current_config in mapped_nodes:
-        analyzer_engine.process(current_config)
+        if not args.no_analyze:
+            analyzer_engine.process(current_config)
         if not args.lint:
             Serializer.writeFile(current_config, args.scheme)
 
