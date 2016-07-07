@@ -33,7 +33,7 @@ class BaseKeyword(object):
     def __init__(self): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
     
-    def __eq__(self, other):
+    def __eq__(self, other): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
     def serialize(self): # pragma: no cover
