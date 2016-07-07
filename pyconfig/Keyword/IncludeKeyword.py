@@ -36,6 +36,10 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
 	def __init__(self):
 		self.include_path = None
 	
+	def __eq__(self, other):
+		cmp_include = (self.include_path == other.include_path)
+		return (cmp_include)
+	
 	def consume(self, parsed_item=[]):
 		if parsed_item[0] == Constants._include:
 			self.include_path = parsed_item[1]
