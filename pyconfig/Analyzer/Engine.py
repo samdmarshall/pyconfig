@@ -31,7 +31,6 @@
 from ..Settings import TypeConstants
 from ..Settings import Builtin
 from ..Settings import Runtime
-<<<<<<< a37b50694aa9bdcaa0ba53d0c3bcc08bd6b2ac64
 from ..Keyword import SettingKeyword
 from ..Helpers.Logger import Logger
 
@@ -40,7 +39,6 @@ def findPreviousDefinition(kv_array, index, setting_key):
     for idx, (configuration, value) in kv_array[:index]:
         setting_values = list(value.keys())
         if setting_key in setting_values:
-            # TODO: add code here to perform a check of the additional properties to see if one substitutes the variable name vs a conditional assignment
             previous_definition_indexes.append(configuration)
         
     return previous_defintion_indexes
@@ -60,10 +58,6 @@ def findDuplicates(dictionary):
                 results[item] = previous_definitions
     return results
 
-=======
-from ..Helpers.Logger import Logger
-
->>>>>>> Fixing the setup.py module definitions
 class Engine(object):
     
     def __init__(self):
@@ -71,7 +65,6 @@ class Engine(object):
         self.__type_table = TypeConstants.ConstantLookupTable
         self.__builtin_table = Builtin.BuiltinLookupTable
         self.__runtime_table = Runtime.RuntimeLookupTable
-<<<<<<< a37b50694aa9bdcaa0ba53d0c3bcc08bd6b2ac64
         self.__namespace_table = dict()
     
     def runInitializer(self, configuration):
@@ -89,13 +82,3 @@ class Engine(object):
         Logger.write().info('Analyzing %s ...' % configuration.name)
         self.runInitializer(configuration)
         self.runDuplicates()
-        
-=======
-        self.__namespace_table = {}
-    
-    def process(self, configuration):
-        Logger.write().info('Analyzing %s...' % configuration.name)
-        for config_item in configuration.config:
-            
-            
->>>>>>> Fixing the setup.py module definitions
