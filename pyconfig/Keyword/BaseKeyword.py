@@ -31,13 +31,16 @@
 class BaseKeyword(object):
     
     def __init__(self): # pragma: no cover
-        pass
+        raise Exception('Please subclass this class and implement this method')
+    
+    def __eq__(self, other):
+        raise Exception('Please subclass this class and implement this method')
 
     def serialize(self): # pragma: no cover
-        return ''
+        raise Exception('Please subclass this class and implement this method')
 
     def consume(self, parsed_item=[]): # pragma: no cover
-        pass
+        raise Exception('Please subclass this class and implement this method')
 
     def deserialize(self, xcconfig_line=''): # pragma: no cover
-        pass
+        raise Exception('Please subclass this class and implement this method')

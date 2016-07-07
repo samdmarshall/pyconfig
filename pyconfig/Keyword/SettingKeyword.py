@@ -48,6 +48,15 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		
 		self.build_setting_name = ''
 	
+	def __eq__(self, other):
+		cmp_name = (self.build_setting_name == other.build_setting_name)
+		cmp_inherits = (self.inherits == other.inherits)
+		cmp_substitutes = (self.substitutes == other.substitutes)
+		cmp_sub_variable = True
+		if self.substitutes and other.substitutes:
+			cmp_sub_variable = (self.substitution_variable_name == other.substitution_variable_name)
+		return (cmp_name and cmp_inherits and cmp_substitutes and cmp_sub_variable)
+		
 	def consumeForStatement(self, statement):
 		configuration_name = statement[1]
 		value = ''
