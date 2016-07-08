@@ -28,6 +28,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from .main import *
-from .version import __version__ as PYCONFIG_VERSION
+from .main 		import *
+from .version 	import __version__ as PYCONFIG_VERSION
 __version__ = PYCONFIG_VERSION

@@ -36,7 +36,14 @@ try:
         print('This software requires that you be running at least Python 2.7')
         sys.exit()
     else:
-        install_dependency_list = ['argparse', 'sys', 'os', 'pyparsing', 'logging']
+        install_dependency_list = [
+            'argparse', 
+            'sys', 
+            'os', 
+            'pyparsing', 
+            'logging',
+            're'
+        ]
         found_modules = {}
         for dependency in install_dependency_list:
             try:
