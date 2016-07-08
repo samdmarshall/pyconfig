@@ -28,19 +28,20 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from .version import __version__ as PYCONFIG_VERSION
 import os
 import sys
 import argparse
-from .Interpreter import Consumer
-from .Graph import Searcher
-from .Graph import Grapher
-from .Helpers.Logger import Logger
-from .Serializer import Serializer
-from .Analyzer import Engine
+from .version         import __version__ as PYCONFIG_VERSION
+from .Interpreter     import Consumer
+from .Graph           import Searcher
+from .Graph           import Grapher
+from .Helpers.Logger  import Logger
+from .Serializer      import Serializer
+from .Analyzer        import Engine
 
 # Main
 def main(argv=sys.argv[1:]):
+    # setup the argument parsing
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(
         '--version',
@@ -85,21 +86,42 @@ def main(argv=sys.argv[1:]):
     )
     args = parser.parse_args(argv)
 
+    # perform the logging modifications before we do any other operations
     Logger.isVerbose(args.verbose)
     Logger.isSilent(args.quiet)
     
+    # take the input path and search for pyconfig files, returning an array of 
+    ## file paths.
     found_pyconfig_files = Searcher.locateConfigs(args.file)
     
+    # once we have the array of files, parse each file and attach the results 
+    ## to a graph node object. Return all of the created nodes as a set.
     parsed_configs = Consumer.CreateGraphNodes(found_pyconfig_files)
     
+    # after all the nodes have been constructed, the file paths that each node
+    ## has should be resolved to the full file path. This is done as a for loop
+    ## instead of a map() call to be compatible with Python 3.
     for node in parsed_configs:
         node.resolvePaths(parsed_configs)
+    # once the file paths have been resolved, then transform the set of files into 
+    ## an array that is ordered from root config to highest level config. Since the 
+    ## map of config files has many roots and many children, this will traverse one
+    ## branch then move onto the next root and navigate to a child, and repeat this
+    ## until it has consumed all of the nodes
     mapped_nodes = Grapher.TraverseNodes(parsed_configs)
     
+    # initialize the analyzer engine, there is only one instance of this across all 
+    ## of the files used in this pass. The intended behavior here is to raise any 
+    ## issues that could impact the outcome of a particular build.
     analyzer_engine = Engine.Engine()
+    # iterate through the ordered nodes 
     for current_config in mapped_nodes:
+        # unless the `--no-analyze` flag was passed, the analysis engine should be
+        ## used to process each configuration.
         if not args.no_analyze:
             analyzer_engine.process(current_config)
+        # unless the `--dry-run` flag was passed, each configuration file should be
+        ## serialized to disk as an xcconfig file.
         if not args.dry_run:
             Serializer.writeFile(current_config, args.scheme)
 
