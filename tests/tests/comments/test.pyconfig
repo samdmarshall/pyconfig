@@ -41,7 +41,7 @@ setting OTHER_CFLAGS use WRAPPER_EXTENSION {
 	}
 }
 
-setting PRODUCT_NAME {
+setting TARGET_NAME {
 	if arch=i386 {
 		MacApp32
 	}

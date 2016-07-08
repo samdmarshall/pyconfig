@@ -40,7 +40,7 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
     test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
     test_generated_output = os.path.join(test_pyconfig_path, test_file_name+'.xcconfig')
     test_expected_output = os.path.join(test_pyconfig_path, test_file_name+'_output.xcconfig')
-    args = ['-q']
+    args = ['--quiet']
     if not override:
         args.append(test_pyconfig_path)
     args.extend(additional_flags)

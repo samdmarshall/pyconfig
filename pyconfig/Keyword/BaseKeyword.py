@@ -39,8 +39,8 @@ class BaseKeyword(object):
     def serialize(self): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
-    def consume(self, parsed_item=[]): # pragma: no cover
-        raise Exception('Please subclass this class and implement this method')
+    def consume(self, parsed_item=[]):
+        self.__parsed_item = parsed_item
 
     def deserialize(self, xcconfig_line=''): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')

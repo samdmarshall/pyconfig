@@ -10,10 +10,10 @@ OTHER_LDFLAGS = $(OTHER_LDFLAGS_$(CONFIGURATION))
 OTHER_CFLAGS_app = -Wall
 OTHER_CFLAGS_xctest = -Wall -Werror
 OTHER_CFLAGS = $(OTHER_CFLAGS_$(WRAPPER_EXTENSION))
-PRODUCT_NAME[arch=i386] = MacApp32
-PRODUCT_NAME[arch=x86_64] = MacApp64
-PRODUCT_NAME[arch=*86*] = IntelApp
-PRODUCT_NAME[arch=i386,sdk=iphone] = SimulatorApp
+TARGET_NAME[arch=i386] = MacApp32
+TARGET_NAME[arch=x86_64] = MacApp64
+TARGET_NAME[arch=*86*] = IntelApp
+TARGET_NAME[arch=i386,sdk=iphone] = SimulatorApp
 FOO = $(inherited) $(BAR)
 PRODUCT_NAME_XING = XING α
 PRODUCT_NAME = $(PRODUCT_NAME_$(CONFIGURATION))

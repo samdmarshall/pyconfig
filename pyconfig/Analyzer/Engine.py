@@ -34,7 +34,7 @@ from ..Settings import Runtime
 from ..Keyword import SettingKeyword
 from ..Helpers.Logger import Logger
 
-def findPreviousDefinition(kv_array, index, setting_key):
+def findPreviousDefinition(kv_array, index, setting_key): # pragma: no cover
     previous_definition_indexes = []
     for idx, (configuration, value) in kv_array[:index]:
         setting_values = list(value.keys())
@@ -50,7 +50,7 @@ def findDuplicates(dictionary):
     for configuration, values in snapshot_of_dict:
         setting_values = list(values.keys())
         duplicates = settings_set.intersection(setting_values)
-        if len(duplicates):
+        if len(duplicates): # pragma: no cover
             current_index = snapshot_of_dict.index((configuration, values))
             for item in duplicates:
                 previous_definitions = findPreviousDefinition(snapshot_of_dict, current_index, item)
@@ -70,12 +70,18 @@ class Engine(object):
     def runInitializer(self, configuration):
         self.__namespace_table[configuration.name] = dict()
         for item in configuration.config:
-            if type(item) is SettingKeyword.SettingKeyword:
-                self.__namespace_table[configuration.name][item.build_setting_name] = item
+            is_setting = (type(item) is SettingKeyword.SettingKeyword)
+            if is_setting:
+                is_unset = (item.build_setting_name not in self.__namespace_table[configuration.name].keys())
+                if is_unset:
+                    self.__namespace_table[configuration.name][item.build_setting_name] = item
+                else: # pragma: no cover
+                    previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
+                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\n\tPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line))
     
     def runDuplicates(self):
         duplicate_results = findDuplicates(self.__namespace_table)
-        for key, value in list(duplicate_results.items()):
+        for key, value in list(duplicate_results.items()): # pragma: no cover
             Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str(value)))
     
     def process(self, configuration):
