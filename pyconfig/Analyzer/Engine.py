@@ -40,7 +40,6 @@ def findPreviousDefinition(kv_array, index, setting_key): # pragma: no cover
         setting_values = list(value.keys())
         if setting_key in setting_values:
             previous_definition_indexes.append(configuration)
-        
     return previous_defintion_indexes
 
 def findDuplicates(dictionary):
@@ -57,6 +56,16 @@ def findDuplicates(dictionary):
                 previous_definitions.append(configuration)
                 results[item] = previous_definitions
     return results
+
+def gatherAllVariables(dictionary):
+    settings_set = set()
+    snapshot_of_dict = list(dictionary.items())
+    for configuration, values in snapshot_of_dict:
+        setting_values = list(values.keys())
+        for keyword in values.values():
+            if keyword.substitutes:
+                settings_set.add(keyword.substitution_variable_name)
+    return settings_set
 
 class Engine(object):
     
@@ -84,7 +93,16 @@ class Engine(object):
         for key, value in list(duplicate_results.items()): # pragma: no cover
             Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str(value)))
     
+    def runMissing(self):
+        variables = gatherAllVariables(self.__namespace_table)
+        variables.difference_update(self.__builtin_table)
+        variables.difference_update(self.__runtime_table)
+        variables.difference_update(self.__type_table.keys())
+        for key in variables: # pragma: no cover
+            Logger.write().warning('No definition for variable "%s"' % key) 
+    
     def process(self, configuration):
         Logger.write().info('Analyzing %s ...' % configuration.name)
         self.runInitializer(configuration)
         self.runDuplicates()
+        self.runMissing()

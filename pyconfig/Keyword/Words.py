@@ -46,13 +46,21 @@ _buildSettingName.setParseAction(addLocnToTokens)
 # 
 _directAssignment = pyparsing.Word(Constants._specialCase)
 
+_directAssignment.setParseAction(addLocnToTokens)
+
 # build configuration Word definition
 _configutationBody = pyparsing.alphanums+'_'
 _configurationStart = pyparsing.alphas
 _buildConfigurationName = pyparsing.Word(_configurationStart, _configutationBody) ^ _directAssignment
 
+_buildConfigurationName.setParseAction(addLocnToTokens)
+
 # conditional value
 _conditionalValue = pyparsing.Word(pyparsing.alphas)
 
+_conditionalValue.setParseAction(addLocnToTokens)
+
 # conditional comparator
 _conditionalComparator = pyparsing.Word(pyparsing.alphanums+'*\"\'_-')
+
+_conditionalComparator.setParseAction(addLocnToTokens)

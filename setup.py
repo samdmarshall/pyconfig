@@ -77,9 +77,6 @@ try:
             'pyconfig/Serializer',
             'pyconfig/Settings',
         ],
-        package_data = {
-            'pyconfig/Settings': ['defaults.xcconfig', 'runtime.xcconfig']
-        },
         entry_points = { 
             'console_scripts': [ 'pyconfig = pyconfig:main' ] 
         },
