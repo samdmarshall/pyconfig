@@ -28,11 +28,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from ..Settings import TypeConstants
-from ..Settings import Builtin
-from ..Settings import Runtime
-from ..Keyword import SettingKeyword
-from ..Helpers.Logger import Logger
+from ..Settings           import TypeConstants
+from ..Settings           import Builtin
+from ..Settings           import Runtime
+from ..Keyword            import SettingKeyword
+from ..Helpers.Logger     import Logger
 
 def findPreviousDefinition(kv_array, index, setting_key): # pragma: no cover
     previous_definition_indexes = []

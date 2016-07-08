@@ -28,9 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import Constants
-from . import BaseKeyword
-from ..Helpers import OrderedDictionary
+from . 			import Constants
+from . 			import BaseKeyword
+from ..Helpers 	import OrderedDictionary
 
 class SettingKeyword(BaseKeyword.BaseKeyword):
 	

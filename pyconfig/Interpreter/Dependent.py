@@ -29,11 +29,11 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
-from ..Keyword import ExportKeyword
-from ..Keyword import IncludeKeyword
-from ..Keyword import Constants
-from ..Keyword import Resolver
-from ..Helpers.Logger import Logger
+from ..Keyword             import ExportKeyword
+from ..Keyword             import IncludeKeyword
+from ..Keyword             import Constants
+from ..Keyword             import Resolver
+from ..Helpers.Logger      import Logger
 
 class DependentNode(object):
     def __init__(self, contents, name):

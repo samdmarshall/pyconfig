@@ -29,9 +29,9 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import pyparsing
-from . import LangParser
-from . import Dependent
-from ..Helpers.Logger import Logger
+from .                 import LangParser
+from .                 import Dependent
+from ..Helpers.Logger  import Logger
 
 def CreateGraphNodes(pyconfig_path_list=[]):
     parsed_configs = set()
