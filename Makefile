@@ -56,6 +56,7 @@ PIP_CMD := pip
 CCTREPORTER_CMD := codeclimate-test-reporter
 UNAME_CMD := uname
 EXIT_CMD := exit
+TPUT_CMD := tput
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -80,6 +81,7 @@ PIP := $(shell command -v $(PIP_CMD) 2> /dev/null)
 CCTREPORTER := $(shell command -v $(CCTREPORTER_CMD) 2> /dev/null)
 UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
 EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
+TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
@@ -88,7 +90,13 @@ else
 USER_FLAG := 
 endif
 
-DISPLAY_SEPARATOR := $(PRINTF) "============================\n"
+TERM_COLUMNS := `$(TPUT) cols`
+DISPLAY_SEPARATOR := \
+number=1 ; while [[ $$number -le $(TERM_COLUMNS) ]] ; do \
+	$(PRINTF) "=" ; \
+	((number = number + 1)) ; \
+done ; \
+$(PRINTF) "\n"
 
 # Targets
 

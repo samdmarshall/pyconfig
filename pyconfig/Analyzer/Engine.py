@@ -83,7 +83,7 @@ class Engine(object):
         for item in configuration.config:
             is_setting = (type(item) is SettingKeyword.SettingKeyword)
             if is_setting:
-                is_unset = (item.build_setting_name not in self.__namespace_table[configuration.name].keys())
+                is_unset = (item.build_setting_name not in list(self.__namespace_table[configuration.name].keys()))
                 if is_unset:
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else: # pragma: no cover
@@ -101,7 +101,7 @@ class Engine(object):
         variables.difference_update(self.__runtime_table)
         variables.difference_update(self.__type_table.keys())
         for key in variables: # pragma: no cover
-            Logger.write().warning('No definition for variable "%s"' % key) 
+            Logger.write().warning('No definition for variable "%s"' % key)
     
     def process(self, configuration):
         Logger.write().info('Analyzing %s ...' % configuration.name)
