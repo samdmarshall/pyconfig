@@ -93,7 +93,7 @@ USER_FLAG :=
 endif
 
 TERM_COLUMNS := `$(TPUT) cols`
-DISPLAY_SEPARATOR := $(SEQ) -f "=" -s '' $(TERM_COLUMNS)
+DISPLAY_SEPARATOR := ./tools/separator.sh "=" $(TERM_COLUMNS)
 
 # Targets
 
