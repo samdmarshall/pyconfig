@@ -140,7 +140,7 @@ install-deps:
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
 	$(call checkfor,$(GEM_CMD))
-	$(DISPLAY_SEPARATOR)
+	@$(DISPLAY_SEPARATOR)
 	$(call geminstall,$(DANGER_CMD))
 	@$(DISPLAY_SEPARATOR)
 
