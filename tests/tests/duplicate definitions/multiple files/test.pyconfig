@@ -1,0 +1,7 @@
+include "test2.xcconfig"
+
+setting FOO {
+	for * {
+		-DBAZ
+	}
+}

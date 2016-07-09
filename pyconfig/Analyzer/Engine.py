@@ -34,13 +34,13 @@ from ..Settings           import Runtime
 from ..Keyword            import SettingKeyword
 from ..Helpers.Logger     import Logger
 
-def findPreviousDefinition(kv_array, index, setting_key): # pragma: no cover
-    previous_definition_indexes = []
-    for idx, (configuration, value) in kv_array[:index]:
+def findPreviousDefinition(kv_array, index, setting_key):
+    previous_definition_indexes = list()
+    for idx, value in kv_array[:index]:
         setting_values = list(value.keys())
         if setting_key in setting_values:
-            previous_definition_indexes.append(configuration)
-    return previous_defintion_indexes
+            previous_definition_indexes.append(value[setting_key])
+    return previous_definition_indexes
 
 def findDuplicates(dictionary):
     results = dict()
@@ -48,13 +48,15 @@ def findDuplicates(dictionary):
     snapshot_of_dict = list(dictionary.items())
     for configuration, values in snapshot_of_dict:
         setting_values = list(values.keys())
-        duplicates = settings_set.intersection(setting_values)
-        if len(duplicates): # pragma: no cover
+        duplicates = settings_set.copy()
+        duplicates.intersection(setting_values)
+        if len(duplicates):
             current_index = snapshot_of_dict.index((configuration, values))
             for item in duplicates:
                 previous_definitions = findPreviousDefinition(snapshot_of_dict, current_index, item)
                 previous_definitions.append(configuration)
                 results[item] = previous_definitions
+        settings_set.update(setting_values)
     return results
 
 def gatherAllVariables(dictionary):

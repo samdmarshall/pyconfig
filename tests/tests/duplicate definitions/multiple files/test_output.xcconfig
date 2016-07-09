@@ -1,0 +1,4 @@
+// TEST DATA
+// TEST DATA
+#include "test2.xcconfig"
+FOO = -DBAZ

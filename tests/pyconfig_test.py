@@ -99,6 +99,14 @@ class pyconfigTestCases(unittest.TestCase):
         test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
         LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test-dir/test', [test_pyconfig_path], True)
     
+    def test_duplicate_definition_single_file(self):
+        LoadTestDirectoryAndTestWithName(self, 'duplicate definitions/single file', 'test')
+    
+    def test_duplicate_definition_multiple_files(self):
+        test_pyconfig_path_sub = 'duplicate definitions/multiple files'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test', [test_pyconfig_path], True)
+    
     def test_flags_scheme_name(self):
         LoadTestDirectoryAndTestWithName(self, 'flags/scheme name', 'test', ['--scheme', 'MyAppDebug'])
 
