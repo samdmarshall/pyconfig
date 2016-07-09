@@ -57,6 +57,7 @@ CCTREPORTER_CMD := codeclimate-test-reporter
 UNAME_CMD := uname
 EXIT_CMD := exit
 TPUT_CMD := tput
+SEQ_CMD := seq
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -82,6 +83,7 @@ CCTREPORTER := $(shell command -v $(CCTREPORTER_CMD) 2> /dev/null)
 UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
 EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
 TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
+SEQ := $(shell command -v $(SEQ_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
@@ -91,7 +93,7 @@ USER_FLAG :=
 endif
 
 TERM_COLUMNS := `$(TPUT) cols`
-DISPLAY_SEPARATOR := @number=1 ; while [[ $$number -le $(TERM_COLUMNS) ]] ; do $(PRINTF) "=" ; ((number = number + 1)) ; done ; $(PRINTF) "\n"
+DISPLAY_SEPARATOR := $(SEQ) -f "=" -s '' $(TERM_COLUMNS)
 
 # Targets
 
@@ -109,6 +111,8 @@ check:
 	$(call checkfor,$(WHICH_CMD))
 	$(call checkfor,$(CAT_CMD))
 	$(call checkfor,$(CP_CMD))
+	$(call checkfor,$(TPUT_CMD))
+	$(call checkfor,$(SEQ_CMD))
 	$(call checkfor,$(TOUCH_CMD))
 	$(call checkfor,$(FIND_CMD))
 	$(call checkfor,$(XARGS_CMD))
