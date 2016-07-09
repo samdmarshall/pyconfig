@@ -91,12 +91,7 @@ USER_FLAG :=
 endif
 
 TERM_COLUMNS := `$(TPUT) cols`
-DISPLAY_SEPARATOR := \
-number=1 ; while [[ $$number -le $(TERM_COLUMNS) ]] ; do \
-	$(PRINTF) "=" ; \
-	((number = number + 1)) ; \
-done ; \
-$(PRINTF) "\n"
+DISPLAY_SEPARATOR := @number=1 ; while [[ $$number -le $(TERM_COLUMNS) ]] ; do $(PRINTF) "=" ; ((number = number + 1)) ; done ; $(PRINTF) "\n"
 
 # Targets
 
