@@ -31,25 +31,26 @@
 import os
 import sys
 import string
+import itertools
 import unittest
 import pyconfig
+import pyconfig.Deserializer.xcconfig
 
 test_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests')
 
-def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_name, additional_flags=[]):
+def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_name, additional_flags=[], override=False):
     test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
     test_generated_output = os.path.join(test_pyconfig_path, test_file_name+'.xcconfig')
     test_expected_output = os.path.join(test_pyconfig_path, test_file_name+'_output.xcconfig')
-    args = ['-q', test_pyconfig_path]
+    args = ['--quiet']
+    if not override:
+        args.append(test_pyconfig_path)
     args.extend(additional_flags)
     pyconfig.main(args)
-    with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
-        generated_lines = generated.readlines()[2:]
-        expected_lines = expected.readlines()[2:]
-        generated.close()
-        expected.close()
-        if generated_lines != expected_lines:
-            test.assertEqual(generated_lines, expected_lines)
+    generated_output = pyconfig.Deserializer.xcconfig.xcconfig(test_generated_output)
+    expected_output = pyconfig.Deserializer.xcconfig.xcconfig(test_expected_output)
+    for generated, expected in list(zip(generated_output.lines, expected_output.lines)):
+        test.assertEqual(generated, expected)
 
 class pyconfigTestCases(unittest.TestCase):
 
@@ -67,6 +68,9 @@ class pyconfigTestCases(unittest.TestCase):
         
     def test_export_with_keyword(self):
         LoadTestDirectoryAndTestWithName(self, 'export/with-export', 'defaults')
+    
+    def test_export_with_keyword_and_include(self):
+        LoadTestDirectoryAndTestWithName(self, 'export/with-export-and-include', 'defaults')
         
     def test_export_without_keyword(self):
         LoadTestDirectoryAndTestWithName(self, 'export/without-export', 'test')
@@ -82,6 +86,25 @@ class pyconfigTestCases(unittest.TestCase):
         
     def test_variable_substitution_without_use(self):
         LoadTestDirectoryAndTestWithName(self, 'variable substitution/without-use', 'test')
+    
+    def test_search_direct_file(self):
+        test_pyconfig_path_sub = 'search/direct-file'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        direct_file_path = os.path.join(test_pyconfig_path, 'test.pyconfig')
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path_sub, 'test', [direct_file_path], True)
+    
+    def test_search_directory_path(self):
+        test_pyconfig_path_sub = 'search/directory'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test-dir/test', [test_pyconfig_path], True)
+    
+    def test_duplicate_definition_single_file(self):
+        LoadTestDirectoryAndTestWithName(self, 'duplicate definitions/single file', 'test')
+    
+    def test_duplicate_definition_multiple_files(self):
+        test_pyconfig_path_sub = 'duplicate definitions/multiple files'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test', [test_pyconfig_path], True)
     
     def test_flags_scheme_name(self):
         LoadTestDirectoryAndTestWithName(self, 'flags/scheme name', 'test', ['--scheme', 'MyAppDebug'])

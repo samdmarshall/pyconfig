@@ -56,6 +56,8 @@ PIP_CMD := pip
 CCTREPORTER_CMD := codeclimate-test-reporter
 UNAME_CMD := uname
 EXIT_CMD := exit
+TPUT_CMD := tput
+TR_CMD := tr
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -80,13 +82,18 @@ PIP := $(shell command -v $(PIP_CMD) 2> /dev/null)
 CCTREPORTER := $(shell command -v $(CCTREPORTER_CMD) 2> /dev/null)
 UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
 EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
+TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
+TR := $(shell command -v $(TR_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
-USER_FLAG := --user
+	USER_FLAG := --user
 else
-USER_FLAG := 
+	USER_FLAG := 
 endif
+
+TERM_COLUMNS := `$(TPUT) cols`
+DISPLAY_SEPARATOR := $(PRINTF) "%*.s\n" $(TERM_COLUMNS) " " | $(TR) ' ' '='
 
 # Targets
 
@@ -94,16 +101,19 @@ endif
 
 checkfor = @$(PRINTF) "Checking for $1..."; \
 if [ -z `$(WHICH) $1` ]; then \
-$(PRINTF) " no\n"; \
-$(EXIT) 1;\
+	$(PRINTF) " no\n"; \
+	$(EXIT) 1;\
 else \
-$(PRINTF) " yes\n"; \
+	$(PRINTF) " yes\n"; \
 fi
 
 check:
 	$(call checkfor,$(WHICH_CMD))
 	$(call checkfor,$(CAT_CMD))
 	$(call checkfor,$(CP_CMD))
+	$(call checkfor,$(TPUT_CMD))
+	$(call checkfor,$(TR_CMD))
+	$(call checkfor,$(PRINTF_CMD))
 	$(call checkfor,$(TOUCH_CMD))
 	$(call checkfor,$(FIND_CMD))
 	$(call checkfor,$(XARGS_CMD))
@@ -115,7 +125,7 @@ check:
 	$(call checkfor,$(COVERAGE_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -130,9 +140,10 @@ install-deps:
 	$(call pipinstall,$(PYPARSING))
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
+	@$(DISPLAY_SEPARATOR)
 	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -142,7 +153,7 @@ install-tools: check
 	@$(PRINTF) "Installing git hooks..."
 	@$(PYTHON2) ./tools/hooks-config.py
 	@$(PRINTF) " done!\n"
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -162,19 +173,19 @@ clean: check
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
 	@$(PRINTF) " done!\n"
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 	
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 	
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -185,7 +196,7 @@ ifeq ($(CIRCLE_BRANCH),develop)
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
 endif
 endif
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
@@ -195,18 +206,18 @@ report: check
 ifdef CIRCLE_ARTIFACTS
 	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
 danger: check
 ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
 	@export DANGER_GITHUB_API_TOKEN=$(value CIRCLECI_DANGER_GITHUB_API_TOKEN)
-	$(DANGER)
+	$(DANGER) --verbose
 else
 	$(DANGER) local --verbose
 endif
-	@$(PRINTF) "============================\n"
+	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 

@@ -36,7 +36,14 @@ try:
         print('This software requires that you be running at least Python 2.7')
         sys.exit()
     else:
-        install_dependency_list = ['argparse', 'sys', 'os', 'pyparsing', 'logging']
+        install_dependency_list = [
+            'argparse', 
+            'sys', 
+            'os', 
+            'pyparsing', 
+            'logging',
+            're'
+        ]
         found_modules = {}
         for dependency in install_dependency_list:
             try:
@@ -61,14 +68,15 @@ try:
         license = 'BSD 3-Clause',
         packages = [ 
             'pyconfig',
+            'pyconfig/Analyzer',
+            'pyconfig/Deserializer',
+            'pyconfig/Graph',
             'pyconfig/Helpers',
+            'pyconfig/Interpreter',
             'pyconfig/Keyword',
             'pyconfig/Serializer',
-            'pyconfig/Deserializer',
+            'pyconfig/Settings',
         ],
-        package_data = {
-            'pyconfig/Deserializer': ['defaults.xcconfig', 'runtime.xcconfig']
-        },
         entry_points = { 
             'console_scripts': [ 'pyconfig = pyconfig:main' ] 
         },

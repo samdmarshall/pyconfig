@@ -1,0 +1,12 @@
+
+setting FOO {
+	for * {
+		-DBAR
+	}
+}
+
+setting FOO {
+	for * {
+		-DBAZ
+	}
+}

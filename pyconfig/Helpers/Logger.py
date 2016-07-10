@@ -64,8 +64,15 @@ class Logger(object):
         Logger._internal_logger.addHandler(ch)
 
     @staticmethod
+    def isVerbose(verbose_logging=False):
+        if Logger._internal_logger == None: # pragma: no cover
+            Logger.SetupLogger()
+        if not verbose_logging:
+            Logger._internal_logger.setLevel(logging.WARNING)
+    
+    @staticmethod
     def isSilent(should_quiet=False):
-        if Logger._internal_logger == None:
+        if Logger._internal_logger == None: # pragma: no cover
             Logger.SetupLogger()
         if should_quiet:
             logging_filter = logging.Filter(name='com.pewpewthespells.py.logging_helper.shut_up')

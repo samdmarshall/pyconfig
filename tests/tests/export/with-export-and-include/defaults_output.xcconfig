@@ -1,0 +1,4 @@
+// TEST DATA
+// TEST DATA
+#include "other.xcconfig"
+FOO = BAR

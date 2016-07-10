@@ -28,6 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this is the base class defintion for all of the pyconfig DSL keywords.
+## The majority of the functionality in this class is to say that we need
+## to subclass and over-ride the methods.
 class BaseKeyword(object):
     
     def __init__(self): # pragma: no cover
@@ -39,8 +42,8 @@ class BaseKeyword(object):
     def serialize(self): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
-    def consume(self, parsed_item=[]): # pragma: no cover
-        raise Exception('Please subclass this class and implement this method')
+    def consume(self, parsed_item=[]):
+        self.__parsed_item = parsed_item
 
     def deserialize(self, xcconfig_line=''): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')

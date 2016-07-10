@@ -28,9 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import Constants
-from . import BaseKeyword
-from ..Helpers import OrderedDictionary
+from . 			import Constants
+from . 			import BaseKeyword
+from ..Helpers 	import OrderedDictionary
 
 class SettingKeyword(BaseKeyword.BaseKeyword):
 	
@@ -48,14 +48,11 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		
 		self.build_setting_name = ''
 	
-	def __eq__(self, other):
+	def __eq__(self, other): # pragma: no cover
 		cmp_name = (self.build_setting_name == other.build_setting_name)
-		cmp_inherits = (self.inherits == other.inherits)
-		cmp_substitutes = (self.substitutes == other.substitutes)
-		cmp_sub_variable = True
-		if self.substitutes and other.substitutes:
-			cmp_sub_variable = (self.substitution_variable_name == other.substitution_variable_name)
-		return (cmp_name and cmp_inherits and cmp_substitutes and cmp_sub_variable)
+		cmp_if = (self.uses_if and (self.uses_if == other.uses_if))
+		cmp_for = (self.uses_for and (self.uses_for == other.uses_for))
+		return (cmp_name and (cmp_if or cmp_for))
 		
 	def consumeForStatement(self, statement):
 		configuration_name = statement[1]
@@ -77,6 +74,8 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		self.configuration_values[conditional_key_value_string] = assignment_value
 	
 	def consume(self, parsed_item=[]):
+		super(SettingKeyword, self).consume(parsed_item)
+		
 		if parsed_item[0] != Constants._setting: # pragma: no cover
 			raise ValueError('SettingKeyword can only consume parsed build setting elements!')
 			

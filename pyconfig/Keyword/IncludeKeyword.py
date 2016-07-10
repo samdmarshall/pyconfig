@@ -36,16 +36,17 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
 	def __init__(self):
 		self.include_path = None
 	
-	def __eq__(self, other):
+	def __eq__(self, other): # pragma: no cover
 		cmp_include = (self.include_path == other.include_path)
 		return (cmp_include)
 	
 	def consume(self, parsed_item=[]):
+		super(IncludeKeyword, self).consume(parsed_item)
 		if parsed_item[0] == Constants._include:
-			self.include_path = parsed_item[1]
+			self.include_path = parsed_item[1][1:-1]
 
 	def serialize(self):
 		serialized_string = ''
 		if self.include_path:
-			serialized_string += '#include '+self.include_path+'\n'
+			serialized_string += '#include "'+self.include_path+'"\n'
 		return serialized_string

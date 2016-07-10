@@ -28,16 +28,26 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import re # pragma: no cover
-from . import XCLineItem # pragma: no cover
+import re
+from . import XCLineItem
 
-class KeyValue(XCLineItem): # pragma: no cover
+class KeyValue(XCLineItem.XCLineItem):
     
     def __init__(self, line):
         super(KeyValue, self).__init__(line)
         offset = KeyValue.FindKeyValueAssignmentOffset(self.contents, 0)
         self.__key = self.contents[:offset]
         self.__value = self.contents[offset+1:]
+    
+    def __eq__(self, other):
+        contents_match = super(KeyValue, self).__eq__(other)
+        keys_match = (self.key() == other.key())
+        conditions_match = (self.conditions() == other.conditions())
+        values_match = (self.value() == other.value())
+        configs_match = (keys_match and conditions_match and values_match)
+        if contents_match and not configs_match: # pragma: no cover
+            raise ValueError('Error in parsing xcconfig files, contents match but parsed results do not!')
+        return configs_match
     
     @classmethod
     def FindKeyValueAssignmentOffset(cls, line, offset):
@@ -51,8 +61,8 @@ class KeyValue(XCLineItem): # pragma: no cover
                 find_close_bracket += 1
                 # found conditional bracket close
                 new_offset += find_close_bracket
-                return KeyValue.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
-            else:
+                return cls.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
+            else: # pragma: no cover
                 print('[xcconfig_kv]: error!')
                 return -1;
         else:
@@ -67,7 +77,7 @@ class KeyValue(XCLineItem): # pragma: no cover
             find_space = key.find(' ')
             if find_space != -1:
                 return key[:find_space]
-            return key
+            return key # pragma: no cover
         else:
             return key[:find_bracket]
     
@@ -85,20 +95,14 @@ class KeyValue(XCLineItem): # pragma: no cover
                 conditions[cond_key] = cond_value
         return conditions
     
-    def value(self, value_type):
+    def value(self):
         value = self.__value
         if len(value) == 0:
             return ''
         if value[0] == ' ':
             value = value[1:]
         comment_offset = value.find('//')
-        if comment_offset != -1:
+        if comment_offset != -1: # pragma: no cover
             value = value[:comment_offset]
-        if value_type == None:
-            return value
-        else:
-            if value_type == 'string':
-                return str(value)
-            if value_type == 'stringlist':
-                # this has to change to be separated by strings
-                return list(value)
+        return value
+        

@@ -36,11 +36,12 @@ class ExportKeyword(BaseKeyword.BaseKeyword):
 	def __init__(self):
 		self.export_path = None
 	
-	def __eq__(self, other):
+	def __eq__(self, other): # pragma: no cover
 		cmp_export = (self.export_path == other.export_path)
 		return (cmp_export)
 	
 	def consume(self, parsed_item=[]):
+		super(ExportKeyword, self).consume(parsed_item)
 		if parsed_item[0] == Constants._export:
 			self.export_path = parsed_item[1][1:-1]
 

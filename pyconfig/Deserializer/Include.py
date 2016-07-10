@@ -28,15 +28,18 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os # pragma: no cover
-from . import XCLineItem # pragma: no cover
+import os
+from . import XCLineItem
 
-class Include(XCLineItem): # pragma: no cover
+class Include(XCLineItem.XCLineItem):
     
     def __init__(self, line):
         super(Include, self).__init__(line)
     
-    def includePath(self, base_path):
+    def __eq__(self, other):
+        return super(Include, self).__eq__(other)
+    
+    def includePath(self, base_path): # pragma: no cover
         quote_start = self.contents.find('"') + 1
         path = self.contents[quote_start:]
         quote_end = path.find('"')

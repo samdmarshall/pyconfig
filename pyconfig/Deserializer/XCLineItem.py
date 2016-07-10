@@ -28,10 +28,13 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class XCLineItem(object): # pragma: no cover
+class XCLineItem(object):
     
     def __init__(self, line):
         line_end = line.find('//')
-        if line_end:
+        if line_end != -1:
             line = line[:line_end]
         self.contents = line
+    
+    def __eq__(self, other):
+        return (self.contents == other.contents)
