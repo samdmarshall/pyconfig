@@ -192,9 +192,9 @@ build3: clean
 test: check
 	$(TOX)
 ifdef CIRCLE_BRANCH
-ifeq ($(CIRCLE_BRANCH),develop)
-	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
-endif
+	ifeq ($(CIRCLE_BRANCH),develop)
+		$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
+	endif
 endif
 	@$(DISPLAY_SEPARATOR)
 
