@@ -113,6 +113,7 @@ check:
 	$(call checkfor,$(CP_CMD))
 	$(call checkfor,$(TPUT_CMD))
 	$(call checkfor,$(TR_CMD))
+	$(call checkfor,$(PRINTF_CMD))
 	$(call checkfor,$(TOUCH_CMD))
 	$(call checkfor,$(FIND_CMD))
 	$(call checkfor,$(XARGS_CMD))
@@ -139,8 +140,8 @@ install-deps:
 	$(call pipinstall,$(PYPARSING))
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
-	$(call checkfor,$(GEM_CMD))
 	@$(DISPLAY_SEPARATOR)
+	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
 	@$(DISPLAY_SEPARATOR)
 
