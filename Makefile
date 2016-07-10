@@ -93,7 +93,7 @@ else
 endif
 
 TERM_COLUMNS := `$(TPUT) cols`
-DISPLAY_SEPARATOR := $(PRINTF) "%*.s" $(TERM_COLUMNS) " " | $(TR) ' ' '='
+DISPLAY_SEPARATOR := $(PRINTF) "%*.s\n" $(TERM_COLUMNS) " " | $(TR) ' ' '='
 
 # Targets
 

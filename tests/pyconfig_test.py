@@ -51,13 +51,6 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
     expected_output = pyconfig.Deserializer.xcconfig.xcconfig(test_expected_output)
     for generated, expected in list(zip(generated_output.lines, expected_output.lines)):
         test.assertEqual(generated, expected)
-#    with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
-#        generated_lines = generated.readlines()[2:]
-#        expected_lines = expected.readlines()[2:]
-#        generated.close()
-#        expected.close()
-#        if generated_lines != expected_lines:
-#            test.assertEqual(generated_lines, expected_lines)
 
 class pyconfigTestCases(unittest.TestCase):
 
