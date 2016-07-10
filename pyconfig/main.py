@@ -55,26 +55,26 @@ def main(argv=sys.argv[1:]):
         help='Path to the pyconfig file to use to generate a xcconfig file',
     )
     parser.add_argument(
-        '--no-analyze',
-        help='Skips the step of analyzing the pyconfig files before writing to disk',
-        default=False,
-        action='store_true'
-    )
-    parser.add_argument(
         '--scheme', 
         metavar='name',
         action='store',
         help='Optional argument to supply the scheme name'
     )
     parser.add_argument(
-        '--quiet',
-        help='Silences all logging output',
+        '--no-analyze',
+        help='Skips the step of analyzing the pyconfig files before writing to disk',
         default=False,
         action='store_true'
     )
     parser.add_argument(
         '--dry-run',
         help='Runs normally except will not write out a file',
+        default=False,
+        action='store_true'
+    )
+    parser.add_argument(
+        '--quiet',
+        help='Silences all logging output',
         default=False,
         action='store_true'
     )
