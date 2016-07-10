@@ -87,9 +87,9 @@ TR := $(shell command -v $(TR_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
-USER_FLAG := --user
+	USER_FLAG := --user
 else
-USER_FLAG := 
+	USER_FLAG := 
 endif
 
 TERM_COLUMNS := `$(TPUT) cols`
@@ -101,10 +101,10 @@ DISPLAY_SEPARATOR := $(PRINTF) "%*.s" $(TERM_COLUMNS) " " | $(TR) ' ' '='
 
 checkfor = @$(PRINTF) "Checking for $1..."; \
 if [ -z `$(WHICH) $1` ]; then \
-$(PRINTF) " no\n"; \
-$(EXIT) 1;\
+	$(PRINTF) " no\n"; \
+	$(EXIT) 1;\
 else \
-$(PRINTF) " yes\n"; \
+	$(PRINTF) " yes\n"; \
 fi
 
 check:

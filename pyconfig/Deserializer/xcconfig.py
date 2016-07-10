@@ -28,11 +28,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os # pragma: no cover
-import sys # pragma: no cover
-from . import Resolver # pragma: no cover
+import os
+import sys
+from . import Resolver
 
-class xcconfig(object): # pragma: no cover
+class xcconfig(object):
     
     def __init__(self, path):
         self.path = path
@@ -46,9 +46,5 @@ class xcconfig(object): # pragma: no cover
         
         for line_text in config_lines:
             line_type_constructor = Resolver.ResolveLineType(line_text)
-            deserialized_line = line_type_constructor(line)
+            deserialized_line = line_type_constructor(line_text)
             self.lines.append(deserialized_line)
-    
-    @classmethod
-    def pathForBuiltinConfigWithName(self, name):
-        return os.path.join(os.path.abspath(os.path.dirname(__file__)), name);

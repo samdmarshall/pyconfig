@@ -28,16 +28,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import re # pragma: no cover
-from . import XCLineItem # pragma: no cover
+import re
+from . import XCLineItem
 
-class KeyValue(XCLineItem): # pragma: no cover
+class KeyValue(XCLineItem.XCLineItem):
     
     def __init__(self, line):
         super(KeyValue, self).__init__(line)
         offset = KeyValue.FindKeyValueAssignmentOffset(self.contents, 0)
         self.__key = self.contents[:offset]
         self.__value = self.contents[offset+1:]
+    
+    def __eq__(self, other):
+        return super(KeyValue, self).__eq__(other)
     
     @classmethod
     def FindKeyValueAssignmentOffset(cls, line, offset):
@@ -51,7 +54,7 @@ class KeyValue(XCLineItem): # pragma: no cover
                 find_close_bracket += 1
                 # found conditional bracket close
                 new_offset += find_close_bracket
-                return KeyValue.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
+                return cls.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
             else:
                 print('[xcconfig_kv]: error!')
                 return -1;
@@ -85,7 +88,7 @@ class KeyValue(XCLineItem): # pragma: no cover
                 conditions[cond_key] = cond_value
         return conditions
     
-    def value(self, value_type):
+    def value(self):
         value = self.__value
         if len(value) == 0:
             return ''
@@ -94,11 +97,5 @@ class KeyValue(XCLineItem): # pragma: no cover
         comment_offset = value.find('//')
         if comment_offset != -1:
             value = value[:comment_offset]
-        if value_type == None:
-            return value
-        else:
-            if value_type == 'string':
-                return str(value)
-            if value_type == 'stringlist':
-                # this has to change to be separated by strings
-                return list(value)
+        return value
+        

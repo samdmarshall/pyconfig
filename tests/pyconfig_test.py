@@ -31,8 +31,10 @@
 import os
 import sys
 import string
+import itertools
 import unittest
 import pyconfig
+import pyconfig.Deserializer.xcconfig
 
 test_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tests')
 
@@ -45,13 +47,17 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
         args.append(test_pyconfig_path)
     args.extend(additional_flags)
     pyconfig.main(args)
-    with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
-        generated_lines = generated.readlines()[2:]
-        expected_lines = expected.readlines()[2:]
-        generated.close()
-        expected.close()
-        if generated_lines != expected_lines:
-            test.assertEqual(generated_lines, expected_lines)
+    generated_output = pyconfig.Deserializer.xcconfig.xcconfig(test_generated_output)
+    expected_output = pyconfig.Deserializer.xcconfig.xcconfig(test_expected_output)
+    for generated, expected in list(zip(generated_output.lines, expected_output.lines)):
+        test.assertEqual(generated, expected)
+#    with open(test_generated_output, 'r') as generated, open(test_expected_output, 'r') as expected:
+#        generated_lines = generated.readlines()[2:]
+#        expected_lines = expected.readlines()[2:]
+#        generated.close()
+#        expected.close()
+#        if generated_lines != expected_lines:
+#            test.assertEqual(generated_lines, expected_lines)
 
 class pyconfigTestCases(unittest.TestCase):
 

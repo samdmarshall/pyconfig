@@ -28,9 +28,12 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import XCLineItem # pragma: no cover
+from . import XCLineItem 
 
-class Comment(XCLineItem): # pragma: no cover
+class Comment(XCLineItem.XCLineItem):
     
     def __init__(self, line):
         super(Comment, self).__init__(line)
+    
+    def __eq__(self, other):
+        return super(Comment, self).__eq__(other)

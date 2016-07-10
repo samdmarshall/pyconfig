@@ -86,13 +86,13 @@ class Engine(object):
                 is_unset = (item.build_setting_name not in list(self.__namespace_table[configuration.name].keys()))
                 if is_unset:
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
-                else: # pragma: no cover
+                else:
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
                     Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\n\tPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line))
     
     def runDuplicates(self):
         duplicate_results = findDuplicates(self.__namespace_table)
-        for key, value in list(duplicate_results.items()): # pragma: no cover
+        for key, value in list(duplicate_results.items()):
             Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str(value)))
     
     def runMissing(self):
@@ -100,7 +100,7 @@ class Engine(object):
         variables.difference_update(self.__builtin_table)
         variables.difference_update(self.__runtime_table)
         variables.difference_update(self.__type_table.keys())
-        for key in variables: # pragma: no cover
+        for key in variables:
             Logger.write().warning('No definition for variable "%s"' % key)
     
     def process(self, configuration):

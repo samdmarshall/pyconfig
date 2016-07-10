@@ -28,19 +28,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from . import XCLineItem # pragma: no cover
-from . import Include # pragma: no cover
-from . import Comment # pragma: no cover
-from . import KeyValue # pragma: no cover
+from . import XCLineItem
+from . import Include
+from . import Comment
+from . import KeyValue
 
-def ResolveLineType(line): # pragma: no cover
+def ResolveLineType(line):
     type_ = XCLineItem.XCLineItem
     if line.startswith('//'):
         type_ = Comment.Comment
     elif line.startswith('#include'):
         type_ = Include.Include
     else:
-        offset = KeyValue.FindKeyValueAssignmentOffset(line, 0)
+        offset = KeyValue.KeyValue.FindKeyValueAssignmentOffset(line, 0)
         if 0 < offset < len(line):
             type_ = KeyValue.KeyValue
     return type_
