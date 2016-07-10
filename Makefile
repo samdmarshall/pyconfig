@@ -213,7 +213,7 @@ endif
 danger: check
 ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
 	@export DANGER_GITHUB_API_TOKEN=$(value CIRCLECI_DANGER_GITHUB_API_TOKEN)
-	$(DANGER)
+	$(DANGER) --verbose
 else
 	$(DANGER) local --verbose
 endif
