@@ -6,7 +6,7 @@ pyconfig
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig/coverage)
 [![CircleCI](https://circleci.com/gh/samdmarshall/pyconfig.svg?style=svg)](https://circleci.com/gh/samdmarshall/pyconfig)
 
-`pyconfig` is a tool that allows you to write the contents of your [`.xcconfig` files](http://pewpewthespells.com/blog/xcconfig_guide.html) in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
+**pyconfig** is a tool that allows you to write the contents of your [`.xcconfig` files](http://pewpewthespells.com/blog/xcconfig_guide.html) in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
 
 ## Contributing and Code of Conduct
@@ -44,15 +44,15 @@ To install the tool from the repo, clone from Github then run the respective `ma
 
 
 ## Usage
-To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it a path as input:
+To use **pyconfig** to generate an `.xcconfig` file, you will have to pass it a path as input:
 
 	$ pyconfig <file path to the configuration file or directory>
 
-There are a number of flags that can be passed to modify the behavior of *pyconfig*:
+There are a number of flags that can be passed to modify the behavior of **pyconfig**:
 
    Flags | Usage
 ------------------|-----------------------------------------------------------
-`--version`       | Displays the version of *pyconfig* and exits
+`--version`       | Displays the version of **pyconfig** and exits
 `--scheme <name>` | Add additional variable defined as `SCHEME_NAME = <name>`
 `--no-analyze`    | Skip the analysis step of processing the `.pyconfig` files
 `--dry-run`       | Do not write any output files
