@@ -195,20 +195,29 @@ test: check
 
 # --- 
 
-RUN_CCTREPORTER = \
+UPLOAD_ARTIFACTS = @$(PRINTF) "Checking for path to upload artifacts to..." ; \
+if [ -d $1 ] ; then \
+	$(PRINTF) "uploading.\n" ; \
+	$(CP) -r ./htmlcov $1 ; \
+else \
+	$(PRINTF) "skipping.\n" ; \
+fi
+
+RUN_CCTREPORTER = @$(PRINTF) "Checking CI branch to upload coverage results... " ; \
 if [ "$(CIRCLE_BRANCH)" == "develop" ]; then \
+	$(PRINTF) "OK.\n"; \
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) ; \
+else \
+	$(PRINTF) "skipping.\n"; \
 fi
 
 report: check
 	$(COVERAGE) report
 	$(COVERAGE) html
 ifdef CIRCLE_ARTIFACTS
-	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
-endif 
-ifdef CIRCLE_BRANCH
-	$(call RUN_CCTREPORTER)
+	$(call UPLOAD_ARTIFACTS,$(CIRCLE_ARTIFACTS))
 endif
+	$(call RUN_CCTREPORTER)
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
