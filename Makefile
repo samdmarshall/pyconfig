@@ -191,14 +191,14 @@ build3: clean
 
 test: check
 	$(TOX)
-ifdef CIRCLE_BRANCH
-	ifeq $(CIRCLE_BRANCH) develop
-		$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN)
-	endif
-endif
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
+
+RUN_CCTREPORTER := \
+@if [ $(CIRCLE_BRANCH) -eq "develop" ]; then \
+	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) \
+@fi
 
 report: check
 	$(COVERAGE) report
@@ -206,6 +206,9 @@ report: check
 ifdef CIRCLE_ARTIFACTS
 	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
+ifdef CIRCLE_BRANCH
+	$(RUN_CCTREPORTER)
+endif
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
