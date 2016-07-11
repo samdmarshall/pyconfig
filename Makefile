@@ -160,7 +160,7 @@ install-tools: check
 removeall = $(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
 clean: check
-	@$(PRINTF) "Removing existing installation..."
+	@$(PRINTF) "Removing existing installation... "
 	@$(TOUCH) $(INSTALLED_FILES_RECORD)
 	@$(CAT) $(INSTALLED_FILES_RECORD) | $(XARGS) $(removeall)
 	@$(removeall) ./pyconfig.egg-info
@@ -173,7 +173,7 @@ clean: check
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
-	@$(PRINTF) " done!\n"
+	@$(PRINTF) "done!\n"
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
@@ -196,7 +196,7 @@ test: check
 
 # --- 
 
-UPLOAD_ARTIFACTS = @$(PRINTF) "Checking for path to upload artifacts to..." ; \
+upload_artifacts = @$(PRINTF) "Checking for path to upload artifacts..." ; \
 if [ -d $1 ] ; then \
 	$(PRINTF) "uploading.\n" ; \
 	$(CP) -r ./htmlcov $1 ; \
@@ -204,7 +204,7 @@ else \
 	$(PRINTF) "skipping.\n" ; \
 fi
 
-RUN_CCTREPORTER = @$(PRINTF) "Checking CI branch to upload coverage results... " ; \
+run_cctreporter = @$(PRINTF) "Checking CI branch to upload coverage results... " ; \
 if [ "$(CIRCLE_BRANCH)" = "develop" ]; then \
 	$(PRINTF) "OK.\n"; \
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) ; \
@@ -212,18 +212,29 @@ else \
 	$(PRINTF) "skipping.\n"; \
 fi
 
+checktest = @$(PRINTF) "Checking that coverage data exists... " ; \
+if [ -e ./.coverage ] ; then \
+	$(PRINTF) "ok!\n" ; \
+else \
+	$(PRINTF) "not found!\n" ; \
+	$(PRINTF) "Please run 'make test' before running 'make report'\n" ; \
+	exit 1 ; \
+fi \
+
 report: check
+	@$(call checktest)
 	$(COVERAGE) report
 	@$(DISPLAY_SEPARATOR)
 	@$(PRINTF) "Generating html report... "
 	@$(COVERAGE) html
 	@$(PRINTF) "done!\n"
+	@$(PRINTF) "Generated html report is located at: ./htmlcov/index.html\n"
 ifdef CIRCLE_ARTIFACTS
 	@$(DISPLAY_SEPARATOR)
-	$(call UPLOAD_ARTIFACTS,$(CIRCLE_ARTIFACTS))
+	$(call upload_artifacts,$(CIRCLE_ARTIFACTS))
 endif
 	@$(DISPLAY_SEPARATOR)
-	$(call RUN_CCTREPORTER)
+	$(call run_cctreporter)
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
