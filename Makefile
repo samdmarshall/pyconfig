@@ -169,6 +169,7 @@ clean: check
 	@$(removeall) ./.tox
 	@$(removeall) .coverage
 	@$(removeall) ./htmlcov
+	@$(removeall) ./.eggs
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
