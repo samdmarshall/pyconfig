@@ -197,7 +197,7 @@ test: check
 
 RUN_CCTREPORTER := \
 @if [ $(CIRCLE_BRANCH) -eq "develop" ]; then \
-	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) \
+	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) ; \
 @fi
 
 report: check
