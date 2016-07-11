@@ -42,6 +42,12 @@ class BaseKeyword(object):
     def serialize(self): # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
+    def consumePath(self, constant, parsed_item=[]):
+        result = None
+        if parsed_item[0] == constant:
+            result = parsed_item[1][1:-1]
+        return result
+    
     def consume(self, parsed_item=[]):
         self.__parsed_item = parsed_item
 

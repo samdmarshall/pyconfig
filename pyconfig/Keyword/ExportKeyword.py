@@ -42,8 +42,7 @@ class ExportKeyword(BaseKeyword.BaseKeyword):
 	
 	def consume(self, parsed_item=[]):
 		super(ExportKeyword, self).consume(parsed_item)
-		if parsed_item[0] == Constants._export:
-			self.export_path = parsed_item[1][1:-1]
-
+		self.export_path = self.consumePath(Constants._export, parsed_item)
+	
 	def serialize(self):
 		return ''

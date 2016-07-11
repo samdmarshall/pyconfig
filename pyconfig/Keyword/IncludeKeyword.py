@@ -42,8 +42,7 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
 	
 	def consume(self, parsed_item=[]):
 		super(IncludeKeyword, self).consume(parsed_item)
-		if parsed_item[0] == Constants._include:
-			self.include_path = parsed_item[1][1:-1]
+		self.include_path = self.consumePath(Constants._include, parsed_item)
 
 	def serialize(self):
 		serialized_string = ''
