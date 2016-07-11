@@ -63,7 +63,29 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 			self.configuration_values[configuration_name] = ' '.join(value)
 		else:
 			self.default_value = ' '.join(value)
+	
+	def consumeModifiers(self, modifiers):
+		if len(modifiers):
+			if modifiers[0] == Constants._use:
+				self.substitutes = True
+				self.substitution_variable_name = modifiers[1]
+			if modifiers[-1] == Constants._inherits:
+				self.inherits = True
+	
+	def consumeConfigurationAssignment(self, configurations):
+		keywords_used = list()
+		for setting_configuration in configurations:
+			keywords_used.append(setting_configuration[0])
 		
+		keyword_used = set(keywords_used)
+		if len(keyword_used) > 1: # pragma: no cover
+			raise ValueError('More than one type of assignment was used for the build setting "%s"' % self.build_setting_name)
+		
+		used_keyword_in_assignemnt = next(iter(keyword_used))
+		self.uses_if = (used_keyword_in_assignemnt == Constants._if)
+		self.uses_for = (used_keyword_in_assignemnt == Constants._for)
+
+	
 	def consumeIfStatement(self, statement):
 		conditions = statement[1]
 		assignment_value = statement[2]
@@ -80,28 +102,11 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 			raise ValueError('SettingKeyword can only consume parsed build setting elements!')
 			
 		self.build_setting_name = parsed_item[1]
-		modifiers = parsed_item[2]
+		self.consumeModifiers(parsed_item[2])
 		configurations = parsed_item[3]
 		
-		if len(modifiers):
-			if modifiers[0] == Constants._use:
-				self.substitutes = True
-				self.substitution_variable_name = modifiers[1]
-			if modifiers[-1] == Constants._inherits:
-					self.inherits = True
-		
-		keywords_used = list()
-		for setting_configuration in configurations:
-			keywords_used.append(setting_configuration[0])
-		
-		keyword_used = set(keywords_used)
-		if len(keyword_used) > 1: # pragma: no cover
-			raise ValueError('More than one type of assignment was used for the build setting "%s"' % self.build_setting_name)
-		
-		used_keyword_in_assignemnt = next(iter(keyword_used))
-		self.uses_if = (used_keyword_in_assignemnt == Constants._if)
-		self.uses_for = (used_keyword_in_assignemnt == Constants._for)
-			
+		self.consumeConfigurationAssignment(configurations)
+					
 		for setting_configuration in configurations:
 			configuration_type = setting_configuration[0]
 			
@@ -130,7 +135,19 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		serialize_string += self.serializeInheritedValues()
 		serialize_string += value+'\n'
 		return serialize_string
-		
+	
+	def serializeForConditionalStatement(self):
+		serialize_string = ''
+		serialize_string += self.build_setting_name+' = '
+		serialize_string += self.serializeInheritedValues()
+		if self.isConfigurationCase():
+			serialize_string += '$('+self.build_setting_name+'_$('+self.substitution_variable_name+'))'
+			if len(self.default_value):
+				serialize_string += ' '
+		serialize_string += self.default_value
+		serialize_string +='\n'
+		return serialize_string
+	
 	def serializeIfStatement(self, key, value):
 		serialize_string = ''
 		serialize_string += self.build_setting_name+'['+key+']'+' = '
@@ -143,14 +160,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 		if self.uses_for:
 			for key, value in self.configuration_values.items():
 				serialize_string += self.serializeForStatement(key, value)
-			serialize_string += self.build_setting_name+' = '
-			serialize_string += self.serializeInheritedValues()
-			if self.isConfigurationCase():
-				serialize_string += '$('+self.build_setting_name+'_$('+self.substitution_variable_name+'))'
-				if len(self.default_value):
-					serialize_string += ' '
-			serialize_string += self.default_value
-			serialize_string +='\n'
+			serialize_string += self.serializeForConditionalStatement()
 		
 		if self.uses_if:
 			for key, value in self.configuration_values.items():

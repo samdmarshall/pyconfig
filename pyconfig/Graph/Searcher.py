@@ -34,19 +34,18 @@ from ..Helpers.Logger import Logger
 
 def locateConfigs(fs_path):
     found_configs = list()
-    if os.path.isdir(fs_path):
-        for root, dirs, files in os.walk(fs_path, followlinks=True):
-            for dir_name in dirs:
-                relative_path = os.path.join(root, dir_name)
-                found_configs.extend(locateConfigs(relative_path))
-            for file_name in files:
-                relative_path = os.path.join(root, file_name)
-                full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
-                name, extension = os.path.splitext(file_name)
-                if extension == '.pyconfig':
-                    Logger.write().info('Found %s' % relative_path)
-                    found_configs.append(full_path)
-    else:
+    for root, dirs, files in os.walk(fs_path, followlinks=True):
+        for dir_name in dirs:
+            relative_path = os.path.join(root, dir_name)
+            found_configs.extend(locateConfigs(relative_path))
+        for file_name in files:
+            relative_path = os.path.join(root, file_name)
+            full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
+            name, extension = os.path.splitext(file_name)
+            if extension == '.pyconfig':
+                Logger.write().info('Found %s' % relative_path)
+                found_configs.append(full_path)
+    if not os.path.isdir(fs_path):
         full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
         found_configs.append(full_path)
     return found_configs
