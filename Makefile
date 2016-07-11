@@ -204,7 +204,7 @@ else \
 fi
 
 RUN_CCTREPORTER = @$(PRINTF) "Checking CI branch to upload coverage results... " ; \
-if [ "$(CIRCLE_BRANCH)" == "develop" ]; then \
+if [ "$(CIRCLE_BRANCH)" = "develop" ]; then \
 	$(PRINTF) "OK.\n"; \
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) ; \
 else \
