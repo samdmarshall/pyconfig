@@ -7,6 +7,9 @@ engines:
     config:
       languages:
       - python
+    exclude_fingerprints:
+    - b8f2a1e43a0b3b9b0c72906c1ce70b38
+    - 51a67d07281197dbafb1a27851a49827
   FIXME:
     enabled: true
 
