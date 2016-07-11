@@ -213,21 +213,29 @@ fi
 
 report: check
 	$(COVERAGE) report
-	$(COVERAGE) html
+	@$(DISPLAY_SEPARATOR)
+	@$(PRINTF) "Generating html report... "
+	@$(COVERAGE) html
+	@$(PRINTF) "done!\n"
 ifdef CIRCLE_ARTIFACTS
+	@$(DISPLAY_SEPARATOR)
 	$(call UPLOAD_ARTIFACTS,$(CIRCLE_ARTIFACTS))
 endif
+	@$(DISPLAY_SEPARATOR)
 	$(call RUN_CCTREPORTER)
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
 danger: check
+	@$(PRINTF) "Running danger "
 ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
+	@$(PRINTF) "(PR)... \n"
 	@export DANGER_GITHUB_API_TOKEN=$(value CIRCLECI_DANGER_GITHUB_API_TOKEN)
-	$(DANGER) --verbose
+	@$(DANGER) --verbose
 else
-	$(DANGER) local --verbose
+	@$(PRINTF) "(local)... \n"
+	@$(DANGER) local --verbose
 endif
 	@$(DISPLAY_SEPARATOR)
 	

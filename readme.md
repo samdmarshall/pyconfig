@@ -22,7 +22,7 @@ pyparsing | >=2.0.3
  argparse | >=1.1
   logging | >=0.5.1.2
 
-Note: All of these modules come as part of the system Python installation for OS X (which is 2.7.10 as of 10.11.5), but you will have to install them yourself if necessary on other systems. Both of these modules can be accquired through `pip install`.
+Note: All of these modules come as part of the system Python installation for OS X (which is 2.7.10 as of 10.11.5), but you will have to install them yourself if necessary on other systems. These modules can be accquired through `pip install`.
 
 
 ## Installation [![homebrew](https://img.shields.io/badge/homebrew-v1.0.2-brightgreen.svg)](https://github.com/samdmarshall/homebrew-formulae) [![homebrew](https://img.shields.io/badge/homebrew-HEAD-orange.svg)](https://github.com/samdmarshall/homebrew-formulae)
@@ -32,26 +32,31 @@ Via [homebrew](http://brew.sh):
 	$ brew tap samdmarshall/formulae
 	$ brew install samdmarshall/formulae/pyconfig
 
-Alternatively you can clone the repo and run the `make build2` to install under Python 2, and `make build3` to install under Python 3.
+To install the tool from the repo, clone from Github then run the respective `make` command for the desired version.
+
+### Installing for Python 2
+
+	$ make build2
+
+### Installing for Python 3
+
+	$ make build3
+
 
 ## Usage
-To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it an input:
+To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it a path as input:
 
-	$ pyconfig <file path to the configuration file>
+	$ pyconfig <file path to the configuration file or directory>
 
-You can also use `pyconfig` to perform syntax validation on the configuration file by passing the `--lint` flag:
 
-	$ pyconfig <file path to the configuration file> --lint
-
-Doing this should raise any of the major syntax errors and print out nothing if it passed successfully.
-
-There is an additional flag that allows you to pass in an additional variable at execution of the script to represent the name of the scheme you are running. This feature exists to allow the generation of the `.xcconfig` files to be added as a pre-build script phase to an Xcode scheme to re-define the build settings as necessary.
-
-	$ pyconfig <file path to the configuration file> --scheme <name of scheme>
-
-When using the `--scheme` flag, a new variable will be written to the generated `.xcconfig` file as:
-
-	SCHEME_NAME = <value that was passed in via the flag>
+            Flags | Usage
+------------------|-----------------------------------------------------------
+`--version`       | Displays the version of *pyconfig*
+`--scheme <name>` | Add additional variable defined as `SCHEME_NAME = <name>`
+`--no-analyze`    | Skip the analysis step of processing the `.pyconfig` files
+`--dry-run`       | Do not write any output files
+`--quiet`         | Silences all logging output
+`--verbose`       | Logs additional information
 
 
 ## Syntax
