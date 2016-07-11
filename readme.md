@@ -48,10 +48,11 @@ To use `pyconfig` to generate an `.xcconfig` file, you will have to pass it a pa
 
 	$ pyconfig <file path to the configuration file or directory>
 
+There are a number of flags that can be passed to modify the behavior of *pyconfig*:
 
-            Flags | Usage
+   Flags | Usage
 ------------------|-----------------------------------------------------------
-`--version`       | Displays the version of *pyconfig*
+`--version`       | Displays the version of *pyconfig* and exits
 `--scheme <name>` | Add additional variable defined as `SCHEME_NAME = <name>`
 `--no-analyze`    | Skip the analysis step of processing the `.pyconfig` files
 `--dry-run`       | Do not write any output files
