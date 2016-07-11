@@ -157,7 +157,7 @@ install-tools: check
 
 # --- 
 
-removeall=$(RM) -rdf
+removeall = $(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
 clean: check
 	@$(PRINTF) "Removing existing installation..."
@@ -195,10 +195,10 @@ test: check
 
 # --- 
 
-RUN_CCTREPORTER := \
-@if [ $(CIRCLE_BRANCH) -eq "develop" ]; then \
+RUN_CCTREPORTER = \
+if [ $(CIRCLE_BRANCH) -eq "develop" ]; then \
 	$(CCTREPORTER) --token $(value CIRCLECI_CODECLIMATE_TOKEN) ; \
-@fi
+fi
 
 report: check
 	$(COVERAGE) report
@@ -207,7 +207,7 @@ ifdef CIRCLE_ARTIFACTS
 	$(CP) -r ./htmlcov $(CIRCLE_ARTIFACTS)
 endif 
 ifdef CIRCLE_BRANCH
-	$(RUN_CCTREPORTER)
+	$(call RUN_CCTREPORTER)
 endif
 	@$(DISPLAY_SEPARATOR)
 
