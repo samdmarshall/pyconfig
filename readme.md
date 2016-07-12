@@ -1,9 +1,6 @@
 pyconfig
 ========
 
-[![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
-
-
 [![Code Climate](https://img.shields.io/codeclimate/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig/coverage)
 [![CircleCI](https://img.shields.io/circleci/project/samdmarshall/pyconfig.svg)](https://circleci.com/gh/samdmarshall/pyconfig)
@@ -12,7 +9,7 @@ pyconfig
 **pyconfig** is a tool that allows you to write the contents of your [`.xcconfig` files](http://pewpewthespells.com/blog/xcconfig_guide.html) in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
 
-## Contributing and Code of Conduct
+## Contributing and Code of Conduct [![License](https://img.shields.io/badge/License-3--Clause%20BSD-blue.svg)](./LICENSE)
 This project and related material has a Code of Conduct that is listed in the [contributing.md](./contributing.md) file. This must be read and adhered to when interacting with this project. Additionally this code is released under a 3-clause BSD license that you can read [here](./LICENSE).
 
 
