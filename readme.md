@@ -5,6 +5,7 @@ pyconfig
 [![Code Climate](https://img.shields.io/codeclimate/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/samdmarshall/pyconfig.svg)](https://codeclimate.com/github/samdmarshall/pyconfig/coverage)
 [![CircleCI](https://circleci.com/gh/samdmarshall/pyconfig.svg?style=svg)](https://circleci.com/gh/samdmarshall/pyconfig)
+[![Dependency Status](https://dependencyci.com/github/samdmarshall/pyconfig/badge)](https://dependencyci.com/github/samdmarshall/pyconfig)
 
 **pyconfig** is a tool that allows you to write the contents of your [`.xcconfig` files](http://pewpewthespells.com/blog/xcconfig_guide.html) in a simple and more expressive language and have them be generated prior to building a target in Xcode. 
 
@@ -20,7 +21,6 @@ This tool is built and tested against Python 2.7.10 and 3.5.0.
 ----------|-----------
 pyparsing | >=2.0.3
  argparse | >=1.1
-  logging | >=0.5.1.2
 
 Note: All of these modules come as part of the system Python installation for OS X (which is 2.7.10 as of 10.11.5), but you will have to install them yourself if necessary on other systems. These modules can be accquired through `pip install`.
 

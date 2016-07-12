@@ -82,7 +82,9 @@ try:
         },
         test_suite = 'tests.pyconfig_test',
         zip_safe = False,
-        **install_requires_dict
+        install_requires = [
+            'pyparsing == 2.0.3',
+        ]
     )
 except ImportError as e:
     raise e
