@@ -109,7 +109,6 @@ else \
 	$(PRINTF) " yes\n"; \
 fi
 
-.PHONY: check
 check:
 	$(call checkfor,$(WHICH_CMD))
 	$(call checkfor,$(CAT_CMD))
@@ -136,7 +135,6 @@ check:
 pipinstall = @$(PIP) install $1 $(USER_FLAG)
 geminstall = @$(GEM) install $1 $(USER_FLAG)
 
-.PHONY: install-deps
 install-deps: 
 	$(call checkfor,$(PYTHON2_CMD))
 	$(call checkfor,$(PIP_CMD))
@@ -155,7 +153,6 @@ install-deps:
 
 # this is for installing any tools that we don't already have
 
-.PHONY: install-tools
 install-tools: check
 	@$(PRINTF) "Installing git hooks..."
 	@$(PYTHON2) ./tools/hooks-config.py
@@ -167,7 +164,6 @@ install-tools: check
 removeall = $(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
 
-.PHONY: clean
 clean: check
 	@$(PRINTF) "Removing existing installation... "
 	@$(TOUCH) $(INSTALLED_FILES_RECORD)
@@ -179,6 +175,7 @@ clean: check
 	@$(removeall) .coverage
 	@$(removeall) ./htmlcov
 	@$(removeall) ./.eggs
+	$(call cleanlocation, ., -name ".DS_Store")
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
@@ -187,21 +184,18 @@ clean: check
 	
 # --- 
 
-.PHONY: build2
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
 
-.PHONY: build3
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
-.PHONY: test
 test: check
 	$(TOX)
 	@$(DISPLAY_SEPARATOR)
@@ -234,7 +228,6 @@ else \
 	exit 1 ; \
 fi \
 
-.PHONY: report
 report: check
 	@$(call checktest)
 	$(COVERAGE) report
@@ -253,7 +246,6 @@ endif
 
 # --- 
 
-.PHONY: danger
 danger: check
 	@$(PRINTF) "Running danger "
 ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
@@ -268,12 +260,10 @@ endif
 	
 # --- 
 
-.PHONY: ci
 ci: test lint report danger
 
 # ---
 
-.PHONY: lint
 lint: check
 	@$(TOUCH) lint_output.txt
 	@$(PRINTF) "Running linter... "
@@ -281,3 +271,7 @@ lint: check
 	@$(PRINTF) " done!\n"
 	@$(PRINTF) "Generated linter report: lint_output.txt\n"
 	@$(DISPLAY_SEPARATOR)
+
+# ---
+
+.PHONY: danger lint ci report test build3 build2 clean install-tools install-deps check
