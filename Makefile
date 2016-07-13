@@ -58,6 +58,7 @@ UNAME_CMD := uname
 EXIT_CMD := exit
 TPUT_CMD := tput
 TR_CMD := tr
+PYLINT_CMD := pylint
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -84,6 +85,7 @@ UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
 EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
 TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
 TR := $(shell command -v $(TR_CMD) 2> /dev/null)
+PYLINT := $(shell command -v $(PYLINT_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
@@ -107,6 +109,7 @@ else \
 	$(PRINTF) " yes\n"; \
 fi
 
+.PHONY: check
 check:
 	$(call checkfor,$(WHICH_CMD))
 	$(call checkfor,$(CAT_CMD))
@@ -123,6 +126,7 @@ check:
 	$(call checkfor,$(PIP_CMD))
 	$(call checkfor,$(TOX_CMD))
 	$(call checkfor,$(COVERAGE_CMD))
+	$(call checkfor,$(PYLINT_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
 	@$(DISPLAY_SEPARATOR)
@@ -132,6 +136,7 @@ check:
 pipinstall = @$(PIP) install $1 $(USER_FLAG)
 geminstall = @$(GEM) install $1 $(USER_FLAG)
 
+.PHONY: install-deps
 install-deps: 
 	$(call checkfor,$(PYTHON2_CMD))
 	$(call checkfor,$(PIP_CMD))
@@ -140,6 +145,7 @@ install-deps:
 	$(call pipinstall,$(PYPARSING))
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
+	$(call pipinstall,$(PYLINT_CMD))
 	@$(DISPLAY_SEPARATOR)
 	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
@@ -149,6 +155,7 @@ install-deps:
 
 # this is for installing any tools that we don't already have
 
+.PHONY: install-tools
 install-tools: check
 	@$(PRINTF) "Installing git hooks..."
 	@$(PYTHON2) ./tools/hooks-config.py
@@ -159,6 +166,8 @@ install-tools: check
 
 removeall = $(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
+
+.PHONY: clean
 clean: check
 	@$(PRINTF) "Removing existing installation... "
 	@$(TOUCH) $(INSTALLED_FILES_RECORD)
@@ -177,19 +186,22 @@ clean: check
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
-	
+
+.PHONY: build2
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
-	
+
+.PHONY: build3
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 
 # --- 
 
+.PHONY: test
 test: check
 	$(TOX)
 	@$(DISPLAY_SEPARATOR)
@@ -200,6 +212,7 @@ upload_artifacts = @$(PRINTF) "Checking for path to upload artifacts..." ; \
 if [ -d $1 ] ; then \
 	$(PRINTF) "uploading.\n" ; \
 	$(CP) -r ./htmlcov $1 ; \
+	$(CP) lint_output.html $1 ; \
 else \
 	$(PRINTF) "skipping.\n" ; \
 fi
@@ -221,6 +234,7 @@ else \
 	exit 1 ; \
 fi \
 
+.PHONY: report
 report: check
 	@$(call checktest)
 	$(COVERAGE) report
@@ -239,6 +253,7 @@ endif
 
 # --- 
 
+.PHONY: danger
 danger: check
 	@$(PRINTF) "Running danger "
 ifdef CIRCLECI_DANGER_GITHUB_API_TOKEN
@@ -253,4 +268,16 @@ endif
 	
 # --- 
 
-ci: test report danger
+.PHONY: ci
+ci: test lint report danger
+
+# ---
+
+.PHONY: lint
+lint: check
+	@$(TOUCH) lint_output.txt
+	@$(PRINTF) "Running linter... "
+	@$(PYLINT) --rcfile=pylintrc ./pyconfig > lint_output.txt || :
+	@$(PRINTF) " done!\n"
+	@$(PRINTF) "Generated linter report: lint_output.txt\n"
+	@$(DISPLAY_SEPARATOR)
