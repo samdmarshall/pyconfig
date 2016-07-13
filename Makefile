@@ -212,7 +212,7 @@ upload_artifacts = @$(PRINTF) "Checking for path to upload artifacts..." ; \
 if [ -d $1 ] ; then \
 	$(PRINTF) "uploading.\n" ; \
 	$(CP) -r ./htmlcov $1 ; \
-	$(CP) lint_output.html $1 ; \
+	$(CP) lint_output.txt $1 ; \
 else \
 	$(PRINTF) "skipping.\n" ; \
 fi
