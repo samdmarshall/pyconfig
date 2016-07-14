@@ -19,8 +19,12 @@ def didModify(files_array)
 end
 
 # Warn when the build system files see changes
-build_files = ["Makefile", "Gemfile", "Dangerfile", "circle.yml", ".codeclimate.yml", "tox.ini"]
+build_files = ["Makefile", "Gemfile", "Dangerfile", "circle.yml", ".codeclimate.yml", "tox.ini", "pylintrc"]
 warn("Changes to build files") if didModify(build_files)
+
+# Warn when changing the requirements files
+req_files = ["requirements.txt", "setup.py"]
+warn("Changes to installation requirements files") if didModify(req_files)
 
 # Fail if changes to License or CoC
 special_files = ["LICENSE", "contributing.md", "contributing/code-of-conduct.md"]
