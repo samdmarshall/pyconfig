@@ -31,10 +31,10 @@
 import pyparsing
 from . import Constants
 
-def addLocnToTokens(s,l,t):
-    t['locn'] = l
-    substring = s[:l]
-    t['line'] = substring.count('\n') + 1
+def addLocnToTokens(string_value, location, token):
+    token['locn'] = location
+    substring = string_value[:location]
+    token['line'] = substring.count('\n') + 1
 
 # build setting Word definition
 _settingBody = pyparsing.alphanums+'_'
@@ -43,8 +43,8 @@ _buildSettingName = pyparsing.Word(_settingStart, _settingBody)
 
 _buildSettingName.setParseAction(addLocnToTokens)
 
-# 
-_directAssignment = pyparsing.Word(Constants._specialCase)
+#
+_directAssignment = pyparsing.Word(Constants._specialCase) # pylint: disable=protected-access
 
 _directAssignment.setParseAction(addLocnToTokens)
 

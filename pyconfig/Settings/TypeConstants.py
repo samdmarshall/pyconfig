@@ -497,7 +497,7 @@ ConstantLookupTable = {
     'USER_LIBRARY_DIR': str,
     'USE_HEADERMAP': bool,
     'USE_HEADER_SYMLINKS': bool,
-    'VALIDATE_PRODUCT': bool, 
+    'VALIDATE_PRODUCT': bool,
     'VALID_ARCHS': list,
     'VERSIONING_SYSTEM': str,
     'VERSION_INFO_BUILDER': str,
@@ -515,4 +515,4 @@ ConstantLookupTable = {
     'XCODE_VERSION_MINOR': str,
     'YACC': str,
     'YACCFLAGS': list,
-};
+}

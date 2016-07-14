@@ -46,33 +46,33 @@ class Logger(object):
         pass
 
     @staticmethod
-    def SetupLogger():
+    def setupLogger():
         Logger._internal_logger = logging.getLogger('com.pewpewthespells.py.logging_helper')
         Logger._internal_logger.setLevel(logging.INFO)
 
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.INFO)
 
         # create formatter
         formatter = logging.Formatter('[%(levelname)s]: %(message)s')
 
         # add formatter to ch
-        ch.setFormatter(formatter)
+        handler.setFormatter(formatter)
 
         # add ch to logger
-        Logger._internal_logger.addHandler(ch)
+        Logger._internal_logger.addHandler(handler)
 
     @staticmethod
     def isVerbose(verbose_logging=False):
         if Logger._internal_logger is None: # pragma: no cover
-            Logger.SetupLogger()
+            Logger.setupLogger()
         if not verbose_logging:
             Logger._internal_logger.setLevel(logging.WARNING)
 
     @staticmethod
     def isSilent(should_quiet=False):
         if Logger._internal_logger is None: # pragma: no cover
-            Logger.SetupLogger()
+            Logger.setupLogger()
         if should_quiet:
             logging_filter = logging.Filter(name='com.pewpewthespells.py.logging_helper.shut_up')
             Logger._internal_logger.addFilter(logging_filter)
@@ -80,5 +80,5 @@ class Logger(object):
     @staticmethod
     def write():
         if Logger._internal_logger is None: # pragma: no cover
-            Logger.SetupLogger()
+            Logger.setupLogger()
         return Logger._internal_logger

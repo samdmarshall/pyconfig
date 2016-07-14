@@ -32,18 +32,18 @@ from . import Constants
 from . import BaseKeyword
 
 class IncludeKeyword(BaseKeyword.BaseKeyword):
-    
+
     def __init__(self):
         super(IncludeKeyword, self).__init__()
         self.include_path = None
-    
+
     def __eq__(self, other): # pragma: no cover
         cmp_include = (self.include_path == other.include_path)
-        return (cmp_include)
-    
-    def consume(self, parsed_item=[]):
+        return cmp_include
+
+    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
         super(IncludeKeyword, self).consume(parsed_item)
-        self.include_path = self.consumePath(Constants._include, parsed_item)
+        self.include_path = self.consumePath(Constants._include, parsed_item) # pylint: disable=protected-access
 
     def serialize(self):
         serialized_string = ''

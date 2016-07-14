@@ -40,7 +40,7 @@ def ResolveLineType(line):
     elif line.startswith('#include'):
         type_ = Include.Include
     else:
-        offset = KeyValue.KeyValue.FindKeyValueAssignmentOffset(line, 0)
+        offset = KeyValue.KeyValue.findKeyValueAssignmentOffset(line, 0)
         if 0 < offset < len(line):
             type_ = KeyValue.KeyValue
     return type_

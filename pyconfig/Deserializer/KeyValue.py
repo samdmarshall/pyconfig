@@ -35,7 +35,7 @@ class KeyValue(XCLineItem.XCLineItem):
 
     def __init__(self, line):
         super(KeyValue, self).__init__(line)
-        offset = KeyValue.FindKeyValueAssignmentOffset(self.contents, 0)
+        offset = KeyValue.findKeyValueAssignmentOffset(self.contents, 0)
         self.__key = self.contents[:offset]
         self.__value = self.contents[offset+1:]
 
@@ -50,7 +50,8 @@ class KeyValue(XCLineItem.XCLineItem):
         return configs_match
 
     @classmethod
-    def FindKeyValueAssignmentOffset(cls, line, offset):
+    def findKeyValueAssignmentOffset(cls, line, offset):
+        result_offset = -1
         find_open_bracket = line.find('[')
         find_equals = line.find('=')
         new_offset = offset
@@ -61,24 +62,24 @@ class KeyValue(XCLineItem.XCLineItem):
                 find_close_bracket += 1
                 # found conditional bracket close
                 new_offset += find_close_bracket
-                return cls.FindKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
-            else: # pragma: no cover
-                return -1
+                result_offset = cls.findKeyValueAssignmentOffset(line[find_close_bracket:], new_offset)
         else:
             if find_equals != -1:
                 new_offset += find_equals
-            return new_offset
+            result_offset = new_offset
+        return result_offset
 
     def key(self):
         key = self.__key
+        result_key = key
         find_bracket = key.find('[')
         if find_bracket == -1:
             find_space = key.find(' ')
             if find_space != -1:
-                return key[:find_space]
-            return key # pragma: no cover
+                result_key = key[:find_space]
         else:
-            return key[:find_bracket]
+            result_key = key[:find_bracket]
+        return result_key
 
     def conditions(self):
         conditions = {}
@@ -86,7 +87,7 @@ class KeyValue(XCLineItem.XCLineItem):
         find_bracket = key.find('[')
         if find_bracket != -1:
             key_conditions_string = key[find_bracket:]
-            condition_strings = list(filter(lambda cond_string: cond_string != '' and cond_string != ' ', re.split(r'[\[|\]]', key_conditions_string)))
+            condition_strings = [cond_string for cond_string in re.split(r'[\[|\]]', key_conditions_string) if cond_string != '' and cond_string != ' ']
             for condition in condition_strings:
                 equals_offset = condition.find('=')
                 cond_key = condition[:equals_offset]
@@ -97,10 +98,11 @@ class KeyValue(XCLineItem.XCLineItem):
     def value(self):
         value = self.__value
         if len(value) == 0:
-            return ''
-        if value[0] == ' ':
-            value = value[1:]
-        comment_offset = value.find('//')
-        if comment_offset != -1: # pragma: no cover
-            value = value[:comment_offset]
+            value = ''
+        else:
+            if value[0] == ' ':
+                value = value[1:]
+            comment_offset = value.find('//')
+            if comment_offset != -1: # pragma: no cover
+                value = value[:comment_offset]
         return value

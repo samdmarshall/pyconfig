@@ -62,7 +62,7 @@ def findDuplicates(dictionary):
 def gatherAllVariables(dictionary):
     settings_set = set()
     snapshot_of_dict = list(dictionary.items())
-    for configuration, values in snapshot_of_dict:
+    for _configuration, values in snapshot_of_dict:
         for keyword in values.values():
             if keyword.substitutes:
                 settings_set.add(keyword.substitution_variable_name)
@@ -87,7 +87,7 @@ class Engine(object):
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else:
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
-                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\n\tPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line))
+                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\n\tPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line)) # pylint: disable=protected-access
 
     def runDuplicates(self):
         duplicate_results = findDuplicates(self.__namespace_table)

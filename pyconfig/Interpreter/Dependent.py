@@ -42,32 +42,32 @@ class DependentNode(object):
         flat_contents = list()
         starting_index = 0
         if len(contents):
-            if contents[0][0] == Constants._export:
+            if contents[0][0] == Constants._export: # pylint: disable=protected-access
                 flat_contents.append(contents[0])
                 starting_index = 1
         for item in contents[starting_index:]:
             flat_contents.extend(item)
         parsed_contents = list()
         for item in flat_contents:
-            ResolvedType = Resolver.ResolveKeywordType(item)
-            resolved_item = ResolvedType()
+            resolved_type_initializer = Resolver.ResolveKeywordType(item)
+            resolved_item = resolved_type_initializer()
             resolved_item.consume(item)
             parsed_contents.append(resolved_item)
         self.config = parsed_contents
         self.name = name
-    
+
     def __repr__(self): # pragma: no cover
         return self.name
 
     def filterContentsByType(self, class_type):
-        return list(filter(lambda node: type(node) == class_type, self.config))
-    
+        return [node for node in self.config if isinstance(node, class_type)]
+
     def exportPath(self):
         base_path = os.path.dirname(self.name)
         export_file = self.exportName()
         export_path = os.path.normpath(os.path.join(base_path, export_file))
         return export_path
-    
+
     def exportName(self):
         xcconfig_name = ''
         exported_name_info = None
@@ -82,19 +82,15 @@ class DependentNode(object):
             file_name = os.path.splitext(os.path.basename(self.name))[0]
             xcconfig_name = file_name + '.xcconfig'
         return xcconfig_name
-    
+
     def resolvePaths(self, graph):
-        found_included_configs = None
         config_includes_array = self.filterContentsByType(IncludeKeyword.IncludeKeyword)
         for parent_config in config_includes_array:
-            exported_name = parent_config.include_path
-            included_config_array = list(filter(lambda config: config.exportName() == exported_name, graph))
+            exported_name = parent_config.include_path # pylint: disable=cell-var-from-loop
+            included_config_array = [config for config in graph if config.exportName() == exported_name] # pylint: disable=cell-var-from-loop
             if len(included_config_array):
                 parent_config_in_graph = included_config_array[0]
                 parent_config_in_graph.children.add(self)
                 self.parents.add(parent_config_in_graph)
             else: # pragma: no cover
-                Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name)
-
-            
-            
+                Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name) # pylint: disable=cell-var-from-loop

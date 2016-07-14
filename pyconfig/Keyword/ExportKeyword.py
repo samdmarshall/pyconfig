@@ -32,18 +32,18 @@ from . import Constants
 from . import BaseKeyword
 
 class ExportKeyword(BaseKeyword.BaseKeyword):
-    
+
     def __init__(self):
         super(ExportKeyword, self).__init__()
         self.export_path = None
-    
+
     def __eq__(self, other): # pragma: no cover
         cmp_export = (self.export_path == other.export_path)
-        return (cmp_export)
-    
-    def consume(self, parsed_item=[]):
+        return cmp_export
+
+    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
         super(ExportKeyword, self).consume(parsed_item)
-        self.export_path = self.consumePath(Constants._export, parsed_item)
-    
+        self.export_path = self.consumePath(Constants._export, parsed_item) # pylint: disable=protected-access
+
     def serialize(self):
         return ''

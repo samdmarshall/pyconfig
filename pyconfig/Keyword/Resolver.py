@@ -35,9 +35,9 @@ from . import IncludeKeyword
 from . import SettingKeyword
 
 kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword,
-    Constants._include: IncludeKeyword.IncludeKeyword,
-    Constants._setting: SettingKeyword.SettingKeyword,
+    Constants._export: ExportKeyword.ExportKeyword, # pylint: disable=protected-access
+    Constants._include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
+    Constants._setting: SettingKeyword.SettingKeyword, # pylint: disable=protected-access
 }
 
 def ResolveKeywordType(parsed_keyword):

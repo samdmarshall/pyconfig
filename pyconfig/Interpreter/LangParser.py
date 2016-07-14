@@ -33,12 +33,14 @@ import pyparsing
 from .. import Keyword
 
 if sys.version_info >= (3, 0):
-    def unichr(c):
-        return chr(c)
-    def xrange(n):
-        return range(n)
+    def unichr(character): # pylint: disable=redefined-builtin
+        return chr(character)
+    def xrange(number): # pylint: disable=redefined-builtin
+        return range(number)
 
 unicodePrintables = u''.join(unichr(c) for c in xrange(65536) if not unichr(c).isspace())
+
+# pylint: disable=protected-access
 
 _commaSeparatedItem = pyparsing.Combine(                     \
     pyparsing.OneOrMore(                                     \
@@ -52,7 +54,7 @@ _commaSeparatedItem = pyparsing.Combine(                     \
 ).streamline()
 
 _genericCSVList = pyparsing.delimitedList(                                                  \
-    pyparsing.Optional( pyparsing.quotedString.copy() | _commaSeparatedItem, default="")    \
+    pyparsing.Optional(pyparsing.quotedString.copy() | _commaSeparatedItem, default="")     \
 )
 
 def KeywordWithDoubleQuotedParameter(keyword):
@@ -89,7 +91,7 @@ _bc_value = pyparsing.Group(                                                   \
     )                                                                          \
 )
 
-# 
+#
 _if_value = pyparsing.Word(pyparsing.alphanums)
 
 #

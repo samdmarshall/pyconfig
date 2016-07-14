@@ -60,17 +60,17 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         value = ''
         if len(statement) == 3:
             value = statement[2]
-        if configuration_name != Constants._specialCase:
+        if configuration_name != Constants._specialCase: # pylint: disable=protected-access
             self.configuration_values[configuration_name] = ' '.join(value)
         else:
             self.default_value = ' '.join(value)
 
     def consumeModifiers(self, modifiers):
         if len(modifiers):
-            if modifiers[0] == Constants._use:
+            if modifiers[0] == Constants._use: # pylint: disable=protected-access
                 self.substitutes = True
                 self.substitution_variable_name = modifiers[1]
-            if modifiers[-1] == Constants._inherits:
+            if modifiers[-1] == Constants._inherits: # pylint: disable=protected-access
                 self.inherits = True
 
     def consumeConfigurationAssignment(self, configurations):
@@ -83,8 +83,8 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
             raise ValueError('More than one type of assignment was used for the build setting "%s"' % self.build_setting_name)
 
         used_keyword_in_assignemnt = next(iter(keyword_used))
-        self.uses_if = (used_keyword_in_assignemnt == Constants._if)
-        self.uses_for = (used_keyword_in_assignemnt == Constants._for)
+        self.uses_if = (used_keyword_in_assignemnt == Constants._if) # pylint: disable=protected-access
+        self.uses_for = (used_keyword_in_assignemnt == Constants._for) # pylint: disable=protected-access
 
     def consumeIfStatement(self, statement):
         conditions = statement[1]
@@ -95,11 +95,11 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         conditional_key_value_string = ','.join(conditional_key_value_list)
         self.configuration_values[conditional_key_value_string] = assignment_value
 
-    def consume(self, parsed_item=[]):
+    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
         super(SettingKeyword, self).consume(parsed_item)
 
-        if parsed_item[0] != Constants._setting: # pragma: no cover
-            raise ValueError('SettingKeyword can only consume parsed build setting elements!')
+        if parsed_item[0] != Constants._setting:  # pylint: disable=protected-access
+            raise ValueError('SettingKeyword can only consume parsed build setting elements!') # pragma: no cover
 
         self.build_setting_name = parsed_item[1]
         self.consumeModifiers(parsed_item[2])
@@ -110,10 +110,10 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         for setting_configuration in configurations:
             configuration_type = setting_configuration[0]
 
-            if configuration_type == Constants._for:
+            if configuration_type == Constants._for: # pylint: disable=protected-access
                 self.consumeForStatement(setting_configuration)
 
-            if configuration_type == Constants._if:
+            if configuration_type == Constants._if: # pylint: disable=protected-access
                 self.consumeIfStatement(setting_configuration)
 
     def serializeInheritedValues(self):
@@ -124,7 +124,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 
     def isConfigurationCase(self):
         keys = list(self.configuration_values.keys())
-        return (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase)
+        return (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase) # pylint: disable=protected-access
 
     def serializeForStatement(self, key, value):
         serialize_string = ''
