@@ -29,7 +29,6 @@ fail("Do not modify the license or Code of Conduct") if didModify(special_files)
 # put labels on PRs
 fail("PR needs labels", sticky: true) if pr_labels.empty?
 
-
 # if we are on CI, then post the 
 username = ENV['CIRCLE_PROJECT_USERNAME']
 project_name = ENV['CIRCLE_PROJECT_REPONAME']
