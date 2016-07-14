@@ -58,6 +58,7 @@ UNAME_CMD := uname
 EXIT_CMD := exit
 TPUT_CMD := tput
 TR_CMD := tr
+PYLINT_CMD := pylint
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
@@ -84,6 +85,7 @@ UNAME := $(shell command -v $(UNAME_CMD) 2> /dev/null)
 EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
 TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
 TR := $(shell command -v $(TR_CMD) 2> /dev/null)
+PYLINT := $(shell command -v $(PYLINT_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
@@ -123,6 +125,7 @@ check:
 	$(call checkfor,$(PIP_CMD))
 	$(call checkfor,$(TOX_CMD))
 	$(call checkfor,$(COVERAGE_CMD))
+	$(call checkfor,$(PYLINT_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
 	@$(DISPLAY_SEPARATOR)
@@ -140,6 +143,7 @@ install-deps:
 	$(call pipinstall,$(PYPARSING))
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
+	$(call pipinstall,$(PYLINT_CMD))
 	@$(DISPLAY_SEPARATOR)
 	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
@@ -159,6 +163,7 @@ install-tools: check
 
 removeall = $(RM) -rdf
 cleanlocation = @$(FIND) $1 $2 -print0 | $(XARGS) -0 $(removeall)
+
 clean: check
 	@$(PRINTF) "Removing existing installation... "
 	@$(TOUCH) $(INSTALLED_FILES_RECORD)
@@ -170,6 +175,7 @@ clean: check
 	@$(removeall) .coverage
 	@$(removeall) ./htmlcov
 	@$(removeall) ./.eggs
+	$(call cleanlocation, ., -name ".DS_Store")
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
@@ -177,13 +183,13 @@ clean: check
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
-	
+
 build2: clean
 	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 	
 # --- 
-	
+
 build3: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
@@ -200,6 +206,7 @@ upload_artifacts = @$(PRINTF) "Checking for path to upload artifacts..." ; \
 if [ -d $1 ] ; then \
 	$(PRINTF) "uploading.\n" ; \
 	$(CP) -r ./htmlcov $1 ; \
+	$(CP) lint_output.txt $1 ; \
 else \
 	$(PRINTF) "skipping.\n" ; \
 fi
@@ -253,4 +260,18 @@ endif
 	
 # --- 
 
-ci: test report danger
+ci: test lint report danger
+
+# ---
+
+lint: check
+	@$(TOUCH) lint_output.txt
+	@$(PRINTF) "Running linter... "
+	@$(PYLINT) --rcfile=pylintrc ./pyconfig > lint_output.txt || :
+	@$(PRINTF) " done!\n"
+	@$(PRINTF) "Generated linter report: lint_output.txt\n"
+	@$(DISPLAY_SEPARATOR)
+
+# ---
+
+.PHONY: danger lint ci report test build3 build2 clean install-tools install-deps check
