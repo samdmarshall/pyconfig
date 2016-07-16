@@ -28,30 +28,24 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# this is the base class defintion for all of the pyconfig DSL keywords.
-## The majority of the functionality in this class is to say that we need
-## to subclass and over-ride the methods.
+# Original code taken from http://code.activestate.com/recipes/410692/
 
-class BaseKeyword(object):
+class Switch(object):
+    def __init__(self, value):
+        self.value = value
+        self.fall = False
 
-    def __init__(self):
-        self.__parsed_item = None
+    def __iter__(self):
+        """Return the match method once, then stop"""
+        yield self.match
+        raise StopIteration # pragma: no cover
 
-    def __eq__(self, other): # pylint: disable=no-self-use ; # pragma: no cover
-        raise Exception('Please subclass this class and implement this method')
-
-    def serialize(self): # pylint: disable=no-self-use ; # pragma: no cover
-        raise Exception('Please subclass this class and implement this method')
-
-    def consumePath(self, constant, parsed_item=list()): # pylint: disable=dangerous-default-value,no-self-use ; # pragma: no cover
-        result = None
-        if parsed_item[0] == constant:
-            result = parsed_item[1][1:-1]
+    def match(self, *args):
+        """Indicate whether or not to enter a case suite"""
+        result = False
+        if self.fall or not args:
+            result = True
+        elif self.value in args: # changed for v1.5, see below
+            self.fall = True
+            result = True
         return result
-
-    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value ; # pragma: no cover
-        self.__parsed_item = parsed_item
-
-    def deserialize(self, xcconfig_line=''): # pylint: disable=no-self-use ; # pragma: no cover
-        _unused = xcconfig_line
-        raise Exception('Please subclass this class and implement this method')

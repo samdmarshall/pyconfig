@@ -196,7 +196,7 @@ build3: clean
 
 # --- 
 
-test: check
+test: clean
 	$(TOX)
 	@$(DISPLAY_SEPARATOR)
 

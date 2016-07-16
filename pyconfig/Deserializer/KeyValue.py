@@ -29,7 +29,22 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
-from . import XCLineItem
+from .                   import XCLineItem
+from ..Helpers.Switch    import Switch
+
+def splitByConditions(conditions_string):
+    results_array = list()
+    conditions_string_array = re.split(r'[\[|\]]', conditions_string)
+    for condition in conditions_string_array:
+        for case in Switch(condition):
+            if case(''):
+                break
+            if case(' '):
+                break
+            if case():
+                results_array.append(condition)
+                break
+    return results_array
 
 class KeyValue(XCLineItem.XCLineItem):
 
@@ -87,8 +102,8 @@ class KeyValue(XCLineItem.XCLineItem):
         find_bracket = key.find('[')
         if find_bracket != -1:
             key_conditions_string = key[find_bracket:]
-            condition_strings = [cond_string for cond_string in re.split(r'[\[|\]]', key_conditions_string) if cond_string != '' and cond_string != ' ']
-            for condition in condition_strings:
+            condition_strings_array = splitByConditions(key_conditions_string)
+            for condition in condition_strings_array:
                 equals_offset = condition.find('=')
                 cond_key = condition[:equals_offset]
                 cond_value = condition[equals_offset+1:]
