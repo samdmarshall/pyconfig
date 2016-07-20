@@ -25,7 +25,6 @@ exclude_paths:
 - examples/
 - tests/
 - tools/
-- hidden-files/
 - "*.md"
 - "*.yml"
 - "*.ini"
