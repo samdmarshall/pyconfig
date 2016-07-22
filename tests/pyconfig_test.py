@@ -80,6 +80,9 @@ class pyconfigTestCases(unittest.TestCase):
 
     def test_include_required(self):
         LoadTestDirectoryAndTestWithName(self, 'include/required', 'test')
+
+    def test_include_legacy(self):
+        LoadTestDirectoryAndTestWithName(self, 'include/legacy', 'test')
         
     def test_inherits(self):
         LoadTestDirectoryAndTestWithName(self, 'inherits', 'test')

@@ -38,6 +38,7 @@ kTypeResolver = {
     Constants._export: ExportKeyword.ExportKeyword, # pylint: disable=protected-access
     Constants._optional_include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
     Constants._required_include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
+    Constants._include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
     Constants._setting: SettingKeyword.SettingKeyword, # pylint: disable=protected-access
 }
 
