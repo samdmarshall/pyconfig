@@ -74,9 +74,6 @@ class DependentNode(object):
         export_info_array = self.filterContentsByType(ExportKeyword.ExportKeyword)
         if len(export_info_array):
             exported_name_info = export_info_array[0]
-            if len(export_info_array) > 1: # pragma: no cover
-                Logger.write().error('More than one export keyword per file in %s !' % self.name)
-        if exported_name_info:
             xcconfig_name = exported_name_info.export_path
         else:
             file_name = os.path.splitext(os.path.basename(self.name))[0]
@@ -92,5 +89,5 @@ class DependentNode(object):
                 parent_config_in_graph = included_config_array[0]
                 parent_config_in_graph.children.add(self)
                 self.parents.add(parent_config_in_graph)
-            elif not parent_config.optional: # pragma: no cover
+            elif not parent_config.optional:
                 Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name) # pylint: disable=cell-var-from-loop
