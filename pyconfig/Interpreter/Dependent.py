@@ -56,9 +56,6 @@ class DependentNode(object):
         self.config = parsed_contents
         self.name = name
 
-    def __repr__(self): # pragma: no cover
-        return self.name
-
     def filterContentsByType(self, class_type):
         return [node for node in self.config if isinstance(node, class_type)]
 
@@ -80,14 +77,20 @@ class DependentNode(object):
             xcconfig_name = file_name + '.xcconfig'
         return xcconfig_name
 
+    def findParents(self, graph, current_config):
+        included_configs = list()
+        for config in graph:
+            if config.exportName() == current_config.include_path:
+                included_configs.append(config)
+        return included_configs
+
     def resolvePaths(self, graph):
         config_includes_array = self.filterContentsByType(IncludeKeyword.IncludeKeyword)
         for parent_config in config_includes_array:
-            exported_name = parent_config.include_path # pylint: disable=cell-var-from-loop
-            included_config_array = [config for config in graph if config.exportName() == exported_name] # pylint: disable=cell-var-from-loop
+            included_config_array = self.findParents(graph, parent_config)
             if len(included_config_array):
                 parent_config_in_graph = included_config_array[0]
                 parent_config_in_graph.children.add(self)
                 self.parents.add(parent_config_in_graph)
             elif not parent_config.optional:
-                Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name) # pylint: disable=cell-var-from-loop
+                Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % parent_config.include_path)

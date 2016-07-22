@@ -38,7 +38,7 @@ class Include(XCLineItem.XCLineItem):
     def __eq__(self, other):
         return super(Include, self).__eq__(other)
 
-#    def includePath(self, base_path): # pragma: no cover
+#    def includePath(self, base_path):
 #        quote_start = self.contents.find('"') + 1
 #        path = self.contents[quote_start:]
 #        quote_end = path.find('"')
