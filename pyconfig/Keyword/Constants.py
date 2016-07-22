@@ -30,15 +30,17 @@
 
 # pylint: disable=bad-whitespace
 
-_setting         = 'setting'
-_use             = 'use'
-_for             = 'for'
-_if              = 'if'
-_include         = 'include'
-_inherits        = 'inherits'
-_and             = 'and'
-_openBrace       = '{'
-_closeBrace      = '}'
-_specialCase     = '*'
-_equals          = '='
-_export          = 'export'
+_setting          = 'setting'
+_use              = 'use'
+_for              = 'for'
+_if               = 'if'
+_include          = 'include'
+_optional_include = '?'+_include
+_required_include = '!'+_include
+_inherits         = 'inherits'
+_and              = 'and'
+_openBrace        = '{'
+_closeBrace       = '}'
+_specialCase      = '*'
+_equals           = '='
+_export           = 'export'

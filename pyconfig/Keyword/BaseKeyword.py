@@ -45,7 +45,7 @@ class BaseKeyword(object):
 
     def consumePath(self, constant, parsed_item=list()): # pylint: disable=dangerous-default-value,no-self-use ; # pragma: no cover
         result = None
-        if parsed_item[0] == constant:
+        if parsed_item[0].endswith(constant):
             result = parsed_item[1][1:-1]
         return result
 
