@@ -74,9 +74,15 @@ class pyconfigTestCases(unittest.TestCase):
         
     def test_export_without_keyword(self):
         LoadTestDirectoryAndTestWithName(self, 'export/without-export', 'test')
-        
-    def test_include(self):
-        LoadTestDirectoryAndTestWithName(self, 'include', 'test')
+
+    def test_include_optional(self):
+        LoadTestDirectoryAndTestWithName(self, 'include/optional', 'test')
+
+    def test_include_required(self):
+        LoadTestDirectoryAndTestWithName(self, 'include/required', 'test')
+
+    def test_include_legacy(self):
+        LoadTestDirectoryAndTestWithName(self, 'include/legacy', 'test')
         
     def test_inherits(self):
         LoadTestDirectoryAndTestWithName(self, 'inherits', 'test')

@@ -72,7 +72,9 @@ def KeywordWithDoubleQuotedParameter(keyword):
 _export = KeywordWithDoubleQuotedParameter(Keyword.Constants._export)
 
 # include "other.xcconfig" # with optional trailing comment
-_include = KeywordWithDoubleQuotedParameter(Keyword.Constants._include)
+_include = KeywordWithDoubleQuotedParameter(Keyword.Constants._required_include) \
+         ^ KeywordWithDoubleQuotedParameter(Keyword.Constants._optional_include) \
+         ^ KeywordWithDoubleQuotedParameter(Keyword.Constants._include)
 
 # parsing conditional statement expressions
 _conditionalExpr = pyparsing.Group(                             \

@@ -36,6 +36,7 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
     def __init__(self):
         super(IncludeKeyword, self).__init__()
         self.include_path = None
+        self.optional = False
 
     def __eq__(self, other): # pragma: no cover
         cmp_include = (self.include_path == other.include_path)
@@ -43,10 +44,14 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
 
     def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
         super(IncludeKeyword, self).consume(parsed_item)
+        self.optional = parsed_item[0].startswith('?')
         self.include_path = self.consumePath(Constants._include, parsed_item) # pylint: disable=protected-access
 
     def serialize(self):
         serialized_string = ''
+        include_type_string = ''
+        if self.optional:
+            include_type_string += '?'
         if self.include_path:
-            serialized_string += '#include "'+self.include_path+'"\n'
+            serialized_string += '#include'+include_type_string+' "'+self.include_path+'"\n'
         return serialized_string

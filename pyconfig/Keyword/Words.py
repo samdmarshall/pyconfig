@@ -36,6 +36,8 @@ def addLocnToTokens(string_value, location, token):
     substring = string_value[:location]
     token['line'] = substring.count('\n') + 1
 
+_include = pyparsing.Word('?!', Constants._include) # pylint: disable=protected-access
+
 # build setting Word definition
 _settingBody = pyparsing.alphanums+'_'
 _settingStart = pyparsing.alphas
