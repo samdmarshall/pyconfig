@@ -32,18 +32,24 @@ import re
 from .                   import XCLineItem
 from ..Helpers.Switch    import Switch
 
+def shouldAppendConditionItem(condition):
+    result = False
+    for case in Switch(condition):
+        if case(''):
+            break
+        if case(' '):
+            break
+        if case():
+            result = True
+            break
+    return result
+
 def splitByConditions(conditions_string):
     results_array = list()
     conditions_string_array = re.split(r'[\[|\]]', conditions_string)
     for condition in conditions_string_array:
-        for case in Switch(condition):
-            if case(''):
-                break
-            if case(' '):
-                break
-            if case():
-                results_array.append(condition)
-                break
+        if shouldAppendConditionItem(condition):
+            results_array.append(condition)
     return results_array
 
 class KeyValue(XCLineItem.XCLineItem):

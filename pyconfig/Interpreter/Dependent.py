@@ -88,9 +88,9 @@ class DependentNode(object):
         for parent_config in config_includes_array:
             exported_name = parent_config.include_path # pylint: disable=cell-var-from-loop
             included_config_array = [config for config in graph if config.exportName() == exported_name] # pylint: disable=cell-var-from-loop
-            if len(included_config_array) or parent_config.optional:
+            if len(included_config_array):
                 parent_config_in_graph = included_config_array[0]
                 parent_config_in_graph.children.add(self)
                 self.parents.add(parent_config_in_graph)
-            else: # pragma: no cover
+            elif not parent_config.optional: # pragma: no cover
                 Logger.write().warning('Could not find an included pyconfig with export name of "%s"!' % exported_name) # pylint: disable=cell-var-from-loop
