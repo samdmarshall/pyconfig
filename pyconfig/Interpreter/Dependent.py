@@ -35,6 +35,13 @@ from ..Keyword             import Constants
 from ..Keyword             import Resolver
 from ..Helpers.Logger      import Logger
 
+def findParents(graph, current_config):
+    included_configs = list()
+    for config in graph:
+        if config.exportName() == current_config.include_path:
+            included_configs.append(config)
+    return included_configs
+
 class DependentNode(object):
     def __init__(self, contents, name):
         self.parents = set()
@@ -77,17 +84,10 @@ class DependentNode(object):
             xcconfig_name = file_name + '.xcconfig'
         return xcconfig_name
 
-    def findParents(self, graph, current_config):
-        included_configs = list()
-        for config in graph:
-            if config.exportName() == current_config.include_path:
-                included_configs.append(config)
-        return included_configs
-
     def resolvePaths(self, graph):
         config_includes_array = self.filterContentsByType(IncludeKeyword.IncludeKeyword)
         for parent_config in config_includes_array:
-            included_config_array = self.findParents(graph, parent_config)
+            included_config_array = findParents(graph, parent_config)
             if len(included_config_array):
                 parent_config_in_graph = included_config_array[0]
                 parent_config_in_graph.children.add(self)
