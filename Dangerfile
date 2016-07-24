@@ -1,17 +1,17 @@
 # Sometimes it's a README fix, or something like that - which isn't relevant for
 # including in a project's CHANGELOG for example
-declared_trivial = pr_title.include? "#trivial"
+declared_trivial = github.pr_title.include? "#trivial"
 
 # Make it more obvious that a PR is a work in progress and shouldn't be merged yet
-warn("PR is classed as Work in Progress") if pr_title.include? "[WIP]"
+warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 
 # Warn when there is a big PR
-warn("Big PR") if lines_of_code > 75
+warn("Big PR") if git.lines_of_code > 75
 
 def didModify(files_array)
   did_modify_files = false
   files_array.each do |file_name|
-    if modified_files.include?(file_name) || deleted_files.include?(file_name)
+    if git.modified_files.include?(file_name) || git.deleted_files.include?(file_name)
       did_modify_files = true
     end
   end
@@ -31,7 +31,7 @@ special_files = ["LICENSE", "contributing.md", "contributing/code-of-conduct.md"
 fail("Do not modify the license or Code of Conduct") if didModify(special_files)
 
 # put labels on PRs
-fail("PR needs labels", sticky: true) if pr_labels.empty?
+fail("PR needs labels", sticky: true) if github.pr_labels.empty?
 
 # if we are on CI, then post the 
 username = ENV['CIRCLE_PROJECT_USERNAME']
