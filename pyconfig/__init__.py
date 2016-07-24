@@ -28,7 +28,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# pylint: unused-import
-from .main        import main
+from .main        import main # pylint: disable=unused-import
 from .version     import __version__ as PYCONFIG_VERSION
 __version__ = PYCONFIG_VERSION
