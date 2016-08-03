@@ -28,40 +28,21 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
-from ..Helpers.Logger import Logger
+import subprocess
 
-def locateWorkingDirectoryForPath(file_path):
-    working_path = file_path
-    if os.path.isfile(file_path):
-        fs_path = os.path.dirname(file_path)
-        working_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
-    return working_path
+try:
+    from subprocess import DEVNULL
+except ImportError:
+    import os
+    DEVNULL = open(os.devnull, 'wb')
 
-def locateDirectories(root, dirs):
-    found_configs = list()
-    for dir_name in dirs:
-        relative_path = os.path.join(root, dir_name)
-        found_configs.extend(locateConfigs(relative_path))
-    return found_configs
-
-def locateFiles(root, files):
-    found_configs = list()
-    for file_name in files:
-        relative_path = os.path.join(root, file_name)
-        full_path = os.path.normpath(os.path.join(os.getcwd(), relative_path))
-        _name, extension = os.path.splitext(file_name)
-        if extension == '.pyconfig':
-            Logger.write().info('Found %s' % relative_path)
-            found_configs.append(full_path)
-    return found_configs
-
-def locateConfigs(fs_path):
-    found_configs = list()
-    for root, dirs, files in os.walk(fs_path, followlinks=True):
-        found_configs.extend(locateDirectories(root, dirs))
-        found_configs.extend(locateFiles(root, files))
-    if not os.path.isdir(fs_path):
-        full_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
-        found_configs.append(full_path)
-    return found_configs
+def Invoke(call_args, shell_state=False):
+    error = 0
+    output = ''
+    try:
+        output = subprocess.check_output(call_args, shell=shell_state, stderr=DEVNULL)
+        error = 0
+    except subprocess.CalledProcessError as exception:
+        output = str(exception.output)
+        error = exception.returncode
+    return (output, error)
