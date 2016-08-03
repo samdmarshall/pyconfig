@@ -72,6 +72,12 @@ def main(argv=sys.argv[1:]):
         action='store_true'
     )
     parser.add_argument(
+        '--scm-info',
+        help='Generate an additional xcconfig that contains metadata about the current source control environment',
+        choices=['detect', 'git', 'svn', 'hg'],
+        action='store'
+    )
+    parser.add_argument(
         '--quiet',
         help='Silences all logging output',
         default=False,
@@ -113,6 +119,16 @@ def main(argv=sys.argv[1:]):
     ## of the files used in this pass. The intended behavior here is to raise any
     ## issues that could impact the outcome of a particular build.
     analyzer_engine = Engine.Engine()
+
+    # detect if there was an option to generate data from the SCM used for this repo
+    ## if there is, then it should be inserted at the head of the list of files and 
+    ## be written first. 
+    
+    # TODO: I will have to think about how to filter and detect for use of the SCM 
+    ## variables so that the include can automatically be added during serialization.
+    if args.scm_info is not None:
+        Logger.write().info('SCM method: %s' % args.scm_info)
+
     # iterate through the ordered nodes
     for current_config in mapped_nodes:
         # unless the `--no-analyze` flag was passed, the analysis engine should be
