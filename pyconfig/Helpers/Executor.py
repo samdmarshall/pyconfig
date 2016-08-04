@@ -28,21 +28,21 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import sys
 import subprocess
 
 try:
     from subprocess import DEVNULL
-except ImportError:
+except ImportError: # pragma: no cover
     import os
     DEVNULL = open(os.devnull, 'wb')
 
 def Invoke(call_args, shell_state=False):
     error = 0
-    output = ''
+    output = None
     try:
-        output = subprocess.check_output(call_args, shell=shell_state, stderr=DEVNULL)
-        error = 0
+        output = subprocess.check_output(call_args, shell=shell_state, stderr=DEVNULL).decode(sys.stdout.encoding)
     except subprocess.CalledProcessError as exception:
-        output = str(exception.output)
+        output = exception.output.decode(sys.stdout.encoding)
         error = exception.returncode
     return (output, error)
