@@ -98,27 +98,27 @@ def InfoFromMercurial(detect_mode=False):
 
     output, error = Executor.Invoke(('hg', 'identify', '--branch'))
     if error != 0 and detect_mode is False:
-            should_append_data = False
-            Logger.write().error('Error fetching branch name: "%s"' % output)
+        should_append_data = False
+        Logger.write().error('Error fetching branch name: "%s"' % output)
     branch_name = output.strip('\n')
 
     output, error = Executor.Invoke(('hg', 'identify', '--id'))
     if error != 0 and detect_mode is False:
-            should_append_data = False
-            Logger.write().error('Error fetching commit hash: "%s"' % output)
+        should_append_data = False
+        Logger.write().error('Error fetching commit hash: "%s"' % output)
     commit_hash = output.strip('\n')
 
     if should_append_data is True:
-            content_string += 'setting PYCONIFG_HG_BRANCH_NAME {\n'\
-                              '    for * {\n'\
-                              '        '+branch_name+'\n'\
-                              '    }\n'\
-                              '}\n'\
-                              'setting PYCONFIG_HG_COMMIT_HASH {\n'\
-                              '    for * {\n'\
-                              '        '+commit_hash+'\n'\
-                              '    }\n'\
-                              '}\n'
+        content_string += 'setting PYCONIFG_HG_BRANCH_NAME {\n'\
+                          '    for * {\n'\
+                          '        '+branch_name+'\n'\
+                          '    }\n'\
+                          '}\n'\
+                          'setting PYCONFIG_HG_COMMIT_HASH {\n'\
+                          '    for * {\n'\
+                          '        '+commit_hash+'\n'\
+                          '    }\n'\
+                          '}\n'
     return content_string
 
 def GenerateSCMContents(scm_type='detect'):
