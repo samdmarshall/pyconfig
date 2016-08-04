@@ -68,27 +68,57 @@ def InfoFromSVN(detect_mode=False):
     content_string = ''
     should_append_data = True
 
-    # TODO: walk up the directory tree to find the root
+    working_dir = os.getcwd()
+    svn_root_dir = Searcher.LocateParentWithPath(working_dir, '.svn')
 
-    output, error = Executor.Invoke(('svnversion'))
-    if error != 0 and detect_mode is False:
-        should_append_data = False
-        Logger.write().error('Error fetching svn revision: "%s"' % output)
-    revision_number = output.strip('\n')
+    if svn_root_dir is not None:
+        os.chdir(svn_root_dir)
 
-    if should_append_data is True:
-        content_string += 'setting PYCONFIG_SVN_REVISION {\n'\
-                          '    for * {\n'\
-                          '        '+revision_number+'\n'\
-                          '    }\n'\
-                          '}\n'
+        output, error = Executor.Invoke(('svnversion'))
+        if error != 0 and detect_mode is False:
+            should_append_data = False
+            Logger.write().error('Error fetching svn revision: "%s"' % output)
+        revision_number = output.strip('\n')
+
+        os.chdir(working_dir)
+
+        if should_append_data is True:
+            content_string += 'setting PYCONFIG_SVN_REVISION {\n'\
+                              '    for * {\n'\
+                              '        '+revision_number+'\n'\
+                              '    }\n'\
+                              '}\n'
     return content_string
 
 def InfoFromMercurial(detect_mode=False):
     content_string = ''
 
-    # TODO: implement this
+    content_string = ''
+    should_append_data = True
 
+    output, error = Executor.Invoke(('hg', 'identify', '--branch'))
+    if error != 0 and detect_mode is False:
+            should_append_data = False
+            Logger.write().error('Error fetching branch name: "%s"' % output)
+    branch_name = output.strip('\n')
+
+    output, error = Executor.Invoke(('hg', 'identify', '--id'))
+    if error != 0 and detect_mode is False:
+            should_append_data = False
+            Logger.write().error('Error fetching commit hash: "%s"' % output)
+    commit_hash = output.strip('\n')
+
+    if should_append_data is True:
+            content_string += 'setting PYCONIFG_HG_BRANCH_NAME {\n'\
+                              '    for * {\n'\
+                              '        '+branch_name+'\n'\
+                              '    }\n'\
+                              '}\n'\
+                              'setting PYCONFIG_HG_COMMIT_HASH {\n'\
+                              '    for * {\n'\
+                              '        '+commit_hash+'\n'\
+                              '    }\n'\
+                              '}\n'
     return content_string
 
 def GenerateSCMContents(scm_type='detect'):

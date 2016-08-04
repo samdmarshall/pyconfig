@@ -31,6 +31,15 @@
 import os
 from ..Helpers.Logger import Logger
 
+def LocateParentWithPath(start_file_path, parent_item):
+    parent_path = start_file_path
+    search_file_path = os.path.join(start_file_path, parent_item)
+    if start_file_path == '/':
+        parent_path = None
+    if os.path.isdir(search_file_path) is False and parent_path is not None:
+        parent_path = LocateParentWithPath(os.path.dirname(start_file_path), parent_item)
+    return parent_path
+
 def locateWorkingDirectoryForPath(file_path):
     working_path = file_path
     if os.path.isfile(file_path):
