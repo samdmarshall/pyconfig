@@ -35,6 +35,9 @@ from ..Helpers.Switch import Switch
 from ..Helpers        import Executor
 from ..Helpers.Logger import Logger
 
+SCM_DEFAULT_EXPORT_NAME = 'scm-version'
+SCM_NODE_NAME = 'SCM Information'
+
 def InfoFromGit(detect_mode=False):
     content_string = ''
     should_append_data = True
@@ -149,12 +152,12 @@ def CreateNodeForSCM(scm_type='detect', file_path=''):
     original_dir = os.getcwd()
     os.chdir(working_dir)
 
-    scm_contents = 'export "scm-versions.xcconfig"\n'
+    scm_contents = 'export "'+SCM_DEFAULT_EXPORT_NAME+'.xcconfig"\n'
     scm_contents += GenerateSCMContents(scm_type)
 
     os.chdir(original_dir)
 
-    scm_output_path = os.path.join(working_dir, 'scm-version.pyconfig')
+    scm_output_path = os.path.join(working_dir, SCM_NODE_NAME)
 
     node = Consumer.CreateNodeFromString(scm_output_path, scm_contents)
 

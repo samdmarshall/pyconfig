@@ -28,11 +28,13 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
 from ..Settings           import TypeConstants
 from ..Settings           import Builtin
 from ..Settings           import Runtime
 from ..Keyword            import SettingKeyword
 from ..Helpers.Logger     import Logger
+from ..SCM                import SCM
 
 def findPreviousDefinition(kv_array, index, setting_key):
     previous_definition_indexes = list()
@@ -103,7 +105,8 @@ class Engine(object):
             Logger.write().warning('No definition for variable "%s"' % key)
 
     def process(self, configuration):
-        Logger.write().info('Analyzing %s ...' % configuration.name)
-        self.runInitializer(configuration)
-        self.runDuplicates()
-        self.runMissing()
+        if os.path.basename(configuration.name) != SCM.SCM_NODE_NAME:
+            Logger.write().info('Analyzing %s ...' % configuration.name)
+            self.runInitializer(configuration)
+            self.runDuplicates()
+            self.runMissing()
