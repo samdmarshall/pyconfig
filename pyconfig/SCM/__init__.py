@@ -27,32 +27,3 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
-
-from .                 import LangParser
-from .                 import Dependent
-from ..Helpers.Logger  import Logger
-
-def CreateNodeFromString(config_name="", config_contents=""):
-    # now parse the file's contents
-    parsed_contents = LangParser._config.parseString(config_contents) # pylint: disable=protected-access
-
-    node = Dependent.DependentNode(parsed_contents, config_name)
-
-    return node
-
-def CreateGraphNodes(pyconfig_path_list=list()): # pylint: disable=dangerous-default-value
-    parsed_configs = set()
-
-    for pyconfig_file_path in pyconfig_path_list:
-        pyconfig_file = open(pyconfig_file_path, 'r')
-
-        pyconfig_contents = pyconfig_file.read()
-        pyconfig_file.close()
-
-        Logger.write().info('Parsing %s ...' % pyconfig_file_path)
-
-        node = CreateNodeFromString(pyconfig_file.name, pyconfig_contents)
-
-        parsed_configs.add(node)
-
-    return parsed_configs

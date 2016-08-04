@@ -48,6 +48,7 @@ setup(
         'pyconfig/Keyword',
         'pyconfig/Serializer',
         'pyconfig/Settings',
+        'pyconfig/SCM',
     ],
     entry_points = { 
         'console_scripts': [ 'pyconfig = pyconfig:main' ] 

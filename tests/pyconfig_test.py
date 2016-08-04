@@ -118,5 +118,20 @@ class pyconfigTestCases(unittest.TestCase):
     def test_flags_scheme_name(self):
         LoadTestDirectoryAndTestWithName(self, 'flags/scheme name', 'test', ['--scheme', 'MyAppDebug'])
 
+    def test_scm_info_git(self):
+        LoadTestDirectoryAndTestWithName(self, 'scm-info/git', 'test', ['--scm-info=git'])
+
+    def test_scm_info_svn(self):
+        LoadTestDirectoryAndTestWithName(self, 'scm-info/svn', 'test', ['--scm-info=svn'])
+
+    def test_scm_info_hg(self):
+        LoadTestDirectoryAndTestWithName(self, 'scm-info/hg', 'test', ['--scm-info=hg'])
+
+    def test_scm_info_detect(self):
+        test_pyconfig_path_sub = 'scm-info/git'
+        test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
+        direct_file_path = os.path.join(test_pyconfig_path, 'test.pyconfig')
+        LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test', ['--scm-info=detect', direct_file_path], True)
+
 if __name__ == '__main__':
     unittest.main()

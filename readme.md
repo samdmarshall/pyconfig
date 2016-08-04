@@ -19,7 +19,6 @@ This tool is built and tested against Python 2.7.10 and 3.5.0.
    Module | Version
 ----------|-----------
 pyparsing | >=2.0.3
- argparse | >=1.1
 
 Note: All of these modules come as part of the system Python installation for OS X (which is 2.7.10 as of 10.11.5), but you will have to install them yourself if necessary on other systems. These modules can be accquired through `pip install`.
 
@@ -50,13 +49,14 @@ To use **pyconfig** to generate an `.xcconfig` file, you will have to pass it a 
 There are a number of flags that can be passed to modify the behavior of **pyconfig**:
 
    Flags | Usage
-------------------|-----------------------------------------------------------
-`--version`       | Displays the version of **pyconfig** and exits
-`--scheme <name>` | Add additional variable defined as `SCHEME_NAME = <name>`
-`--no-analyze`    | Skip the analysis step of processing the `.pyconfig` files
-`--dry-run`       | Do not write any output files
-`--quiet`         | Silences all logging output
-`--verbose`       | Logs additional information
+-------------------|-----------------------------------------------------------
+`--version`        | Displays the version of **pyconfig** and exits
+`--scheme <name>`  | Add additional variable defined as `SCHEME_NAME = <name>`
+`--no-analyze`     | Skip the analysis step of processing the `.pyconfig` files
+`--dry-run`        | Do not write any output files
+`--quiet`          | Silences all logging output
+`--verbose`        | Logs additional information
+`--scm-info <type>`| Write an additional `.xcconfig` file that contains information from the source control management software for versioning
 
 
 ## Syntax

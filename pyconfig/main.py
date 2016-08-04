@@ -37,6 +37,7 @@ from .Graph           import Grapher
 from .Helpers.Logger  import Logger
 from .Serializer      import Serializer
 from .Analyzer        import Engine
+from .SCM             import SCM
 
 # Main
 def main(argv=sys.argv[1:]):
@@ -72,6 +73,12 @@ def main(argv=sys.argv[1:]):
         action='store_true'
     )
     parser.add_argument(
+        '--scm-info',
+        help='Generate an additional xcconfig that contains metadata about the current source control environment',
+        choices=['detect', 'git', 'svn', 'hg'],
+        action='store'
+    )
+    parser.add_argument(
         '--quiet',
         help='Silences all logging output',
         default=False,
@@ -97,6 +104,16 @@ def main(argv=sys.argv[1:]):
     ## to a graph node object. Return all of the created nodes as a set.
     parsed_configs = Consumer.CreateGraphNodes(found_pyconfig_files)
 
+    # detect if there was an option to generate data from the SCM used for this repo
+    ## if there is, then it should be inserted into the list of files so that it can
+    ## be in graphed as part of the dependency tree.
+    if args.scm_info is not None:
+        Logger.write().info('SCM method: %s' % args.scm_info)
+
+        scm_node = SCM.CreateNodeForSCM(args.scm_info, args.file)
+
+        parsed_configs.add(scm_node)
+
     # after all the nodes have been constructed, the file paths that each node
     ## has should be resolved to the full file path. This is done as a for loop
     ## instead of a map() call to be compatible with Python 3.
@@ -113,6 +130,7 @@ def main(argv=sys.argv[1:]):
     ## of the files used in this pass. The intended behavior here is to raise any
     ## issues that could impact the outcome of a particular build.
     analyzer_engine = Engine.Engine()
+
     # iterate through the ordered nodes
     for current_config in mapped_nodes:
         # unless the `--no-analyze` flag was passed, the analysis engine should be

@@ -28,18 +28,21 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
 from ..Settings           import TypeConstants
 from ..Settings           import Builtin
 from ..Settings           import Runtime
 from ..Keyword            import SettingKeyword
 from ..Helpers.Logger     import Logger
+from ..SCM                import SCM
 
-def findPreviousDefinition(kv_array, index, setting_key):
+def findPreviousDefinition(kv_array, configuration, setting_key):
     previous_definition_indexes = list()
-    for _index, value in kv_array[:index]:
-        setting_values = list(value.keys())
-        if setting_key in setting_values:
-            previous_definition_indexes.append(value[setting_key])
+    for file_name, value in kv_array:
+        if file_name != configuration:
+            setting_values = list(value.keys())
+            if setting_key in setting_values:
+               previous_definition_indexes.append(file_name)
     return previous_definition_indexes
 
 def findDuplicates(dictionary):
@@ -49,11 +52,10 @@ def findDuplicates(dictionary):
     for configuration, values in snapshot_of_dict:
         setting_values = list(values.keys())
         duplicates = settings_set.copy()
-        duplicates.intersection(setting_values)
-        if len(duplicates):
-            current_index = snapshot_of_dict.index((configuration, values))
-            for item in duplicates:
-                previous_definitions = findPreviousDefinition(snapshot_of_dict, current_index, item)
+        shared_values = duplicates.intersection(setting_values)
+        if len(shared_values):
+            for item in shared_values:
+                previous_definitions = findPreviousDefinition(snapshot_of_dict, configuration, item)
                 previous_definitions.append(configuration)
                 results[item] = previous_definitions
         settings_set.update(setting_values)
@@ -103,7 +105,8 @@ class Engine(object):
             Logger.write().warning('No definition for variable "%s"' % key)
 
     def process(self, configuration):
-        Logger.write().info('Analyzing %s ...' % configuration.name)
-        self.runInitializer(configuration)
-        self.runDuplicates()
-        self.runMissing()
+        if os.path.basename(configuration.name) != SCM.SCM_NODE_NAME:
+            Logger.write().info('Analyzing %s ...' % configuration.name)
+            self.runInitializer(configuration)
+            self.runDuplicates()
+            self.runMissing()
