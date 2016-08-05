@@ -63,8 +63,32 @@ class DependentNode(object):
         self.config = parsed_contents
         self.name = name
 
+    def chainParents(self):
+        # needs to include the current name or we will never get any elements
+        chain = [self.name]
+        for parent in self.parents:
+            chain = parent.chainParents() + chain
+        return chain
+
+    def chainChildren(self):
+        # needs to include the current name or we will never get any elements
+        chain = [self.name]
+        for child in self.children:
+            chain = chain + child.chainChildren()
+        return chain
+
+    def importChain(self):
+        parents = self.chainParents()
+        children = self.chainChildren()
+        chain = parents + [self.name] + children
+        chain_set = set()
+        # uniquing the list that was created
+        chain = [link for link in chain if not (link in chain_set or chain_set.add(link))]
+        return chain
+
     def filterContentsByType(self, class_type):
-        return [node for node in self.config if isinstance(node, class_type)]
+        results = [node for node in self.config if isinstance(node, class_type)]
+        return results
 
     def exportPath(self):
         base_path = os.path.dirname(self.name)
