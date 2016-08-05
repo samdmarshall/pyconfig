@@ -14,6 +14,9 @@ engines:
     - 6d61aab6b7baaa5ba2544cf9dcd32fd3
     - fb54f72bab4fb1aa79dda0de0ae78c0e
     - f6ad549600e30311a4259411ec8758d3
+    - 4de4506264ea5173b969955f6285e129
+    - 7e389a457079fb8a08d9995bf27c54ba
+    - 4ecd2c66dc03e4c33c532392db1f2cfa
   FIXME:
     enabled: true
 
