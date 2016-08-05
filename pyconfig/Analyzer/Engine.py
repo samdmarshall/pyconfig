@@ -42,7 +42,7 @@ def findPreviousDefinition(kv_array, configuration, setting_key):
         if file_name != configuration:
             setting_values = list(value.keys())
             if setting_key in setting_values:
-               previous_definition_indexes.append(file_name)
+                previous_definition_indexes.append(file_name)
     return previous_definition_indexes
 
 def findDuplicates(dictionary):

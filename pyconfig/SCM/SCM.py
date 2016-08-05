@@ -38,20 +38,23 @@ from ..Helpers.Logger import Logger
 SCM_DEFAULT_EXPORT_NAME = 'scm-version'
 SCM_NODE_NAME = 'SCM Information'
 
+def DetectError(output, error, detect_mode, error_string):
+    should_append_data = True
+    if error != 0 and detect_mode is False: # pragma: no cover
+        should_append_data = False
+        Logger.write().error(error_string % output)
+    return should_append_data
+
 def InfoFromGit(detect_mode=False):
     content_string = ''
     should_append_data = True
 
     output, error = Executor.Invoke(('git', 'symbolic-ref', '--short', 'HEAD'))
-    if error != 0 and detect_mode is False: # pragma: no cover
-        should_append_data = False
-        Logger.write().error('Error fetching branch name: "%s"' % output)
+    should_append_data = DetectError(output, error, detect_mode, 'Error fetching branch name: "%s"')
     branch_name = output.strip('\n')
 
     output, error = Executor.Invoke(('git', 'rev-parse', '--short', branch_name))
-    if error != 0 and detect_mode is False: # pragma: no cover
-        should_append_data = False
-        Logger.write().error('Error fetching commit hash: "%s"' % output)
+    should_append_data = DetectError(output, error, detect_mode, 'Error fetching commit hash: "%s"')
     commit_hash = output.strip('\n')
 
     if should_append_data is True:
@@ -78,9 +81,7 @@ def InfoFromSVN(detect_mode=False):
         os.chdir(svn_root_dir)
 
         output, error = Executor.Invoke(('svnversion'))
-        if error != 0 and detect_mode is False: # pragma: no cover
-            should_append_data = False
-            Logger.write().error('Error fetching svn revision: "%s"' % output)
+        should_append_data = DetectError(output, error, detect_mode, 'Error fetching svn revision: "%s"')
         revision_number = output.strip('\n')
 
         os.chdir(working_dir)
@@ -100,15 +101,11 @@ def InfoFromMercurial(detect_mode=False):
     should_append_data = True
 
     output, error = Executor.Invoke(('hg', 'identify', '--branch'))
-    if error != 0 and detect_mode is False: # pragma: no cover
-        should_append_data = False
-        Logger.write().error('Error fetching branch name: "%s"' % output)
+    should_append_data = DetectError(output, error, detect_mode, 'Error fetching branch name: "%s"')
     branch_name = output.strip('\n')
 
     output, error = Executor.Invoke(('hg', 'identify', '--id'))
-    if error != 0 and detect_mode is False: # pragma: no cover
-        should_append_data = False
-        Logger.write().error('Error fetching commit hash: "%s"' % output)
+    should_append_data = DetectError(output, error, detect_mode, 'Error fetching revision number: "%s"')
     commit_hash = output.strip('\n')
 
     if should_append_data is True:
@@ -117,7 +114,7 @@ def InfoFromMercurial(detect_mode=False):
                           '        '+branch_name+'\n'\
                           '    }\n'\
                           '}\n'\
-                          'setting PYCONFIG_HG_COMMIT_HASH {\n'\
+                          'setting PYCONFIG_HG_REVISION {\n'\
                           '    for * {\n'\
                           '        '+commit_hash+'\n'\
                           '    }\n'\
