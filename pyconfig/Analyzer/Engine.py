@@ -89,12 +89,19 @@ class Engine(object):
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else:
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
-                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\n\tPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line)) # pylint: disable=protected-access
+                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\nPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line)) # pylint: disable=protected-access
 
-    def runDuplicates(self):
+    def runDuplicates(self, configuration):
         duplicate_results = findDuplicates(self.__namespace_table)
         for key, value in list(duplicate_results.items()):
-            Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str(value)))
+            for file_containing_dups in value:
+                if file_containing_dups == configuration.name:
+                    # if this is the current config, then ignore it and move on
+                    continue
+                if file_containing_dups in configuration.importChain():
+                    # only raise a warning if a duplicate build setting is declared
+                    ## in the same chain of imports.
+                    Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str([configuration.name, file_containing_dups])))
 
     def runMissing(self):
         variables = gatherAllVariables(self.__namespace_table)
@@ -102,11 +109,17 @@ class Engine(object):
         variables.difference_update(self.__runtime_table)
         variables.difference_update(self.__type_table.keys())
         for key in variables:
+            # note that this will announce for each time a config containing a
+            ## build setting that is not defined is used. meaning that this
+            ## will trigger multiple times for the same issue, this is intended
+            ## as each chain of imported configs should be treated as if used
+            ## for a separate build configuration
             Logger.write().warning('No definition for variable "%s"' % key)
 
     def process(self, configuration):
+        # ignore the SCM generated configuration file
         if os.path.basename(configuration.name) != SCM.SCM_NODE_NAME:
             Logger.write().info('Analyzing %s ...' % configuration.name)
             self.runInitializer(configuration)
-            self.runDuplicates()
+            self.runDuplicates(configuration)
             self.runMissing()
