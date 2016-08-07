@@ -32,7 +32,7 @@ from setuptools import setup
 
 setup(
     name = 'pyconfig',
-    version = '1.1',
+    version = '1.1.1',
     description = 'Tool for generating xcconfig files',
     url = 'https://github.com/samdmarshall/pyconfig',
     author = 'Samantha Marshall',

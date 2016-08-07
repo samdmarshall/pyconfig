@@ -18,12 +18,12 @@ This tool is built and tested against Python 2.7.10 and 3.5.0.
 
    Module | Version
 ----------|-----------
-pyparsing | >=2.0.3
+pyparsing | >=2.0.1
 
 Note: All of these modules come as part of the system Python installation for OS X (which is 2.7.10 as of 10.11.5), but you will have to install them yourself if necessary on other systems. These modules can be accquired through `pip install`.
 
 
-## Installation [![homebrew](https://img.shields.io/badge/homebrew-v1.1-brightgreen.svg)](https://github.com/samdmarshall/homebrew-formulae) [![homebrew](https://img.shields.io/badge/homebrew-HEAD-orange.svg)](https://github.com/samdmarshall/homebrew-formulae)
+## Installation [![homebrew](https://img.shields.io/badge/homebrew-v1.1.1-brightgreen.svg)](https://github.com/samdmarshall/homebrew-formulae) [![homebrew](https://img.shields.io/badge/homebrew-HEAD-orange.svg)](https://github.com/samdmarshall/homebrew-formulae)
 Via [homebrew](http://brew.sh):
 
 	$ brew update
