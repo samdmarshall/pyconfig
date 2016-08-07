@@ -260,7 +260,7 @@ endif
 	
 # --- 
 
-ci: test lint report danger
+ci: test lint report #danger
 
 # ---
 
