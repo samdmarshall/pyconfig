@@ -66,6 +66,7 @@ def gatherAllVariables(dictionary):
     snapshot_of_dict = list(dictionary.items())
     for _configuration, values in snapshot_of_dict:
         for keyword in values.values():
+            settings_set.add(keyword.build_setting_name)
             if keyword.substitutes:
                 settings_set.add(keyword.substitution_variable_name)
     return settings_set
@@ -78,6 +79,7 @@ class Engine(object):
         self.__builtin_table = Builtin.BuiltinLookupTable
         self.__runtime_table = Runtime.RuntimeLookupTable
         self.__namespace_table = dict()
+        self.__user_defined_table = set()
 
     def runInitializer(self, configuration):
         self.__namespace_table[configuration.name] = dict()
@@ -89,7 +91,11 @@ class Engine(object):
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else:
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
-                    Logger.write().warning('Found duplicate defintion for "%s" at %s:%i\nPrevious defintion at %s:%i' % (item.build_setting_name, configuration.name, item._BaseKeyword__parsed_item.line, configuration.name, previous_item._BaseKeyword__parsed_item.line)) # pylint: disable=protected-access
+                    # pylint: disable=protected-access
+                    print_string = 'Found duplicate defintion for "'+item.build_setting_name+'":\n'\
+                        '> '+configuration.name+':'+str(item._BaseKeyword__parsed_item.line)+'\n'\
+                        '> '+configuration.name+':'+str(previous_item._BaseKeyword__parsed_item.line)+''
+                    Logger.write().warning(print_string)
 
     def runDuplicates(self, configuration):
         duplicate_results = findDuplicates(self.__namespace_table)
@@ -101,13 +107,34 @@ class Engine(object):
                 if file_containing_dups in configuration.importChain():
                     # only raise a warning if a duplicate build setting is declared
                     ## in the same chain of imports.
-                    Logger.write().warning('Found duplicate definition for "%s" in files: %s' % (key, str([configuration.name, file_containing_dups])))
+                    print_message = 'Found duplicate definition for "'+key+'" in files:\n'\
+                        '> '+configuration.name+'\n'\
+                        '> '+file_containing_dups
+                    Logger.write().warning(print_message)
+
+    def gatherUserDefinedVariables(self):
+        self.__user_defined_table = set()
+        snapshot_of_dict = list(self.__namespace_table.items())
+        for _configuration, values in snapshot_of_dict:
+            for keyword in values.values():
+                build_setting_name = keyword.build_setting_name
+                is_builtin = build_setting_name in self.__builtin_table
+                is_runtime = build_setting_name in self.__runtime_table
+                is_known = build_setting_name in self.__type_table.keys()
+                if not is_builtin and not is_runtime and not is_known:
+                    self.__user_defined_table.add(build_setting_name)
 
     def runMissing(self):
         variables = gatherAllVariables(self.__namespace_table)
+        # remove any variables that are defined as part of the builtin set
         variables.difference_update(self.__builtin_table)
+        # remove any variables that are defined at runtime
         variables.difference_update(self.__runtime_table)
+        # remove any known variable that gets defined by Xcode
         variables.difference_update(self.__type_table.keys())
+        # remove variables specifically defined by the user
+        variables.difference_update(self.__user_defined_table)
+        # this leaves only variables that are not defined by Xcode or by the user
         for key in variables:
             # note that this will announce for each time a config containing a
             ## build setting that is not defined is used. meaning that this
@@ -122,4 +149,5 @@ class Engine(object):
             Logger.write().info('Analyzing %s ...' % configuration.name)
             self.runInitializer(configuration)
             self.runDuplicates(configuration)
+            self.gatherUserDefinedVariables()
             self.runMissing()
