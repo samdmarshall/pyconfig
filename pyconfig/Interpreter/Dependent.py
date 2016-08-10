@@ -70,17 +70,9 @@ class DependentNode(object):
             chain = parent.chainParents() + chain
         return chain
 
-    def chainChildren(self):
-        # needs to include the current name or we will never get any elements
-        chain = [self.name]
-        for child in self.children:
-            chain = chain + child.chainChildren()
-        return chain
-
     def importChain(self):
         parents = self.chainParents()
-        children = self.chainChildren()
-        chain = parents + [self.name] + children
+        chain = parents + [self.name] # don't include children as they will resolve on their own.
         chain_set = set()
         # uniquing the list that was created
         chain = [link for link in chain if not (link in chain_set or chain_set.add(link))]

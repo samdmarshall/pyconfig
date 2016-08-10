@@ -133,5 +133,8 @@ class pyconfigTestCases(unittest.TestCase):
         direct_file_path = os.path.join(test_pyconfig_path, 'test.pyconfig')
         LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test', ['--scm-info=detect', direct_file_path], True)
 
+    def test_debug_flag(self):
+        LoadTestDirectoryAndTestWithName(self, 'comments', 'test', ['--debug'])
+
 if __name__ == '__main__':
     unittest.main()

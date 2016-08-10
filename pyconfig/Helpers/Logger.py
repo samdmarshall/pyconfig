@@ -125,7 +125,7 @@ class Logger(object):
         if should_quiet:
             logging_filter = logging.Filter(name='com.pewpewthespells.py.logging_helper.shut_up')
             Logger._internal_logger.addFilter(logging_filter)
-        
+
     @staticmethod
     def write():
         if Logger._internal_logger is None: # pragma: no cover
