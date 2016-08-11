@@ -41,9 +41,10 @@ class ExportKeyword(BaseKeyword.BaseKeyword):
         cmp_export = (self.export_path == other.export_path)
         return cmp_export
 
-    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
+    def consume(self, parsed_item=None):
+        parsed_item = list() if parsed_item is None else parsed_item
         super(ExportKeyword, self).consume(parsed_item)
         self.export_path = self.consumePath(Constants._export, parsed_item) # pylint: disable=protected-access
 
-    def serialize(self):
-        return ''
+    def serialize(self): # pragma: no cover
+        raise Exception('The "export" keyword should never be serialized! Something has gone wrong!')

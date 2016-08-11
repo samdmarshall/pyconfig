@@ -40,7 +40,9 @@ def CreateNodeFromString(config_name="", config_contents=""):
 
     return node
 
-def CreateGraphNodes(pyconfig_path_list=list()): # pylint: disable=dangerous-default-value
+def CreateGraphNodes(pyconfig_path_list=None):
+    pyconfig_path_list = list() if pyconfig_path_list is None else pyconfig_path_list
+
     parsed_configs = set()
 
     for pyconfig_file_path in pyconfig_path_list:

@@ -28,6 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this is a list of build settings (by name) that are defined at runtime by the
+## Xcode build system. These should not be modified by the user and a warning or
+## error should be raised if that is the case.
 RuntimeLookupTable = [
     #
     'ALTERNATE_GROUP',

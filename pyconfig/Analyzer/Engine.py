@@ -91,10 +91,11 @@ class Engine(object):
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else:
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
-                    # pylint: disable=protected-access
-                    print_string = 'Found duplicate defintion for "'+item.build_setting_name+'":\n'\
-                        '> '+configuration.name+':'+str(item._BaseKeyword__parsed_item.line)+'\n'\
-                        '> '+configuration.name+':'+str(previous_item._BaseKeyword__parsed_item.line)+''
+                    current_line_number = str(item._BaseKeyword__parsed_item.line) # pylint: disable=protected-access
+                    previous_line_number = str(previous_item._BaseKeyword__parsed_item.line) # pylint: disable=protected-access
+                    print_string = 'Found duplicate defintion for "'+item.build_setting_name+'":'\
+                        '\n> '+configuration.name+':'+current_line_number+''\
+                        '\n> '+configuration.name+':'+previous_line_number+''
                     Logger.write().warning(print_string)
 
     def runDuplicates(self, configuration):
@@ -107,9 +108,9 @@ class Engine(object):
                 if file_containing_dups in configuration.importChain():
                     # only raise a warning if a duplicate build setting is declared
                     ## in the same chain of imports.
-                    print_message = 'Found duplicate definition for "'+key+'" in files:\n'\
-                        '> '+configuration.name+'\n'\
-                        '> '+file_containing_dups
+                    print_message = 'Found duplicate definition for "'+key+'" in files:'\
+                        '\n> '+configuration.name+'' \
+                        '\n> '+file_containing_dups
                     Logger.write().warning(print_message)
 
     def gatherUserDefinedVariables(self):
@@ -145,6 +146,7 @@ class Engine(object):
 
     def process(self, configuration):
         # ignore the SCM generated configuration file
+        Logger.write().debug('Analyzer is processing "%s"' % configuration.name)
         if os.path.basename(configuration.name) != SCM.SCM_NODE_NAME:
             Logger.write().info('Analyzing %s ...' % configuration.name)
             self.runInitializer(configuration)

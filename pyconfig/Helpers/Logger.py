@@ -93,10 +93,12 @@ class Logger(object):
     @staticmethod
     def setupLogger():
         Logger._internal_logger = logging.getLogger('com.pewpewthespells.py.logging_helper')
-        Logger._internal_logger.setLevel(logging.INFO)
+
+        level = logging.DEBUG if Logger._debug_logging else logging.INFO
+        Logger._internal_logger.setLevel(level)
 
         handler = logging.StreamHandler()
-        handler.setLevel(logging.INFO)
+        handler.setLevel(level)
 
         # create formatter
         formatter = None

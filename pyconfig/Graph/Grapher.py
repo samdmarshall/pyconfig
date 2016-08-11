@@ -28,7 +28,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def TraverseNodes(graph_nodes=list()): # pylint: disable=dangerous-default-value
+def TraverseNodes(graph_nodes=None):
+    graph_nodes = list() if graph_nodes is None else graph_nodes
+
     graph_list = list()
     visited = set()
     root_nodes_array = [node for node in graph_nodes if len(node.parents) == 0]
@@ -40,7 +42,10 @@ def TraverseNodes(graph_nodes=list()): # pylint: disable=dangerous-default-value
     visited.update(set(child_nodes))
     return graph_list
 
-def WalkNodes(visited=set(), nodes_with_children=list()): # pylint: disable=dangerous-default-value
+def WalkNodes(visited=None, nodes_with_children=None):
+    visited = set() if visited is None else visited
+    nodes_with_children = list() if nodes_with_children is None else nodes_with_children
+
     child_nodes = list()
     for node in nodes_with_children:
         valid_nodes_array = [filtered_node for filtered_node in node.children if filtered_node not in visited]

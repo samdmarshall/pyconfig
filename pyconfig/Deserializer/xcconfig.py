@@ -35,9 +35,9 @@ class xcconfig(object):
 
     def __init__(self, path):
         self.path = path
-        self.lines = []
+        self.lines = list()
 
-        config_lines = []
+        config_lines = list()
         if os.path.exists(self.path):
             file_descriptor = open(self.path)
             config_lines = [line.strip() for line in file_descriptor]

@@ -43,13 +43,16 @@ class BaseKeyword(object):
     def serialize(self): # pylint: disable=no-self-use ; # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
-    def consumePath(self, constant, parsed_item=list()): # pylint: disable=dangerous-default-value,no-self-use ; # pragma: no cover
+    def consumePath(self, constant, parsed_item=None): # pylint: disable=no-self-use ; # pragma: no cover
+        parsed_item = list() if parsed_item is None else parsed_item
         result = None
         if parsed_item[0].endswith(constant):
             result = parsed_item[1][1:-1]
         return result
 
-    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value ; # pragma: no cover
+    def consume(self, parsed_item=None): # pragma: no cover
+        parsed_item = list() if parsed_item is None else parsed_item
+
         self.__parsed_item = parsed_item
 
     def deserialize(self, xcconfig_line=''): # pylint: disable=no-self-use ; # pragma: no cover

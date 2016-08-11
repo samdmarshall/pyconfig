@@ -95,7 +95,8 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         conditional_key_value_string = ','.join(conditional_key_value_list)
         self.configuration_values[conditional_key_value_string] = assignment_value
 
-    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
+    def consume(self, parsed_item=None):
+        parsed_item = list() if parsed_item is None else parsed_item
         super(SettingKeyword, self).consume(parsed_item)
 
         if parsed_item[0] != Constants._setting:  # pylint: disable=protected-access

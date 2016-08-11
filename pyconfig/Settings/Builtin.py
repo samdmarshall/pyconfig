@@ -28,6 +28,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this file contains a list of all of the build settings (by name) that are
+## registered as "built-ins" to any Xcode project. These will be present no
+## matter how a particular target will be configured. These definitions are
+## used as part of the analysis engine to exclude these from the pool of
+## undefined variables.
 BuiltinLookupTable = [
     #
     'ADDITIONAL_SDKS',

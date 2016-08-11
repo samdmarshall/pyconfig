@@ -42,7 +42,8 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
         cmp_include = (self.include_path == other.include_path)
         return cmp_include
 
-    def consume(self, parsed_item=list()): # pylint: disable=dangerous-default-value
+    def consume(self, parsed_item=None):
+        parsed_item = list() if parsed_item is None else parsed_item
         super(IncludeKeyword, self).consume(parsed_item)
         self.optional = parsed_item[0].startswith('?')
         self.include_path = self.consumePath(Constants._include, parsed_item) # pylint: disable=protected-access

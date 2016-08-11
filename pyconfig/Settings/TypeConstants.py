@@ -28,6 +28,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this is a lookup table that defines the type that should be assigned to each of the
+## known build settings. This is currently only used to eliminate variables from the
+## pool that is assumed to be "undefined" by the user. This should eventually be used
+## to validate the contents of assignment and warn when something is being assigned
+## that might cause undesird behavior.
 ConstantLookupTable = {
     'ACTION': str,
     'ADDITIONAL_SDKS': str,
