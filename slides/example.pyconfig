@@ -1,0 +1,89 @@
+export "Codesign.xcconfig"
+
+setting WRAPPER_EXTENSION_CONFIGURATION {
+	for * {
+		$(WRAPPER_EXTENSION)_$(CONFIGURATION)
+	}
+}
+
+setting CODE_SIGN_IDENTITY {
+	for *
+}
+
+
+setting PROVISIONING_PROFILE {
+	for * {
+		$(PROFILE)
+	}
+}
+
+
+setting IDENTITY use WRAPPER_EXTENSION_CONFIGURATION {
+	for app_Debug {
+		iPhone Developer
+	}
+	for app_Enterprise {
+		iPhone Distribution: Enterprise
+	}
+	for app_Release {
+		iPhone Distribution: Store
+	}
+	for app_ReleaseCandidate {
+		iPhone Distribution: Enterprise
+	}
+
+	for framework_Debug {
+		iPhone Developer
+	}
+	for framework_Enterprise {
+		iPhone Distribution: Enterprise
+	}
+	for framework_Release {
+		iPhone Distribution: Store
+	}
+	for framework_ReleaseCandidate {
+		iPhone Distribution: Enterprise
+	}
+
+	for xctest_Debug {
+		iPhone Developer
+	}
+	for xctest_Enterprise {
+		iPhone Developer
+	}
+	for xctest_Release {
+		iPhone Developer
+	}
+	for xctest_ReleaseCandidate {
+		iPhone Developer
+	}
+}
+
+setting PROFILE use WRAPPER_EXTENSION_CONFIGURATION {
+	for app_Debug
+	for app_Enterprise {
+		2a2947e4-0668-4354-9626-f73512043c1e
+	}
+	for app_Release {
+		eb27f132-c360-44be-9d46-0816c29cb8de
+	}
+	for app_ReleaseCandidate {
+		2a2947e4-0668-4354-9626-f73512043c1e
+	}
+	
+	for framework_Debug
+	for framework_Enterprise {
+		2a2947e4-0668-4354-9626-f73512043c1e
+	}
+	for framework_Release {
+		eb27f132-c360-44be-9d46-0816c29cb8de
+	}
+	for framework_ReleaseCandidate {
+		2a2947e4-0668-4354-9626-f73512043c1e
+	}
+
+	for xctest_Debug
+	for xctest_Enterprise
+	for xctest_Release
+	for xctest_ReleaseCandidate
+}
