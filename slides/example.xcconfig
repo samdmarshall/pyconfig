@@ -1,0 +1,40 @@
+
+CODE_SIGN_IDENTITY = $(CODE_SIGN_IDENTITY_$(CONFIGURATION)_$(WRAPPER_EXTENSION))
+
+PROVISIONING_PROFILE = $(PROVISIONING_PROFILE_$(CONFIGURATION)_$(WRAPPER_EXTENSION))
+
+
+FOO = 
+
+
+CODE_SIGN_IDENTITY_Debug_app = iPhone Developer
+PROVISIONING_PROFILE_Debug_app = 
+CODE_SIGN_IDENTITY_Debug_framework = iPhone Developer
+PROVISIONING_PROFILE_Debug_framework = 
+CODE_SIGN_IDENTITY_Debug_xctest = iPhone Developer
+PROVISIONING_PROFILE_Adhoc_xctest = 
+
+
+CODE_SIGN_IDENTITY_Enterprise_app = iPhone Distribution: Enterprise
+PROVISIONING_PROFILE_Enterprise_app = 2a2947e4-0668-4354-9626-f73512043c1e
+CODE_SIGN_IDENTITY_Enterprise_framework = iPhone Distribution: Enterprise
+PROVISIONING_PROFILE_Enterprise_framework = 2a2947e4-0668-4354-9626-f73512043c1e
+CODE_SIGN_IDENTITY_Enterprise_xctest = iPhone Developer
+PROVISIONING_PROFILE_Enterprise_xctest = 
+
+
+CODE_SIGN_IDENTITY_Release_app = iPhone Distribution: Store
+PROVISIONING_PROFILE_Release_app = eb27f132-c360-44be-9d46-0816c29cb8de
+CODE_SIGN_IDENTITY_Release_framework = iPhone Distribution: Store
+PROVISIONING_PROFILE_Release_framework = eb27f132-c360-44be-9d46-0816c29cb8de
+CODE_SIGN_IDENTITY_Release_xctest = iPhone Developer
+PROVISIONING_PROFILE_Release_xctest = 
+
+
+CODE_SIGN_IDENTITY_ReleaseCandidate_app = iPhone Distribution: Enterprise
+PROVISIONING_PROFILE_ReleaseCandidate_app = 2a2947e4-0668-4354-9626-f73512043c1e
+CODE_SIGN_IDENTITY_ReleaseCandidate_framework = iPhone Distribution: Enterprise
+PROVISIONING_PROFILE_ReleaseCandidate_framework = 2a2947e4-0668-4354-9626-f73512043c1e
+CODE_SIGN_IDENTITY_ReleaseCandidate_xctest = iPhone Developer
+PROVISIONING_PROFILE_ReleaseCandidate_xctest = 
+
