@@ -2,7 +2,6 @@
 include "root.xcconfig" # like here
 include "codesign.xcconfig"
 
-
 # or here
 setting PODS_ROOT {
 	for * {
@@ -28,7 +27,6 @@ setting OTHER_LDFLAGS {
 		-framework "Reveal"
 	}
 	for Release
-	#testing
 }
 	
 setting OTHER_CFLAGS use WRAPPER_EXTENSION {

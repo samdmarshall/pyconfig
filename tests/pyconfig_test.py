@@ -49,6 +49,7 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
     pyconfig.main(args)
     generated_output = pyconfig.Deserializer.xcconfig.xcconfig(test_generated_output)
     expected_output = pyconfig.Deserializer.xcconfig.xcconfig(test_expected_output)
+    test.assertEqual(len(generated_output.lines), len(expected_output.lines))
     for generated, expected in list(zip(generated_output.lines, expected_output.lines)):
         test.assertEqual(generated, expected)
 

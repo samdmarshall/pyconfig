@@ -124,6 +124,10 @@ _values = pyparsing.delimitedList(    \
     pyparsing.Empty()                 \
 )
 
+_setting_value = pyparsing.Optional(pyparsing.pythonStyleComment)            \
+    + _values                                                                \
+    + pyparsing.Optional(pyparsing.pythonStyleComment)
+
 #
 _setting = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))                 \
 + pyparsing.Group(                                                                                \
@@ -134,11 +138,11 @@ _setting = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)
         + Keyword.Words._buildSettingName)                                                        \
         + pyparsing.Optional(pyparsing.Keyword(Keyword.Constants._inherits))                      \
     )                                                                                             \
-    + pyparsing.Suppress(Keyword.Constants._openBrace)                                            \
-    + pyparsing.Optional(pyparsing.pythonStyleComment)                                            \
-    + pyparsing.Group(_values)                                                                    \
-    + pyparsing.Optional(pyparsing.pythonStyleComment)                                            \
-    + pyparsing.Suppress(Keyword.Constants._closeBrace)                                           \
+    + pyparsing.nestedExpr(                                                                       \
+        Keyword.Constants._openBrace,                                                             \
+        Keyword.Constants._closeBrace,                                                            \
+        _setting_value                                                                            \
+    )                                                                                             \
 )
 
 # composing the configuration file parser
