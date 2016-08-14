@@ -35,6 +35,8 @@ from ..Helpers.Switch     import Switch
 
 build_setting_char_set = string.ascii_letters + '_' + string.digits
 
+# pylint: disable=protected-access
+
 class Linter(object):
     def __init__(self, contents):
         self.error = None
@@ -68,6 +70,7 @@ class Linter(object):
             scope_level += 1
         else: # pragma: no cover
             self.error = 'Expected character `%s`, encountered `%s` at line: %i, index: %i' % (starter, current_char, self.line_number, self.char_number)
+        # advance past the scope starter
         self.index += 1
         self.char_number += 1
         start = self.index
@@ -88,10 +91,13 @@ class Linter(object):
                 self.index += 1
                 self.char_number += 1
                 status = True
+            # if a scope starter is encountered then increase the current scope level
             if current_char == starter:
                 scope_level += 1
+            # if a scope closer is encountered then decrease the current scope level
             if current_char == closer:
                 scope_level -= 1
+                # save the index that the scope ended on so we can capture the entire scope
                 end = self.index
         # don't include the last bracket
         end -= 1
@@ -113,13 +119,16 @@ class Linter(object):
         status = True
         while status is True:
             status = self.readString('"')
-            if status is False: break
+            if status is False:
+                break
             # check to see that we have a end-quote before the newline
             status = self.findCharacterBeforeCharacter('"', '\n')
-            if status is False: break
+            if status is False:
+                break
             # read end of quote
             status = self.readString('"')
-            if status is False: break
+            if status is False:
+                break
             break
         return status
 
@@ -146,7 +155,7 @@ class Linter(object):
             self.index += expected_index
         return status
 
-    def validates(self):
+    def validates(self): # pylint: disable=too-many-branches,too-many-statements
         should_advance = len(self.contents) > 0
         status = True
         has_finished_exports = False
@@ -168,33 +177,49 @@ class Linter(object):
                         break
                     status = first_export is True
                     if status is False: # pragma: no cover
-                        self.error = 'Encountered more than one `%s` keyword at line %i, index: %i' % (Keyword.Constants._export, line_number, char_number)
+                        self.error = 'Encountered more than one `%s` keyword at line %i, index: %i' % (Keyword.Constants._export, self.line_number, self.char_number)
                         break
                     status = self.readString(Keyword.Constants._export)
-                    if status is False: break
+                    if status is False:
+                        break
                     # check for a white space
                     status = self.readString(' ')
-                    if status is False: break
+                    if status is False:
+                        break
                     # check for double-quote string
                     status = self.readQuotedString()
                     first_export = False
                     break
-                if case(Keyword.Constants._required_include[0]): pass
-                if case(Keyword.Constants._optional_include[0]): pass
+                if case(Keyword.Constants._required_include[0]):
+                    pass
+                if case(Keyword.Constants._optional_include[0]):
+                    pass
                 if case(Keyword.Constants._include[0]):
+                    status = has_finished_includes is False
+                    if status is False:
+                        self.error = 'Encountered `%s` after `%s` keyword at line: %i, index: %i' % (Keyword.Constants._include, current_keyword, self.line_number, self.char_number)
+                        break
                     current_keyword = Keyword.Constants._include
                     has_finished_exports = True
-                    if current_character == Keyword.Constants._required_include[0] \
-                         or current_character == Keyword.Constants._optional_include[0]:
+                    # if the include statement started with `!` or `?`, then read either of
+                    ## those and advance one character
+                    is_required_include = current_character == Keyword.Constants._required_include[0]
+                    is_optional_include = current_character == Keyword.Constants._optional_include[0]
+                    if is_required_include or is_optional_include:
                         self.index += 1
                         self.char_number += 1
+                    # read the "include" keyword
                     status = self.readString(Keyword.Constants._include)
-                    if status is False: break
+                    if status is False:
+                        break
                     # check for a white space
                     status = self.readString(' ')
-                    if status is False: break
+                    if status is False:
+                        break
                     # check for double-quote string
                     status = self.readQuotedString()
+                    if status is False:
+                        break
                     break
                 if case(Keyword.Constants._setting[0]):
                     current_keyword = Keyword.Constants._setting
@@ -202,33 +227,42 @@ class Linter(object):
                     has_finished_includes = True
                     # read the setting keyword
                     status = self.readString(Keyword.Constants._setting)
-                    if status is False: break
+                    if status is False:
+                        break
                     # read whitespace
                     status = self.readString(' ')
-                    if status is False: break
+                    if status is False:
+                        break
                     # read the build setting name
                     status = self.readFromCharacterSetUntilCharacter(build_setting_char_set, ' ')
-                    if status is False: break
+                    if status is False:
+                        break
                     # read whitespace
                     status = self.readString(' ')
-                    if status is False: break
+                    if status is False:
+                        break
                     # read optional "use"
                     status = self.readString(Keyword.Constants._use, True)
                     if status is True:
                         status = self.readString(' ')
-                        if status is False: break
+                        if status is False:
+                            break
                         status = self.readFromCharacterSetUntilCharacter(build_setting_char_set, ' ')
-                        if status is False: break
+                        if status is False:
+                            break
                         status = self.readString(' ')
-                        if status is False: break
+                        if status is False:
+                            break
                     # read optional "inherits"
                     status = self.readString(Keyword.Constants._inherits, True)
                     if status is True:
                         status = self.readString(' ')
-                        if status is False: break
+                        if status is False:
+                            break
                     # read scope
                     status, scope_contents = self.readScope('{', '}')
-                    if status is False: break
+                    if status is False:
+                        break
                     # read contents to ensure it is valid
                     break
                 if case():
