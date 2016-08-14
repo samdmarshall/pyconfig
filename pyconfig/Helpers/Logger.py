@@ -66,7 +66,7 @@ class ColoredFormatter(logging.Formatter):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color
 
-    def format(self, record):
+    def format(self, record): # pragma: no cover
         levelname = record.levelname
         if self.use_color and levelname in LEVELS:
             levelname_color = LEVELS[levelname] + levelname + RESET_SEQ
@@ -102,7 +102,7 @@ class Logger(object):
 
         # create formatter
         formatter = None
-        if Logger._debug_logging is True:
+        if Logger._debug_logging is True: # pragma: no cover
             formatter = ColoredFormatter('[%(levelname)s][%(filename)s:%(lineno)s]: %(message)s', Logger._use_ansi_codes)
         else:
             formatter = ColoredFormatter('[%(levelname)s]: %(message)s', Logger._use_ansi_codes)

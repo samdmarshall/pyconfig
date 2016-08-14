@@ -8,7 +8,7 @@ setting PODS_ROOT {
 		${SRCROOT}/Pods
 	}
 }
-	
+
 # and here
 setting HEADER_SEARCH_PATHS {
 	for * {

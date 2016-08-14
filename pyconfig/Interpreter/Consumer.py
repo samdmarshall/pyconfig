@@ -31,7 +31,7 @@
 from .                 import LangParser
 from .                 import Dependent
 from ..Helpers.Logger  import Logger
-
+from ..Analyzer.Linter import Linter
 def CreateNodeFromString(config_name="", config_contents=""):
     # now parse the file's contents
     parsed_contents = LangParser._config.parseString(config_contents) # pylint: disable=protected-access
@@ -47,14 +47,22 @@ def CreateGraphNodes(pyconfig_path_list=None):
 
     for pyconfig_file_path in pyconfig_path_list:
         pyconfig_file = open(pyconfig_file_path, 'r')
-
         pyconfig_contents = pyconfig_file.read()
         pyconfig_file.close()
 
-        Logger.write().info('Parsing %s ...' % pyconfig_file_path)
+        Logger.write().info('Linting %s ...' % pyconfig_file_path)
 
-        node = CreateNodeFromString(pyconfig_file.name, pyconfig_contents)
+        linter_obj = Linter(pyconfig_contents)
+        if linter_obj.validates():
+            #
+            Logger.write().info('Parsing %s ...' % pyconfig_file_path)
 
-        parsed_configs.add(node)
+            node = CreateNodeFromString(pyconfig_file.name, pyconfig_contents)
+
+            parsed_configs.add(node)
+        else: # pragma: no cover
+            Logger.write().error('Unable to parse file "%s"!\n> %s' % (pyconfig_file_path, linter_obj.error))
+            parsed_configs = set()
+            break
 
     return parsed_configs
