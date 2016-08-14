@@ -60,6 +60,8 @@ class Linter(object):
 
     def readScope(self, starter, closer):
         current_char = self.contents[self.index]
+        start_line_number = self.line_number
+        start_char_number = self.char_number
         status = current_char == starter
         scope_level = 0
         if status is True:
@@ -71,9 +73,18 @@ class Linter(object):
         start = self.index
         end = start
         while status is True and scope_level != 0:
+            # ensure we don't go out of bounds of the content we are searching
+            if self.index >= len(self.contents):
+                self.error = 'Missing `%s` for `%s` on line: %i, index: %i' % (closer, starter, start_line_number, start_char_number)
+                status = False
+                break
+            # get the current character to look at
             current_char = self.contents[self.index]
+            # consume any whitespace
             status = self.readWhitespace(current_char, True)
             if status is False:
+                # if there wasn't whitespace, then advance the counter and make sure we continue
+                ## without any errors
                 self.index += 1
                 self.char_number += 1
                 status = True
