@@ -54,7 +54,7 @@ class Linter(object):
             self.index += 1
             self.char_number += 1
         else:
-            if optional is False:
+            if optional is False: # pragma: no cover
                 self.error = (self.contents[self.last_newline:self.index]+'|')
         return status
 
@@ -64,6 +64,8 @@ class Linter(object):
         scope_level = 0
         if status is True:
             scope_level += 1
+        else: # pragma: no cover
+            self.error = 'Expected character `%s`, encountered `%s` at line: %i, index: %i' % (starter, current_char, self.line_number, self.char_number)
         self.index += 1
         self.char_number += 1
         start = self.index
@@ -92,7 +94,7 @@ class Linter(object):
             self.char_number += 1
             current_char = self.contents[self.index]
         status = current_char == terminate_char
-        if status is False:
+        if status is False: # pragma: no cover
             self.error = 'Encountered `%s` before `%s` at line: %i, index: %i' % (current_char, terminate_char, self.line_number, self.char_number)
         return status
 
@@ -110,14 +112,15 @@ class Linter(object):
             break
         return status
 
-    def readString(self, string_value):
+    def readString(self, string_value, optional=False):
         read_string = self.contents[self.index:self.index+len(string_value)]
         status = read_string == string_value
         if status is True:
             self.index += len(string_value)
             self.char_number += len(string_value)
         else:
-            self.error = 'Expected `%s` at line %i, index: %i' % (string_value, self.line_number, self.char_number)
+            if optional is False: # pragma: no cover
+                self.error = 'Expected `%s` at line %i, index: %i' % (string_value, self.line_number, self.char_number)
         return status
 
     def findCharacterBeforeCharacter(self, expected_char, unexpected_char):
@@ -126,7 +129,7 @@ class Linter(object):
         expected_index = self.contents[self.index:].find(expected_char)
         if unexpected_index != -1:
             status = expected_index < unexpected_index
-        if status is False:
+        if status is False: # pragma: no cover
             self.error = 'Expected `%s` before `%s` at line %i, index: %i' % (expected_char, unexpected_char, self.line_number, self.char_number)
         else:
             self.index += expected_index
@@ -149,11 +152,11 @@ class Linter(object):
                     break
                 if case(Keyword.Constants._export[0]):
                     status = has_finished_exports is False
-                    if status is False:
+                    if status is False: # pragma: no cover
                         self.error = 'Encountered keyword `%s` after encountering keyword `%s`. Please place the `%s` keyword before the `%s` keyword.' % (Keyword.Constants._export, current_keyword, Keyword.Constants._export, current_keyword)
                         break
                     status = first_export is True
-                    if status is False:
+                    if status is False: # pragma: no cover
                         self.error = 'Encountered more than one `%s` keyword at line %i, index: %i' % (Keyword.Constants._export, line_number, char_number)
                         break
                     status = self.readString(Keyword.Constants._export)
@@ -199,7 +202,19 @@ class Linter(object):
                     status = self.readString(' ')
                     if status is False: break
                     # read optional "use"
+                    status = self.readString(Keyword.Constants._use, True)
+                    if status is True:
+                        status = self.readString(' ')
+                        if status is False: break
+                        status = self.readFromCharacterSetUntilCharacter(build_setting_char_set, ' ')
+                        if status is False: break
+                        status = self.readString(' ')
+                        if status is False: break
                     # read optional "inherits"
+                    status = self.readString(Keyword.Constants._inherits, True)
+                    if status is True:
+                        status = self.readString(' ')
+                        if status is False: break
                     # read scope
                     status, scope_contents = self.readScope('{', '}')
                     if status is False: break

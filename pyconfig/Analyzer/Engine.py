@@ -89,7 +89,7 @@ class Engine(object):
                 is_unset = (item.build_setting_name not in list(self.__namespace_table[configuration.name].keys()))
                 if is_unset:
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
-                else:
+                else: # pragma: no cover
                     previous_item = self.__namespace_table[configuration.name][item.build_setting_name]
                     current_line_number = str(item._BaseKeyword__parsed_item.line) # pylint: disable=protected-access
                     previous_line_number = str(previous_item._BaseKeyword__parsed_item.line) # pylint: disable=protected-access
@@ -105,7 +105,7 @@ class Engine(object):
                 if file_containing_dups == configuration.name:
                     # if this is the current config, then ignore it and move on
                     continue
-                if file_containing_dups in configuration.importChain():
+                if file_containing_dups in configuration.importChain(): # pragma: no cover
                     # only raise a warning if a duplicate build setting is declared
                     ## in the same chain of imports.
                     print_message = 'Found duplicate definition for "'+key+'" in files:'\
@@ -136,7 +136,7 @@ class Engine(object):
         # remove variables specifically defined by the user
         variables.difference_update(self.__user_defined_table)
         # this leaves only variables that are not defined by Xcode or by the user
-        for key in variables:
+        for key in variables: # pragma: no cover
             # note that this will announce for each time a config containing a
             ## build setting that is not defined is used. meaning that this
             ## will trigger multiple times for the same issue, this is intended
