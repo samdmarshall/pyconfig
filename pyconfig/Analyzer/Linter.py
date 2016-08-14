@@ -58,6 +58,8 @@ class Linter(object):
         else:
             if optional is False: # pragma: no cover
                 self.error = (self.contents[self.last_newline:self.index]+'|')
+            else:
+                Logger.write().debug('Attempted to read optional whitespace, but found none, continuing...')
         return status
 
     def readScope(self, starter, closer):
@@ -77,7 +79,7 @@ class Linter(object):
         end = start
         while status is True and scope_level != 0:
             # ensure we don't go out of bounds of the content we are searching
-            if self.index >= len(self.contents):
+            if self.index >= len(self.contents): # pragma: no cover
                 self.error = 'Missing `%s` for `%s` on line: %i, index: %i' % (closer, starter, start_line_number, start_char_number)
                 status = False
                 break
@@ -120,19 +122,20 @@ class Linter(object):
         while status is True:
             status = self.readString('"')
             if status is False:
-                break
+                break # pragma: no cover
             # check to see that we have a end-quote before the newline
             status = self.findCharacterBeforeCharacter('"', '\n')
             if status is False:
-                break
+                break # pragma: no cover
             # read end of quote
             status = self.readString('"')
             if status is False:
-                break
+                break # pragma: no cover
             break
         return status
 
     def readString(self, string_value, optional=False):
+        Logger.write().debug('Attempting to read `%s`' % string_value)
         read_string = self.contents[self.index:self.index+len(string_value)]
         status = read_string == string_value
         if status is True:
@@ -149,6 +152,8 @@ class Linter(object):
         expected_index = self.contents[self.index:].find(expected_char)
         if unexpected_index != -1:
             status = expected_index < unexpected_index
+        else:
+            Logger.write().debug('Could not find `%s` after `%s`, continuing...' % (unexpected_char, expected_char))
         if status is False: # pragma: no cover
             self.error = 'Expected `%s` before `%s` at line %i, index: %i' % (expected_char, unexpected_char, self.line_number, self.char_number)
         else:
@@ -167,7 +172,10 @@ class Linter(object):
             for case in Switch(current_character):
                 if case(Keyword.Constants._comment[0]):
                     old_index = self.index
-                    self.index += self.contents[self.index:].index('\n')
+                    eol_index = self.contents[self.index:].find('\n')
+                    if eol_index == -1:
+                        eol_index = len(self.contents) - old_index
+                    self.index += eol_index
                     self.char_number += self.index - old_index
                     break
                 if case(Keyword.Constants._export[0]):
@@ -181,22 +189,22 @@ class Linter(object):
                         break
                     status = self.readString(Keyword.Constants._export)
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # check for a white space
                     status = self.readString(' ')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # check for double-quote string
                     status = self.readQuotedString()
                     first_export = False
                     break
                 if case(Keyword.Constants._required_include[0]):
-                    pass
+                    pass # pragma: no cover
                 if case(Keyword.Constants._optional_include[0]):
-                    pass
+                    pass # pragma: no cover
                 if case(Keyword.Constants._include[0]):
                     status = has_finished_includes is False
-                    if status is False:
+                    if status is False: # pragma: no cover
                         self.error = 'Encountered `%s` after `%s` keyword at line: %i, index: %i' % (Keyword.Constants._include, current_keyword, self.line_number, self.char_number)
                         break
                     current_keyword = Keyword.Constants._include
@@ -211,15 +219,15 @@ class Linter(object):
                     # read the "include" keyword
                     status = self.readString(Keyword.Constants._include)
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # check for a white space
                     status = self.readString(' ')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # check for double-quote string
                     status = self.readQuotedString()
                     if status is False:
-                        break
+                        break # pragma: no cover
                     break
                 if case(Keyword.Constants._setting[0]):
                     current_keyword = Keyword.Constants._setting
@@ -228,41 +236,41 @@ class Linter(object):
                     # read the setting keyword
                     status = self.readString(Keyword.Constants._setting)
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # read whitespace
                     status = self.readString(' ')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # read the build setting name
                     status = self.readFromCharacterSetUntilCharacter(build_setting_char_set, ' ')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # read whitespace
                     status = self.readString(' ')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # read optional "use"
                     status = self.readString(Keyword.Constants._use, True)
                     if status is True:
                         status = self.readString(' ')
                         if status is False:
-                            break
+                            break # pragma: no cover
                         status = self.readFromCharacterSetUntilCharacter(build_setting_char_set, ' ')
                         if status is False:
-                            break
+                            break # pragma: no cover
                         status = self.readString(' ')
                         if status is False:
-                            break
+                            break # pragma: no cover
                     # read optional "inherits"
                     status = self.readString(Keyword.Constants._inherits, True)
                     if status is True:
                         status = self.readString(' ')
                         if status is False:
-                            break
+                            break # pragma: no cover
                     # read scope
                     status, scope_contents = self.readScope('{', '}')
                     if status is False:
-                        break
+                        break # pragma: no cover
                     # read contents to ensure it is valid
                     break
                 if case():
