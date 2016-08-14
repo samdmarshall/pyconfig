@@ -118,6 +118,9 @@ def main(argv=sys.argv[1:]):
     ## to a graph node object. Return all of the created nodes as a set.
     parsed_configs = Consumer.CreateGraphNodes(found_pyconfig_files)
 
+    if len(found_pyconfig_files) != len(parsed_configs):
+        sys.exit(1)
+
     # detect if there was an option to generate data from the SCM used for this repo
     ## if there is, then it should be inserted into the list of files so that it can
     ## be in graphed as part of the dependency tree.
