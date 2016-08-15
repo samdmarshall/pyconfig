@@ -88,12 +88,14 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
 
     def consumeIfStatement(self, statement):
         conditions = statement[1]
-        assignment_value = statement[2]
+        value = ''
+        if len(statement) == 3:
+            value = statement[2]
         conditional_key_value_list = list()
         for condition in conditions:
             conditional_key_value_list.append('='.join(condition))
         conditional_key_value_string = ','.join(conditional_key_value_list)
-        self.configuration_values[conditional_key_value_string] = assignment_value
+        self.configuration_values[conditional_key_value_string] = ' '.join(value)
 
     def consume(self, parsed_item=None):
         parsed_item = list() if parsed_item is None else parsed_item

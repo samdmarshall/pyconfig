@@ -49,6 +49,7 @@ def LoadTestDirectoryAndTestWithName(test, test_pyconfig_path_sub, test_file_nam
     pyconfig.main(args)
     generated_output = pyconfig.Deserializer.xcconfig.xcconfig(test_generated_output)
     expected_output = pyconfig.Deserializer.xcconfig.xcconfig(test_expected_output)
+    test.assertEqual(len(generated_output.lines), len(expected_output.lines))
     for generated, expected in list(zip(generated_output.lines, expected_output.lines)):
         test.assertEqual(generated, expected)
 
@@ -119,22 +120,22 @@ class pyconfigTestCases(unittest.TestCase):
         LoadTestDirectoryAndTestWithName(self, 'flags/scheme name', 'test', ['--scheme', 'MyAppDebug'])
 
     def test_scm_info_git(self):
-        LoadTestDirectoryAndTestWithName(self, 'scm-info/git', 'test', ['--scm-info=git'])
+        LoadTestDirectoryAndTestWithName(self, 'flags/scm-info/git', 'test', ['--scm-info=git'])
 
     def test_scm_info_svn(self):
-        LoadTestDirectoryAndTestWithName(self, 'scm-info/svn', 'test', ['--scm-info=svn'])
+        LoadTestDirectoryAndTestWithName(self, 'flags/scm-info/svn', 'test', ['--scm-info=svn'])
 
     def test_scm_info_hg(self):
-        LoadTestDirectoryAndTestWithName(self, 'scm-info/hg', 'test', ['--scm-info=hg'])
+        LoadTestDirectoryAndTestWithName(self, 'flags/scm-info/hg', 'test', ['--scm-info=hg'])
 
     def test_scm_info_detect(self):
-        test_pyconfig_path_sub = 'scm-info/git'
+        test_pyconfig_path_sub = 'flags/scm-info/git'
         test_pyconfig_path = os.path.join(test_directory, test_pyconfig_path_sub)
         direct_file_path = os.path.join(test_pyconfig_path, 'test.pyconfig')
         LoadTestDirectoryAndTestWithName(self, test_pyconfig_path, 'test', ['--scm-info=detect', direct_file_path], True)
 
     def test_debug_flag(self):
-        LoadTestDirectoryAndTestWithName(self, 'comments', 'test', ['--debug'])
+        LoadTestDirectoryAndTestWithName(self, 'comments', 'test', ['--verbose', '--debug'])
 
 if __name__ == '__main__':
     unittest.main()

@@ -57,7 +57,7 @@ def InfoFromGit(detect_mode=False):
     should_append_data = DetectError(output, error, detect_mode, 'Error fetching commit hash: "%s"')
     commit_hash = output.strip('\n')
 
-    if should_append_data is True:
+    if should_append_data is True and len(output):
         content_string += 'setting PYCONIFG_GIT_BRANCH_NAME {\n'\
                           '    for * {\n'\
                           '        '+branch_name+'\n'\
@@ -86,7 +86,7 @@ def InfoFromSVN(detect_mode=False):
 
         os.chdir(working_dir)
 
-        if should_append_data is True:
+        if should_append_data is True and len(output):
             content_string += 'setting PYCONFIG_SVN_REVISION {\n'\
                               '    for * {\n'\
                               '        '+revision_number+'\n'\
@@ -108,7 +108,7 @@ def InfoFromMercurial(detect_mode=False):
     should_append_data = DetectError(output, error, detect_mode, 'Error fetching revision number: "%s"')
     commit_hash = output.strip('\n')
 
-    if should_append_data is True:
+    if should_append_data is True and len(output):
         content_string += 'setting PYCONIFG_HG_BRANCH_NAME {\n'\
                           '    for * {\n'\
                           '        '+branch_name+'\n'\

@@ -2,5 +2,5 @@ setting OTHER_LDFLAGS {
 	for Debug { 
 		-framework "Reveal"
 	}
-	for Release		
+	for Release
 }
