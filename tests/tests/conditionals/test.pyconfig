@@ -11,6 +11,7 @@ setting PRODUCT_NAME {
 	if arch=i386 and sdk=iphone {
 		SimulatorApp
 	}
+	if arch=arm*
 }
 
 setting FOO {
@@ -28,5 +29,11 @@ setting BAR {
 setting BAZ {
 	if dialect=c11 {
 		c11
+	}
+}
+
+setting FUZZ {
+	if config=Release {
+		$(BAR)
 	}
 }

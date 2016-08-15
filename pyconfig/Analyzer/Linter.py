@@ -32,6 +32,7 @@ import string
 from ..                   import Keyword
 from ..Helpers.Logger     import Logger
 from ..Helpers.Switch     import Switch
+from ..Interpreter        import LangParser
 
 build_setting_char_set = string.ascii_letters + '_' + string.digits
 
@@ -52,7 +53,7 @@ def readUntilStringInContent(terminate_value, content=None, index=None):
     while current_char != terminate_value and should_advance:
         index += 1
         current_char = content[index]
-        should_advance = index < len(content)
+        should_advance = index+1 < len(content)
     status = current_char == terminate_value
     return (status, index - start_index)
 
@@ -64,10 +65,10 @@ def readFromCharacterSet(char_set, content=None, index=None):
     while current_char in char_set and should_advance:
         index += 1
         current_char = content[index]
-        should_advance = index < len(content)
+        should_advance = index+1 < len(content)
     return (status, index - start_index)
 
-def readFromCharacterSetUntilCharacterFromContent(char_set, terminate_char, content=None, index=None):
+def readFromCharSetUntilCharFromContent(char_set, terminate_char, content=None, index=None):
     status, read_count = readFromCharacterSet(char_set, content, index)
     if status is True:
         current_char = content[index+read_count]
@@ -75,15 +76,14 @@ def readFromCharacterSetUntilCharacterFromContent(char_set, terminate_char, cont
     return (status, read_count)
 
 def readScopeFromContent(starter, closer, content=None, index=None):
-    Logger.write().debug('Attempting to read content between matching `%s` and `%s`' % (starter, closer))
     current_char = content[index]
-    error = None
+    error_msg = None
     status = current_char == starter
     scope_level = 0
     if status is True:
         scope_level += 1
     else: # pragma: no cover
-        error = 'Expected character `%s`, encountered `%s` ' % (starter, current_char)
+        error_msg = 'Expected character `%s`, encountered `%s` ' % (starter, current_char)
     # advance past the scope starter
     start = index
     index += 1
@@ -92,12 +92,12 @@ def readScopeFromContent(starter, closer, content=None, index=None):
         # ensure we don't go out of bounds of the content we are searching
         status = index <= len(content)
         if status is False: # pragma: no cover
-            error = 'Missing `%s` for `%s`' % (closer, starter)
+            error_msg = 'Missing `%s` for `%s`' % (closer, starter)
             break
         # get the current character to look at
         current_char = content[index]
         # consume any whitespace
-        status, index, _line_number, _char_number, _last_newline, _error = readWhitespace(True, content, index)
+        status, index, _, _, _, error_msg = readWhitespace(True, content, index)
         if status is False:
             # if there wasn't whitespace, then advance the counter and make sure we continue
             ## without any errors
@@ -113,9 +113,9 @@ def readScopeFromContent(starter, closer, content=None, index=None):
             end = index
     # trip the ending brace
     end -= 1
-    return (status, content[start:end], index-start)
+    return (status, content[start+1:end], index-start, error_msg)
 
-def readConditionFromContent(content=None, index=None):
+def readConditionFromContent(content=None, index=None): # pylint: disable=too-many-branches
     status = True
     current_char = content[index]
     original_index = index
@@ -159,6 +159,8 @@ def readConditionFromContent(content=None, index=None):
         # read conditional value assignment
         status, read_count = readUntilStringInContent(' ', content, index)
         if status is False:
+            status, read_count = readUntilStringInContent('\n', content, index)
+        if status is False:
             break # pragma: no cover
         index += read_count
         break
@@ -185,6 +187,21 @@ def readWhitespace(optional=False, content=None, index=None):
             Logger.write().debug('Attempted to read optional whitespace, but found `%s`, continuing...' % content[index])
     result = (status, index, line_number, char_number, last_newline, error)
     return result
+
+def validateCommaSeparatedValues(content):
+    index = 0
+    status = index < len(content)
+    while status is True:
+        # check to see if this is a single value assignment, if so we can short-circuit
+        ## the check and exit now
+        first_comma_index = content[index:].find(',')
+        if first_comma_index == -1:
+            break
+        # now perform a full check on the content
+        results = LangParser._genericCSVList.parseString(content)
+        status = len(results) > 0 and len(results[-1]) > 0
+        break
+    return status
 
 class Linter(object):
     def __init__(self, contents):
@@ -268,7 +285,7 @@ class Linter(object):
         return (status, self.contents[start:end])
 
     def readFromCharacterSetUntilCharacter(self, char_set, terminate_char):
-        status, read_count = readFromCharacterSetUntilCharacterFromContent(char_set, terminate_char, self.contents, self.index)
+        status, read_count = readFromCharSetUntilCharFromContent(char_set, terminate_char, self.contents, self.index)
         self.index += read_count
         self.char_number += read_count
         current_char = self.contents[self.index]
@@ -317,9 +334,10 @@ class Linter(object):
             self.index += expected_index
         return status
 
-    def validateIf(self, scope_contents, index):
+    def validateIf(self, scope_contents, index): # pylint: disable=too-many-branches
         status = True
         while status is True:
+            should_try_reading_assignment = True
             # read `if`
             status, read_count = readStringFromContent('if', scope_contents, index)
             if status is False:
@@ -338,6 +356,12 @@ class Linter(object):
                 if status is False:
                     break # pragma: no cover
                 index += read_count
+                # if the next character is a newline, then break, because this is the end of this definition
+                newline_index = scope_contents[index:].find('\n')
+                is_newline = newline_index == 0
+                if is_newline:
+                    should_try_reading_assignment = False
+                    break
                 # read space
                 status, read_count = readStringFromContent(' ', scope_contents, index)
                 if status is False:
@@ -363,9 +387,14 @@ class Linter(object):
                         break
             if status is False:
                 break # pragma: no cover
-            # read scope
-            status, assignment_scope, read_count = readScopeFromContent('{', '}', scope_contents[index:], 0)
-            index += read_count
+            if should_try_reading_assignment is True:
+                # read scope
+                Logger.write().debug('Attempting to read content between matching `%s` and `%s`' % ('{', '}'))
+                status, assignment_scope, read_count, self.error = readScopeFromContent('{', '}', scope_contents[index:], 0)
+                if status is False:
+                    break # pragma: no cover
+                index += read_count
+                status = validateCommaSeparatedValues(assignment_scope)
             break
         return (status, index)
 
@@ -401,8 +430,14 @@ class Linter(object):
             if status is False:
                 break # pragma: no cover
             # read the scope
-            status, assignment_scope, read_count = readScopeFromContent('{', '}', scope_contents[index:], 0)
+            Logger.write().debug('Attempting to read content between matching `%s` and `%s`' % ('{', '}'))
+            status, assignment_scope, read_count, self.error = readScopeFromContent('{', '}', scope_contents[index:], 0)
+            if status is False:
+                break # pragma: no cover
             index += read_count
+            status = validateCommaSeparatedValues(assignment_scope)
+            if status is False:
+                self.error = 'Error in validating contents of scope ending at line %i, please check to make sure you have no trailing commas' % self.line_number # pragma: no cover
             break
         return (status, index)
 
@@ -424,10 +459,9 @@ class Linter(object):
                     status, index = self.validateFor(scope_contents, index)
                     break
                 if case():
-                    status, index_increase, _line_increase, _char_number, _last_newline_increase, error = readWhitespace(False, scope_contents, index)
-                    if status is False: # pragma: no cover
-                        self.error = error
-                        break
+                    status, index_increase, _, _, _, self.error = readWhitespace(False, scope_contents, index)
+                    if status is False:
+                        break # pragma: no cover
                     index = index_increase
                     break
             should_advance = index < len(scope_contents)
@@ -498,7 +532,7 @@ class Linter(object):
             break
         return status
 
-    def validateSetting(self):
+    def validateSetting(self): # pylint: disable=too-many-branches
         status = True
         while status is True:
             self.current_keyword = Keyword.Constants._setting
@@ -548,6 +582,7 @@ class Linter(object):
                 break # pragma: no cover
             break
         return status
+
     def validates(self): # pylint: disable=too-many-branches,too-many-statements
         should_advance = len(self.contents) > 0
         status = True

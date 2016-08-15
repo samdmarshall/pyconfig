@@ -94,7 +94,11 @@ _bc_value = pyparsing.Group(                                                   \
 )
 
 #
-_if_value = pyparsing.Word(pyparsing.alphanums)
+_if_value = pyparsing.Group(                                                   \
+    pyparsing.Optional(                                                        \
+        _genericCSVList.ignore(pyparsing.pythonStyleComment)                   \
+    )                                                                          \
+)
 
 #
 _if_cond = pyparsing.Keyword(Keyword.Constants._if)     \
