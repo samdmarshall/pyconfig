@@ -12,3 +12,21 @@ setting PRODUCT_NAME {
 		SimulatorApp
 	}
 }
+
+setting FOO {
+	if config=Debug {
+		DebugMode
+	}
+}
+
+setting BAR {
+	if variant=unused {
+		unused
+	}
+}
+
+setting BAZ {
+	if dialect=c11 {
+		c11
+	}
+}

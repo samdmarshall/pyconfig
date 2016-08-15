@@ -121,7 +121,7 @@ def main(argv=sys.argv[1:]):
     running_as_script = __name__ == '__main__'
     encountered_linter_error = len(found_pyconfig_files) != len(parsed_configs)
     if running_as_script and encountered_linter_error:
-        sys.exit(1)
+        sys.exit(1) # pragma: no cover
 
     # detect if there was an option to generate data from the SCM used for this repo
     ## if there is, then it should be inserted into the list of files so that it can
