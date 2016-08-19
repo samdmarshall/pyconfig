@@ -7,3 +7,12 @@ setting OTHER_CFLAGS use WRAPPER_EXTENSION {
 		-Wall
 	}
 }
+
+setting FOO use BAR {
+	for 0800 {
+		"hello"
+	}
+	for 0700 {
+		"world"
+	}
+}

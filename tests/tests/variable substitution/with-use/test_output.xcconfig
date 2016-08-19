@@ -3,3 +3,6 @@
 OTHER_CFLAGS_app = 
 OTHER_CFLAGS_xctest = -Werror
 OTHER_CFLAGS = $(OTHER_CFLAGS_$(WRAPPER_EXTENSION)) -Wall
+FOO_0800 = "hello"
+FOO_0700 = "world"
+FOO = $(FOO_$(BAR))

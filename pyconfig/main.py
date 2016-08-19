@@ -118,6 +118,10 @@ def main(argv=sys.argv[1:]):
     ## to a graph node object. Return all of the created nodes as a set.
     parsed_configs = Consumer.CreateGraphNodes(found_pyconfig_files)
 
+    # if pyconfig is running as a script and the number of files returned by the
+    ## consumer is not equal to the number of files located originally, then
+    ## this should be interpreted as a linter error and the script should finish
+    ## with a non-zero exit code.
     running_as_script = __name__ == '__main__'
     encountered_linter_error = len(found_pyconfig_files) != len(parsed_configs)
     if running_as_script and encountered_linter_error:
@@ -138,6 +142,7 @@ def main(argv=sys.argv[1:]):
     ## instead of a map() call to be compatible with Python 3.
     for node in parsed_configs:
         node.resolvePaths(parsed_configs)
+
     # once the file paths have been resolved, then transform the set of files into
     ## an array that is ordered from root config to highest level config. Since the
     ## map of config files has many roots and many children, this will traverse one

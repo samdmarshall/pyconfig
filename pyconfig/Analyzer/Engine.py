@@ -81,7 +81,10 @@ class Engine(object):
         self.__namespace_table = dict()
         self.__user_defined_table = set()
 
-    def runInitializer(self, configuration):
+    def __runInitializer(self, configuration):
+        """
+        This method is to pass through the passed in file
+        """
         self.__namespace_table[configuration.name] = dict()
         for item in configuration.config:
             is_setting = isinstance(item, SettingKeyword.SettingKeyword)
@@ -98,7 +101,7 @@ class Engine(object):
                         '\n> '+configuration.name+':'+previous_line_number+''
                     Logger.write().warning(print_string)
 
-    def runDuplicates(self, configuration):
+    def __runDuplicates(self, configuration):
         duplicate_results = findDuplicates(self.__namespace_table)
         for key, value in list(duplicate_results.items()):
             for file_containing_dups in value:
@@ -113,7 +116,7 @@ class Engine(object):
                         '\n> '+file_containing_dups
                     Logger.write().warning(print_message)
 
-    def gatherUserDefinedVariables(self):
+    def __gatherUserDefinedVariables(self):
         self.__user_defined_table = set()
         snapshot_of_dict = list(self.__namespace_table.items())
         for _configuration, values in snapshot_of_dict:
@@ -125,7 +128,7 @@ class Engine(object):
                 if not is_builtin and not is_runtime and not is_known:
                     self.__user_defined_table.add(build_setting_name)
 
-    def runMissing(self):
+    def __runMissing(self):
         variables = gatherAllVariables(self.__namespace_table)
         # remove any variables that are defined as part of the builtin set
         variables.difference_update(self.__builtin_table)
@@ -149,7 +152,7 @@ class Engine(object):
         Logger.write().debug('Analyzer is processing "%s"' % configuration.name)
         if os.path.basename(configuration.name) != SCM.SCM_NODE_NAME:
             Logger.write().info('Analyzing %s ...' % configuration.name)
-            self.runInitializer(configuration)
-            self.runDuplicates(configuration)
-            self.gatherUserDefinedVariables()
-            self.runMissing()
+            self.__runInitializer(configuration)
+            self.__runDuplicates(configuration)
+            self.__gatherUserDefinedVariables()
+            self.__runMissing()

@@ -51,9 +51,8 @@ _directAssignment = pyparsing.Word(Constants._specialCase) # pylint: disable=pro
 _directAssignment.setParseAction(addLocnToTokens)
 
 # build configuration Word definition
-_configutationBody = pyparsing.alphanums+'_'
-_configurationStart = pyparsing.alphas
-_buildConfigurationName = pyparsing.Word(_configurationStart, _configutationBody) ^ _directAssignment
+_configutationWord = pyparsing.alphanums+'_'
+_buildConfigurationName = pyparsing.Word(_configutationWord) ^ _directAssignment
 
 _buildConfigurationName.setParseAction(addLocnToTokens)
 
