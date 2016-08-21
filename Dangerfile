@@ -25,3 +25,6 @@
     'path'=> 'lint_output.txt'
   }
 ]
+
+# Run the shared Dangerfile with these settings
+danger.import_dangerfile "samdmarshall/danger"
