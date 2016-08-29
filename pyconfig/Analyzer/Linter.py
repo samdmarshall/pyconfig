@@ -97,12 +97,17 @@ def readScopeFromContent(starter, closer, content=None, index=None):
         # get the current character to look at
         current_char = content[index]
         # consume any whitespace
-        status, index, _, _, _, error_msg = readWhitespace(True, content, index)
-        if status is False:
-            # if there wasn't whitespace, then advance the counter and make sure we continue
-            ## without any errors
-            index += 1
-            status = True
+        status, index, _, _, _, error_msg = readWhitespace(content, index)
+        if error_msg is not None:
+            # the only error message that will come out of the `readWhitespace` function
+            ## is that it encountered a non-whitespace character. This isn't really an
+            ## error so instead of trying to fake it by continuing, we are going to try
+            ## to reach another character of another type.
+            status, index, error_msg = readNonWhitespace(content, index)
+        if error_msg is not None:
+            # now throw an error, because we have encountered a case that should be
+            ## raised to the user's awareness.
+            Logger.write().error(error_msg)
         # if a scope starter is encountered then increase the current scope level
         if current_char == starter:
             scope_level += 1
@@ -166,7 +171,18 @@ def readConditionFromContent(content=None, index=None): # pylint: disable=too-ma
         break
     return (status, index - original_index)
 
-def readWhitespace(optional=False, content=None, index=None):
+def readNonWhitespace(content=None, index=None):
+    error_msg = None
+    current_char = content[index]
+    status = current_char not in string.whitespace
+    if status is True:
+        index += 1
+    else:
+        error_msg = 'Was expecting non-whitespace after a failure to read whitespace, but encountered a whitespace character!'
+    result = (status, index, error_msg)
+    return result
+
+def readWhitespace(content=None, index=None):
     line_number = 0
     char_number = 0
     last_newline = -1
@@ -181,10 +197,7 @@ def readWhitespace(optional=False, content=None, index=None):
         index += 1
         char_number += 1
     else:
-        if optional is False: # pragma: no cover
-            error = ('Expected whitespace, but found `%s`' % current_char)
-        else:
-            Logger.write().debug('Attempted to read optional whitespace, but found `%s`, continuing...' % content[index])
+        error = ('Expected whitespace, but found `%s`' % current_char)
     result = (status, index, line_number, char_number, last_newline, error)
     return result
 
@@ -219,8 +232,8 @@ class Linter(object):
         self.first_export = True
         self.current_keyword = None
 
-    def readWhitespace(self, optional=False, content=None, index=None):
-        status, index_increase, line_increase, char_number, last_newline_increase, error = readWhitespace(optional, content, index)
+    def readWhitespace(self, content=None, index=None):
+        status, index_increase, line_increase, char_number, last_newline_increase, error = readWhitespace(content, index)
         # update error message
         if error is not None: # pragma: no cover
             self.error = '%s at line: %i, index: %i' % (error, self.line_number, self.char_number)
@@ -265,7 +278,7 @@ class Linter(object):
             # get the current character to look at
             current_char = self.contents[self.index]
             # consume any whitespace
-            status = self.readWhitespace(True, self.contents, self.index)
+            status = self.readWhitespace(self.contents, self.index)
             if status is False:
                 # if there wasn't whitespace, then advance the counter and make sure we continue
                 ## without any errors
@@ -459,7 +472,7 @@ class Linter(object):
                     status, index = self.validateFor(scope_contents, index)
                     break
                 if case():
-                    status, index_increase, _, _, _, self.error = readWhitespace(False, scope_contents, index)
+                    status, index_increase, _, _, _, self.error = readWhitespace(scope_contents, index)
                     if status is False:
                         break # pragma: no cover
                     index = index_increase
@@ -611,7 +624,7 @@ class Linter(object):
                     status = self.validateSetting()
                     break
                 if case():
-                    status = self.readWhitespace(False, self.contents, self.index)
+                    status = self.readWhitespace(self.contents, self.index)
                     break
             should_advance = self.index < len(self.contents)
         return status
