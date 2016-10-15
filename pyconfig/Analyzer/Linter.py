@@ -560,6 +560,7 @@ class Linter(object):
             status, scope_contents = self.readScope('{', '}')
             if status is False:
                 break # pragma: no cover
+            _ = scope_contents
             break
         return status
 

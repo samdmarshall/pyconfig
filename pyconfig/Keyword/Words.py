@@ -66,4 +66,4 @@ _conditionalComparator = pyparsing.Word(pyparsing.alphanums+'*\"\'_-')
 
 _conditionalComparator.setParseAction(addLocnToTokens)
 
-_direct = pyparsing.Word(Constants._direct)
+_direct = pyparsing.Word(Constants._direct) # pylint: disable=protected-access
