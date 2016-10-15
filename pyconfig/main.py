@@ -132,9 +132,7 @@ def main(argv=sys.argv[1:]):
     ## be in graphed as part of the dependency tree.
     if args.scm_info is not None:
         Logger.write().info('SCM method: %s' % args.scm_info)
-
         scm_node = SCM.CreateNodeForSCM(args.scm_info, args.file)
-
         parsed_configs.add(scm_node)
 
     # after all the nodes have been constructed, the file paths that each node
