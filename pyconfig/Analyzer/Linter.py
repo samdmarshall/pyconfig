@@ -104,7 +104,7 @@ def readScopeFromContent(starter, closer, content=None, index=None):
             ## error so instead of trying to fake it by continuing, we are going to try
             ## to reach another character of another type.
             status, index, error_msg = readNonWhitespace(content, index)
-        if error_msg is not None:
+        if error_msg is not None: # pragma: no cover
             # now throw an error, because we have encountered a case that should be
             ## raised to the user's awareness.
             Logger.write().error(error_msg)
@@ -177,7 +177,7 @@ def readNonWhitespace(content=None, index=None):
     status = current_char not in string.whitespace
     if status is True:
         index += 1
-    else:
+    else: # pragma: no cover
         error_msg = 'Was expecting non-whitespace after a failure to read whitespace, but encountered a whitespace character!'
     result = (status, index, error_msg)
     return result
@@ -545,6 +545,24 @@ class Linter(object):
             break
         return status
 
+    def validateDirect(self):
+        status = True
+        while status is True:
+            # read the direct keyword
+            status = self.readString(Keyword.Constants._direct)
+            if status is False:
+                break # pragma: no cover
+            # read whitespace
+            status = self.readString(' ')
+            if status is False:
+                break # pragma: no cover
+            # read scope
+            status, scope_contents = self.readScope('{', '}')
+            if status is False:
+                break # pragma: no cover
+            break
+        return status
+
     def validateSetting(self): # pylint: disable=too-many-branches
         status = True
         while status is True:
@@ -610,6 +628,10 @@ class Linter(object):
                 if case(Keyword.Constants._export[0]):
                     Logger.write().debug('Attempting to read export statement...')
                     status = self.validateExport()
+                    break
+                if case(Keyword.Constants._direct[0]):
+                    Logger.write().debug('Attempting to read direct statement...')
+                    status = self.validateDirect()
                     break
                 if case(Keyword.Constants._required_include[0]):
                     pass # pragma: no cover

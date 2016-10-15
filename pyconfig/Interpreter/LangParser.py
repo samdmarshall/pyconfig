@@ -149,6 +149,21 @@ _setting = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment)
     )                                                                                             \
 )
 
+_direct_value = pyparsing.delimitedList(                                     \
+        pyparsing.Word(unicodePrintables+' \t'),                             \
+        pyparsing.Empty()                                                    \
+    )
+
+_direct = pyparsing.Suppress(pyparsing.ZeroOrMore(pyparsing.pythonStyleComment))                  \
++ pyparsing.Group(                                                                                \
+    pyparsing.Keyword(Keyword.Constants._direct)                                                  \
+    + pyparsing.nestedExpr(                                                                       \
+        Keyword.Constants._openBrace,                                                             \
+        Keyword.Constants._closeBrace,                                                            \
+        _direct_value                                                                             \
+    )                                                                                             \
+)
+
 # composing the configuration file parser
 _config = pyparsing.Suppress(                                \
     pyparsing.ZeroOrMore(                                    \
@@ -161,6 +176,7 @@ _config = pyparsing.Suppress(                                \
         pyparsing.delimitedList(_include, pyparsing.Empty()) \
     )                                                        \
 )                                                            \
++ pyparsing.Optional(_direct)                                \
 + pyparsing.Optional(                                        \
     pyparsing.Group(                                         \
         pyparsing.delimitedList(_setting, pyparsing.Empty()) \

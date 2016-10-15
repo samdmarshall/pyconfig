@@ -65,3 +65,5 @@ _conditionalValue.setParseAction(addLocnToTokens)
 _conditionalComparator = pyparsing.Word(pyparsing.alphanums+'*\"\'_-')
 
 _conditionalComparator.setParseAction(addLocnToTokens)
+
+_direct = pyparsing.Word(Constants._direct)

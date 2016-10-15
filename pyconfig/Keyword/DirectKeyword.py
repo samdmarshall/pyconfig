@@ -30,24 +30,25 @@
 
 from . import Constants
 from . import BaseKeyword
-from . import ExportKeyword
-from . import IncludeKeyword
-from . import SettingKeyword
-from . import DirectKeyword
 
-kTypeResolver = {
-    Constants._export: ExportKeyword.ExportKeyword, # pylint: disable=protected-access
-    Constants._optional_include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
-    Constants._required_include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
-    Constants._include: IncludeKeyword.IncludeKeyword, # pylint: disable=protected-access
-    Constants._setting: SettingKeyword.SettingKeyword, # pylint: disable=protected-access
-    Constants._direct: DirectKeyword.DirectKeyword, # pylint: disable=protected-access
-}
+class DirectKeyword(BaseKeyword.BaseKeyword):
 
-def ResolveKeywordType(parsed_keyword):
-    result = BaseKeyword
-    if len(parsed_keyword):
-        parsed_keyword_type = parsed_keyword[0]
-        if parsed_keyword_type in kTypeResolver.keys():
-            result = kTypeResolver[parsed_keyword_type]
-    return result
+    def __init__(self):
+        super(DirectKeyword, self).__init__()
+        self.direct_contents = None
+
+    def __eq__(self, other): # pragma: no cover
+        cmp_contents = (self.direct_contents == other.direct_contents)
+        return cmp_contents
+
+    def consume(self, parsed_item=None):
+        parsed_item = list() if parsed_item is None else parsed_item
+        super(DirectKeyword, self).consume(parsed_item)
+
+        if parsed_item[0] != Constants._direct:  # pylint: disable=protected-access
+            raise ValueError('DirectKeyword can only consume parsed build setting elements!') # pragma: no cover
+
+        print(parsed_item)
+
+    def serialize(self): # pragma: no cover
+        raise Exception('The "export" keyword should never be serialized! Something has gone wrong!')
