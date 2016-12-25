@@ -1,0 +1,12 @@
+// TEST DATA
+// TEST DATA
+// foo
+PRODUCT_NAME[arch=i386] = MacApp32
+PRODUCT_NAME[arch=x86_64] = MacApp64
+PRODUCT_NAME[arch=*86*] = IntelApp
+PRODUCT_NAME[arch=i386,sdk=iphone] = SimulatorApp
+PRODUCT_NAME[arch=arm*] =
+FOO[config=Debug] = DebugMode
+BAR[variant=unused] = unused
+BAZ[dialect=c11] = c11
+FUZZ[config=Release] = $(BAR)

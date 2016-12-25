@@ -185,7 +185,7 @@ clean: check
 # ---
 
 build2: clean
-	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
+	$(PYTHON2) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 	
 # ---

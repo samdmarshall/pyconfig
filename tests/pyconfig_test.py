@@ -137,5 +137,8 @@ class pyconfigTestCases(unittest.TestCase):
     def test_debug_flag(self):
         LoadTestDirectoryAndTestWithName(self, 'comments', 'test', ['--verbose', '--debug'])
 
+    def test_direct_keyword(self):
+        LoadTestDirectoryAndTestWithName(self, 'direct', 'test')
+
 if __name__ == '__main__':
     unittest.main()
