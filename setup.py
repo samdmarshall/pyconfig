@@ -56,6 +56,6 @@ setup(
     test_suite = 'tests.pyconfig_test',
     zip_safe = False,
     install_requires = [
-        'pyparsing == 2.0.1',
+        'pyparsing >= 2.0.1',
     ]
 )

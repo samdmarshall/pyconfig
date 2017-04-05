@@ -11,7 +11,7 @@ dependencies:
     - sudo apt-get install mercurial --no-install-recommends
   override:
     - make install-deps
-    - pyenv local 2.7.10 3.5.0
+    - pyenv local 2.7.10 3.6.0
 
 test:
   override:
