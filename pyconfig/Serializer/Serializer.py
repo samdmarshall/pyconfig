@@ -42,7 +42,12 @@ def openOutputFileToWrite(input_string):
     file_path = os.path.expanduser(input_string)
     parent_path = os.path.dirname(file_path)
     if not os.path.exists(parent_path):  # pragma: no cover
-        os.makedirs(parent_path)
+        try:
+            os.makedirs(parent_path)
+        except OSError as e:
+            if e.errno != 17:
+                raise
+            pass
     return open(file_path, 'w')
 
 def writeFile(config_node=None, scheme_name=None):
