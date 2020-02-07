@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -32,7 +32,7 @@ from .                 import LangParser
 from .                 import Dependent
 from ..Helpers.Logger  import Logger
 from ..Analyzer.Linter import Linter
-def CreateNodeFromString(config_name="", config_contents=""):
+def CreateNodeFromString(config_name="", config_contents="") -> Dependent.DependentNode:
     # now parse the file's contents
     parsed_contents = LangParser._config.parseString(config_contents) # pylint: disable=protected-access
 
@@ -40,7 +40,7 @@ def CreateNodeFromString(config_name="", config_contents=""):
 
     return node
 
-def CreateGraphNodes(pyconfig_path_list=None):
+def CreateGraphNodes(pyconfig_path_list=None) -> set:
     pyconfig_path_list = list() if pyconfig_path_list is None else pyconfig_path_list
 
     parsed_configs = set()

@@ -1,16 +1,8 @@
-.DS_Store
+
+tests/**/*.xcconfig
+
 installed_files.txt
-build/
-dist/
-pyconfig.egg-info/
-.tox/
-.coverage
-*.xcconfig
-*.pyc
-__pycache__/
-htmlcov/
-.eggs/
-lint_output.txt
+*_output.txt
 
 # make sure to include the static test output data
 !*_output.xcconfig

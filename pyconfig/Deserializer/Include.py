@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig

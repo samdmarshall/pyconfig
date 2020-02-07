@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -31,6 +31,7 @@
 import os
 from ..Graph          import Searcher
 from ..Interpreter    import Consumer
+from ..Interpreter    import Dependent
 from ..Helpers.Switch import Switch
 from ..Helpers        import Executor
 from ..Helpers.Logger import Logger
@@ -38,14 +39,14 @@ from ..Helpers.Logger import Logger
 SCM_DEFAULT_EXPORT_NAME = 'scm-version'
 SCM_NODE_NAME = 'SCM Information'
 
-def DetectError(output, error, detect_mode, error_string):
+def DetectError(output, error, detect_mode, error_string) -> bool:
     should_append_data = True
     if error != 0 and detect_mode is False: # pragma: no cover
         should_append_data = False
         Logger.write().error(error_string % output)
     return should_append_data
 
-def InfoFromGit(detect_mode=False):
+def InfoFromGit(detect_mode=False) -> str:
     content_string = ''
     should_append_data = True
 
@@ -70,7 +71,7 @@ def InfoFromGit(detect_mode=False):
                           '}\n'
     return content_string
 
-def InfoFromSVN(detect_mode=False):
+def InfoFromSVN(detect_mode=False) -> str:
     content_string = ''
     should_append_data = True
 
@@ -94,7 +95,7 @@ def InfoFromSVN(detect_mode=False):
                               '}\n'
     return content_string
 
-def InfoFromMercurial(detect_mode=False):
+def InfoFromMercurial(detect_mode=False) -> str:
     content_string = ''
 
     content_string = ''
@@ -121,7 +122,7 @@ def InfoFromMercurial(detect_mode=False):
                           '}\n'
     return content_string
 
-def GenerateSCMContents(scm_type='detect'):
+def GenerateSCMContents(scm_type='detect') -> str:
     scm_content_string = ''
     detect_mode = False
     for case in Switch(scm_type):
@@ -143,7 +144,7 @@ def GenerateSCMContents(scm_type='detect'):
             break
     return scm_content_string
 
-def CreateNodeForSCM(scm_type='detect', file_path=''):
+def CreateNodeForSCM(scm_type='detect', file_path='') -> Dependent.DependentNode:
     working_dir = Searcher.locateWorkingDirectoryForPath(file_path)
 
     original_dir = os.getcwd()

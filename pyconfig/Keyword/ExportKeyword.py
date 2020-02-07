@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -41,10 +41,10 @@ class ExportKeyword(BaseKeyword.BaseKeyword):
         cmp_export = (self.export_path == other.export_path)
         return cmp_export
 
-    def consume(self, parsed_item=None):
+    def consume(self, parsed_item=None) -> None:
         parsed_item = list() if parsed_item is None else parsed_item
         super(ExportKeyword, self).consume(parsed_item)
         self.export_path = self.consumePath(Constants._export, parsed_item) # pylint: disable=protected-access
 
-    def serialize(self): # pragma: no cover
+    def serialize(self) -> str: # pragma: no cover
         raise Exception('The "export" keyword should never be serialized! Something has gone wrong!')

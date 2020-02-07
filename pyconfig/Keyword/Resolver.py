@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -28,6 +28,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import typing
 from . import Constants
 from . import BaseKeyword
 from . import ExportKeyword

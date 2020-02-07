@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -47,9 +47,10 @@ def openOutputFileToWrite(input_string):
         except OSError as error:
             if error.errno != 17:
                 raise
-    return open(file_path, 'w')
+    fd = open(file_path, 'w')
+    return fd
 
-def writeFile(config_node=None, scheme_name=None):
+def writeFile(config_node=None, scheme_name=None) -> None:
     """
     Takes a configuration file node object and a string of the scheme
     name and will write out a file to disk.

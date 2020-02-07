@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -40,7 +40,7 @@ from .Analyzer        import Engine
 from .SCM             import SCM
 
 # Main
-def main(argv=sys.argv[1:]):
+def main(argv=sys.argv[1:]) -> None:
     # setup the argument parsing
     parser = argparse.ArgumentParser(description='pyconfig is a tool to generate xcconfig files from a simple DSL')
     parser.add_argument(

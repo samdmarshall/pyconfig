@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -28,7 +28,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def TraverseNodes(graph_nodes=None):
+def TraverseNodes(graph_nodes=None) -> list:
     graph_nodes = list() if graph_nodes is None else graph_nodes
 
     graph_list = list()
@@ -42,7 +42,7 @@ def TraverseNodes(graph_nodes=None):
     visited.update(set(child_nodes))
     return graph_list
 
-def WalkNodes(visited=None, nodes_with_children=None):
+def WalkNodes(visited=None, nodes_with_children=None) -> list:
     visited = set() if visited is None else visited
     nodes_with_children = list() if nodes_with_children is None else nodes_with_children
 

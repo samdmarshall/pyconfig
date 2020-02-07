@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -42,13 +42,13 @@ class IncludeKeyword(BaseKeyword.BaseKeyword):
         cmp_include = (self.include_path == other.include_path)
         return cmp_include
 
-    def consume(self, parsed_item=None):
+    def consume(self, parsed_item=None) -> None:
         parsed_item = list() if parsed_item is None else parsed_item
         super(IncludeKeyword, self).consume(parsed_item)
         self.optional = parsed_item[0].startswith('?')
         self.include_path = self.consumePath(Constants._include, parsed_item) # pylint: disable=protected-access
 
-    def serialize(self):
+    def serialize(self) -> str:
         serialized_string = ''
         include_type_string = ''
         if self.optional:

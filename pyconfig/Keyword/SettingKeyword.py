@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -55,7 +55,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         cmp_for = (self.uses_for and (self.uses_for == other.uses_for))
         return cmp_name and (cmp_if or cmp_for)
 
-    def consumeForStatement(self, statement):
+    def consumeForStatement(self, statement) -> None:
         configuration_name = statement[1]
         value = ''
         if len(statement) == 3:
@@ -65,7 +65,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         else:
             self.default_value = ' '.join(value)
 
-    def consumeModifiers(self, modifiers):
+    def consumeModifiers(self, modifiers) -> None:
         if len(modifiers):
             if modifiers[0] == Constants._use: # pylint: disable=protected-access
                 self.substitutes = True
@@ -73,7 +73,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
             if modifiers[-1] == Constants._inherits: # pylint: disable=protected-access
                 self.inherits = True
 
-    def consumeConfigurationAssignment(self, configurations):
+    def consumeConfigurationAssignment(self, configurations) -> None:
         keywords_used = list()
         for setting_configuration in configurations:
             keywords_used.append(setting_configuration[0])
@@ -86,7 +86,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         self.uses_if = (used_keyword_in_assignemnt == Constants._if) # pylint: disable=protected-access
         self.uses_for = (used_keyword_in_assignemnt == Constants._for) # pylint: disable=protected-access
 
-    def consumeIfStatement(self, statement):
+    def consumeIfStatement(self, statement) -> None:
         conditions = statement[1]
         value = ''
         if len(statement) == 3:
@@ -97,7 +97,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         conditional_key_value_string = ','.join(conditional_key_value_list)
         self.configuration_values[conditional_key_value_string] = ' '.join(value)
 
-    def consume(self, parsed_item=None):
+    def consume(self, parsed_item=None) -> None:
         parsed_item = list() if parsed_item is None else parsed_item
         super(SettingKeyword, self).consume(parsed_item)
 
@@ -119,17 +119,22 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
             if configuration_type == Constants._if: # pylint: disable=protected-access
                 self.consumeIfStatement(setting_configuration)
 
-    def serializeInheritedValues(self):
+    def serializeInheritedValues(self) -> str:
         serialize_string = ''
         if self.inherits:
             serialize_string += '$(inherited) '
         return serialize_string
 
-    def isConfigurationCase(self):
+    def isConfigurationCase(self) -> bool:
         keys = list(self.configuration_values.keys())
-        return (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase) # pylint: disable=protected-access
+        has_keys = len(keys) != 0
+        has_many_keys = len(keys) > 1
+        not_special_key = has_keys and keys[0] != Constants._specialCase
+        # (len(keys) > 1) or (len(keys) and keys[0] != Constants._specialCase) # pylint: disable=protected-access
+        result = has_many_keys or not_special_key
+        return result
 
-    def serializeForStatement(self, key, value):
+    def serializeForStatement(self, key, value) -> str:
         serialize_string = ''
         serialize_string += self.build_setting_name
         if self.isConfigurationCase():
@@ -139,7 +144,7 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         serialize_string += value + '\n'
         return serialize_string
 
-    def serializeForConditionalStatement(self):
+    def serializeForConditionalStatement(self) -> str:
         serialize_string = ''
         serialize_string += self.build_setting_name + ' = '
         serialize_string += self.serializeInheritedValues()
@@ -151,14 +156,14 @@ class SettingKeyword(BaseKeyword.BaseKeyword):
         serialize_string += '\n'
         return serialize_string
 
-    def serializeIfStatement(self, key, value):
+    def serializeIfStatement(self, key, value) -> str:
         serialize_string = ''
         serialize_string += self.build_setting_name+'['+key+']'+' = '
         serialize_string += self.serializeInheritedValues()
         serialize_string += value+'\n'
         return serialize_string
 
-    def serialize(self):
+    def serialize(self) -> str:
         serialize_string = ''
         if self.uses_for:
             for key, value in self.configuration_values.items():

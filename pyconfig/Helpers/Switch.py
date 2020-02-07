@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -40,7 +40,7 @@ class Switch(object):
         yield self.match
         raise StopIteration # pragma: no cover
 
-    def match(self, *args):
+    def match(self, *args) -> bool:
         """Indicate whether or not to enter a case suite"""
         result = False
         if self.fall or not args:

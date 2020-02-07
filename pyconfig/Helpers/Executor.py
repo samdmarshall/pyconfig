@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -31,17 +31,11 @@
 import sys
 import subprocess
 
-try:
-    from subprocess import DEVNULL
-except ImportError: # pragma: no cover
-    import os
-    DEVNULL = open(os.devnull, 'wb')
-
-def Invoke(call_args, shell_state=False):
+def Invoke(call_args, shell_state=False) -> tuple:
     error = 0
     output = None
     try:
-        output = subprocess.check_output(call_args, shell=shell_state, stderr=DEVNULL).decode(sys.stdout.encoding)
+        output = subprocess.check_output(call_args, shell=shell_state, stderr=subprocess.DEVNULL).decode(sys.stdout.encoding)
     except subprocess.CalledProcessError as exception:
         output = exception.output.decode(sys.stdout.encoding)
         error = exception.returncode

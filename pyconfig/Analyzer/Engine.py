@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,6 +29,7 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import typing
 from ..Settings           import TypeConstants
 from ..Settings           import Builtin
 from ..Settings           import Runtime
@@ -36,7 +37,7 @@ from ..Keyword            import SettingKeyword
 from ..Helpers.Logger     import Logger
 from ..SCM                import SCM
 
-def findPreviousDefinition(kv_array, configuration, setting_key):
+def findPreviousDefinition(kv_array, configuration, setting_key) -> list:
     previous_definition_indexes = list()
     for file_name, value in kv_array:
         if file_name != configuration:
@@ -45,9 +46,9 @@ def findPreviousDefinition(kv_array, configuration, setting_key):
                 previous_definition_indexes.append(file_name)
     return previous_definition_indexes
 
-def findDuplicates(dictionary):
+def findDuplicates(dictionary) -> dict:
     results = dict()
-    settings_set = set()
+    settings_set: typing.Set[str] = set()
     snapshot_of_dict = list(dictionary.items())
     for configuration, values in snapshot_of_dict:
         setting_values = list(values.keys())
@@ -61,7 +62,7 @@ def findDuplicates(dictionary):
         settings_set.update(setting_values)
     return results
 
-def gatherAllVariables(dictionary):
+def gatherAllVariables(dictionary) -> set:
     settings_set = set()
     snapshot_of_dict = list(dictionary.items())
     for _configuration, values in snapshot_of_dict:
@@ -81,7 +82,7 @@ class Engine(object):
         self.__namespace_table = dict()
         self.__user_defined_table = set()
 
-    def __runInitializer(self, configuration):
+    def __runInitializer(self, configuration) -> None:
         """
         This method is to pass through the passed in file
         """
@@ -89,7 +90,7 @@ class Engine(object):
         for item in configuration.config:
             is_setting = isinstance(item, SettingKeyword.SettingKeyword)
             if is_setting:
-                is_unset = (item.build_setting_name not in list(self.__namespace_table[configuration.name].keys()))
+                is_unset = ( item.build_setting_name not in list(self.__namespace_table[configuration.name].keys()) )
                 if is_unset:
                     self.__namespace_table[configuration.name][item.build_setting_name] = item
                 else: # pragma: no cover
@@ -101,7 +102,7 @@ class Engine(object):
                         '\n> '+configuration.name+':'+previous_line_number+''
                     Logger.write().warning(print_string)
 
-    def __runDuplicates(self, configuration):
+    def __runDuplicates(self, configuration) -> None:
         duplicate_results = findDuplicates(self.__namespace_table)
         for key, value in list(duplicate_results.items()):
             for file_containing_dups in value:
@@ -116,7 +117,7 @@ class Engine(object):
                         '\n> '+file_containing_dups
                     Logger.write().warning(print_message)
 
-    def __gatherUserDefinedVariables(self):
+    def __gatherUserDefinedVariables(self) -> None:
         self.__user_defined_table = set()
         snapshot_of_dict = list(self.__namespace_table.items())
         for _configuration, values in snapshot_of_dict:
@@ -128,7 +129,7 @@ class Engine(object):
                 if not is_builtin and not is_runtime and not is_known:
                     self.__user_defined_table.add(build_setting_name)
 
-    def __runMissing(self):
+    def __runMissing(self) -> None:
         variables = gatherAllVariables(self.__namespace_table)
         # remove any variables that are defined as part of the builtin set
         variables.difference_update(self.__builtin_table)

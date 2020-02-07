@@ -7,8 +7,8 @@ import shutil
 import stat
 
 # Copies the commit-msg file into the .git/hooks directory to be executed by
-# git during commits if it does not already exist or if the file has been changed. 
-# Files in the .git/hooks are not tracked, so any updates to commit-msg must 
+# git during commits if it does not already exist or if the file has been changed.
+# Files in the .git/hooks are not tracked, so any updates to commit-msg must
 # occur in the root and be copied over.
 base_git_hooks_path = '.git/hooks/'
 base_tools_hooks_path = './tools/hooks/'

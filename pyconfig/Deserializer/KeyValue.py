@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,10 +29,11 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import typing
 from .                   import XCLineItem
 from ..Helpers.Switch    import Switch
 
-def shouldAppendConditionItem(condition):
+def shouldAppendConditionItem(condition) -> bool:
     result = False
     for case in Switch(condition):
         if case(''):
@@ -44,7 +45,7 @@ def shouldAppendConditionItem(condition):
             break
     return result
 
-def splitByConditions(conditions_string):
+def splitByConditions(conditions_string) -> list:
     results_array = list()
     conditions_string_array = re.split(r'[\[|\]]', conditions_string)
     for condition in conditions_string_array:
@@ -57,8 +58,8 @@ class KeyValue(XCLineItem.XCLineItem):
     def __init__(self, line):
         super(KeyValue, self).__init__(line)
         offset = KeyValue.findKeyValueAssignmentOffset(self.contents, 0)
-        self.__key = self.contents[:offset]
-        self.__value = self.contents[offset+1:]
+        self.__key: str = self.contents[:offset]
+        self.__value: str = self.contents[offset+1:]
 
     def __eq__(self, other):
         contents_match = super(KeyValue, self).__eq__(other)
@@ -71,7 +72,7 @@ class KeyValue(XCLineItem.XCLineItem):
         return configs_match
 
     @classmethod
-    def findKeyValueAssignmentOffset(cls, line, offset):
+    def findKeyValueAssignmentOffset(cls, line, offset) -> int:
         result_offset = -1
         find_open_bracket = line.find('[')
         find_equals = line.find('=')
@@ -90,7 +91,7 @@ class KeyValue(XCLineItem.XCLineItem):
             result_offset = new_offset
         return result_offset
 
-    def key(self):
+    def key(self) -> str:
         key = self.__key
         result_key = key
         find_bracket = key.find('[')
@@ -102,7 +103,7 @@ class KeyValue(XCLineItem.XCLineItem):
             result_key = key[:find_bracket]
         return result_key
 
-    def conditions(self):
+    def conditions(self) -> dict:
         conditions = {}
         key = self.__key
         find_bracket = key.find('[')
@@ -116,7 +117,7 @@ class KeyValue(XCLineItem.XCLineItem):
                 conditions[cond_key] = cond_value
         return conditions
 
-    def value(self):
+    def value(self) -> str:
         value = self.__value
         if len(value) == 0:
             value = ''

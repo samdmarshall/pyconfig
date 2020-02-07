@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -38,7 +38,6 @@ INSTALLED_FILES_RECORD := ./installed_files.txt
 
 # names of the executables that are used as a part of this project
 
-PYTHON2_CMD := python
 PYTHON3_CMD := python3
 TOX_CMD := tox
 COVERAGE_CMD := coverage
@@ -52,20 +51,20 @@ PRINTF_CMD := printf
 TOUCH_CMD := touch
 CP_CMD := cp
 CAT_CMD := cat
-PIP_CMD := pip
+PIP_CMD := pip3
 CCTREPORTER_CMD := codeclimate-test-reporter
 UNAME_CMD := uname
 EXIT_CMD := exit
 TPUT_CMD := tput
 TR_CMD := tr
 PYLINT_CMD := pylint
+MYPY_CMD := mypy
 
 PYPARSING := pyparsing
 TOX_PYENV := tox-pyenv
 
 # invoke the specific executable command
 
-PYTHON2 := $(shell command -v $(PYTHON2_CMD) 2> /dev/null)
 PYTHON3 := $(shell command -v $(PYTHON3_CMD) 2> /dev/null)
 TOX := $(shell command -v $(TOX_CMD) 2> /dev/null)
 COVERAGE := $(shell command -v $(COVERAGE_CMD) 2> /dev/null)
@@ -86,6 +85,7 @@ EXIT := $(shell command -v $(EXIT_CMD) 2> /dev/null)
 TPUT := $(shell command -v $(TPUT_CMD) 2> /dev/null)
 TR := $(shell command -v $(TR_CMD) 2> /dev/null)
 PYLINT := $(shell command -v $(PYLINT_CMD) 2> /dev/null)
+MYPY := $(shell command -v $(MYPY_CMD) 2> /dev/null)
 
 SYSTEM := $(shell $(UNAME) -s)
 ifeq ($(SYSTEM),Darwin)
@@ -120,12 +120,12 @@ check:
 	$(call checkfor,$(FIND_CMD))
 	$(call checkfor,$(XARGS_CMD))
 	$(call checkfor,$(RM_CMD))
-	$(call checkfor,$(PYTHON2_CMD))
 	$(call checkfor,$(PYTHON3_CMD))
 	$(call checkfor,$(PIP_CMD))
 	$(call checkfor,$(TOX_CMD))
 	$(call checkfor,$(COVERAGE_CMD))
 	$(call checkfor,$(PYLINT_CMD))
+	$(call checkfor,$(MYPY_CMD))
 	$(call checkfor,$(GEM_CMD))
 	$(call checkfor,$(DANGER_CMD))
 	@$(DISPLAY_SEPARATOR)
@@ -136,7 +136,6 @@ pipinstall = @$(PIP) install $1 $(USER_FLAG)
 geminstall = @$(GEM) install $1 $(USER_FLAG)
 
 install-deps:
-	$(call checkfor,$(PYTHON2_CMD))
 	$(call checkfor,$(PIP_CMD))
 	$(call pipinstall,$(COVERAGE_CMD))
 	$(call pipinstall,$(TOX_CMD))
@@ -144,6 +143,7 @@ install-deps:
 	$(call pipinstall,$(TOX_PYENV))
 	$(call pipinstall,$(CCTREPORTER_CMD))
 	$(call pipinstall,$(PYLINT_CMD))
+	$(call pipinstall,$(MYPY_CMD))
 	@$(DISPLAY_SEPARATOR)
 	$(call checkfor,$(GEM_CMD))
 	$(call geminstall,$(DANGER_CMD))
@@ -175,22 +175,19 @@ clean: check
 	@$(removeall) .coverage
 	@$(removeall) ./htmlcov
 	@$(removeall) ./.eggs
+	@$(removeall) ./.mypy_cache
+	@$(removeall) ./report
 	$(call cleanlocation, ., -name ".DS_Store")
 	$(call cleanlocation, ., -name "*.pyc")
 	$(call cleanlocation, ., -name "__pycache__" -type d)
 	$(call cleanlocation, ./tests, -name "*.xcconfig" -and -not -name "*_output.xcconfig")
+	$(call cleanlocation, ., -name "*_output.txt")
 	@$(PRINTF) "done!\n"
 	@$(DISPLAY_SEPARATOR)
-	
+
 # ---
 
-build2: clean
-	$(PYTHON2) ./setup.py install $(USER_FLAG) --record $(INSTALLED_FILES_RECORD)
-	@$(DISPLAY_SEPARATOR)
-	
-# ---
-
-build3: clean
+build: clean
 	$(PYTHON3) ./setup.py install --record $(INSTALLED_FILES_RECORD)
 	@$(DISPLAY_SEPARATOR)
 
@@ -257,7 +254,7 @@ else
 	@$(DANGER) local --verbose
 endif
 	@$(DISPLAY_SEPARATOR)
-	
+
 # ---
 
 ci: test lint report danger
@@ -265,13 +262,20 @@ ci: test lint report danger
 # ---
 
 lint: check
-	@$(TOUCH) lint_output.txt
+	@$(TOUCH) pylint_output.txt
 	@$(PRINTF) "Running linter... "
-	@$(PYLINT) --rcfile=pylintrc ./pyconfig > lint_output.txt || :
+	@$(PYLINT) --rcfile=pylintrc ./pyconfig > pylint_output.txt || :
 	@$(PRINTF) " done!\n"
-	@$(PRINTF) "Generated linter report: lint_output.txt\n"
+	@$(PRINTF) "Generated linter report: pylint_output.txt\n"
+
+	@$(TOUCH) mypy_output.txt
+	@$(PRINTF) "Running mypy... "
+	@$(MYPY) ./pyconfig --ignore-missing-imports > mypy_output.txt || :
+	@$(PRINTF) " done!\n"
+	@$(PRINTF) "Generated mypy report: mypy_output.txt\n"
+
 	@$(DISPLAY_SEPARATOR)
 
 # ---
 
-.PHONY: danger lint ci report test build3 build2 clean install-tools install-deps check
+.PHONY: danger lint ci report test build clean install-tools install-deps check

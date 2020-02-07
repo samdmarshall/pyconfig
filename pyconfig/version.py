@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -30,4 +30,4 @@
 
 from . import version_info
 
-__version__ = '1.1.3.1 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'
+__version__ = '1.2.0 ('+version_info.remote_origin+' @ '+version_info.commit_hash+')'

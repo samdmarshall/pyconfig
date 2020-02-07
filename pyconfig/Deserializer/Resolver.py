@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -28,12 +28,13 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import typing
 from . import XCLineItem
 from . import Include
 from . import Comment
 from . import KeyValue
 
-def ResolveLineType(line):
+def ResolveLineType(line) -> typing.Any:
     type_ = XCLineItem.XCLineItem
     if line.startswith('//'):
         type_ = Comment.Comment

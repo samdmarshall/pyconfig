@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -31,7 +31,7 @@
 import pyparsing
 from . import Constants
 
-def addLocnToTokens(string_value, location, token):
+def addLocnToTokens(string_value, location, token) -> None:
     token['locn'] = location
     substring = string_value[:location]
     token['line'] = substring.count('\n') + 1

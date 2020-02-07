@@ -1,5 +1,5 @@
-# this dangerfile sets values that will be consumed by the global danger 
-# file. The global dangerfile is run automatically after this repo-specific 
+# this dangerfile sets values that will be consumed by the global danger
+# file. The global dangerfile is run automatically after this repo-specific
 # file is run. The global dangerfile is located at: https://github.com/samdmarshall/danger
 
 # set the number of lines that must be changed before this classifies as a 'Big PR'
@@ -8,7 +8,7 @@
 # set the files to watch and warn about if there are changes made
 @SDM_DANGER_BUILD_FILES = ['Makefile', 'Gemfile', 'Dangerfile', 'circle.yml', '.codeclimate.yml', 'tox.ini', 'pylintrc']
 
-# set the files to watch and warn about if there are 
+# set the files to watch and warn about if there are
 @SDM_DANGER_INSTALL_REQUIREMENTS_FILES = ['requirements.txt', 'setup.py']
 
 # set the files to watch and fail if there are changes

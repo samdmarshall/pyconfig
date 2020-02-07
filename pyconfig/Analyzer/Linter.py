@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,6 +29,7 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import string
+import typing
 from ..                   import Keyword
 from ..Helpers.Logger     import Logger
 from ..Helpers.Switch     import Switch
@@ -38,14 +39,14 @@ build_setting_char_set = string.ascii_letters + '_' + string.digits
 
 # pylint: disable=protected-access
 
-def readStringFromContent(string_value, content=None, at_index=None):
+def readStringFromContent(string_value, content=None, at_index=None) -> typing.Tuple[bool, int]:
     Logger.write().debug('Attempting to read `%s`' % string_value)
     end_index = at_index+len(string_value)
     read_string = content[at_index:end_index]
     status = read_string == string_value
     return (status, len(string_value))
 
-def readUntilStringInContent(terminate_value, content=None, index=None):
+def readUntilStringInContent(terminate_value, content=None, index=None) -> typing.Tuple[bool, int]:
     status = True
     start_index = index
     should_advance = index < len(content)
@@ -57,7 +58,7 @@ def readUntilStringInContent(terminate_value, content=None, index=None):
     status = current_char == terminate_value
     return (status, index - start_index)
 
-def readFromCharacterSet(char_set, content=None, index=None):
+def readFromCharacterSet(char_set, content=None, index=None) -> typing.Tuple[bool, int]:
     status = True
     start_index = index
     should_advance = index < len(content)
@@ -68,14 +69,14 @@ def readFromCharacterSet(char_set, content=None, index=None):
         should_advance = index+1 < len(content)
     return (status, index - start_index)
 
-def readFromCharSetUntilCharFromContent(char_set, terminate_char, content=None, index=None):
+def readFromCharSetUntilCharFromContent(char_set, terminate_char, content=None, index=None) -> typing.Tuple[bool, int]:
     status, read_count = readFromCharacterSet(char_set, content, index)
     if status is True:
         current_char = content[index+read_count]
         status = current_char == terminate_char
     return (status, read_count)
 
-def readScopeFromContent(starter, closer, content=None, index=None):
+def readScopeFromContent(starter, closer, content=None, index=None) -> typing.Tuple[bool, list, int, typing.Optional[str]]:
     current_char = content[index]
     error_msg = None
     status = current_char == starter
@@ -118,9 +119,9 @@ def readScopeFromContent(starter, closer, content=None, index=None):
             end = index
     # trip the ending brace
     end -= 1
-    return (status, content[start+1:end], index-start, error_msg)
+    return  (status, content[start+1:end], index-start, error_msg)
 
-def readConditionFromContent(content=None, index=None): # pylint: disable=too-many-branches
+def readConditionFromContent(content=None, index=None) -> typing.Tuple[bool, int]: # pylint: disable=too-many-branches
     status = True
     current_char = content[index]
     original_index = index
@@ -171,7 +172,7 @@ def readConditionFromContent(content=None, index=None): # pylint: disable=too-ma
         break
     return (status, index - original_index)
 
-def readNonWhitespace(content=None, index=None):
+def readNonWhitespace(content=None, index=None) -> typing.Tuple[bool, int, typing.Optional[str]]:
     error_msg = None
     current_char = content[index]
     status = current_char not in string.whitespace
@@ -182,7 +183,7 @@ def readNonWhitespace(content=None, index=None):
     result = (status, index, error_msg)
     return result
 
-def readWhitespace(content=None, index=None):
+def readWhitespace(content=None, index=None) -> typing.Tuple[bool, int, int, int, int, typing.Optional[str]]:
     line_number = 0
     char_number = 0
     last_newline = -1
@@ -201,7 +202,7 @@ def readWhitespace(content=None, index=None):
     result = (status, index, line_number, char_number, last_newline, error)
     return result
 
-def validateCommaSeparatedValues(content):
+def validateCommaSeparatedValues(content) -> bool:
     index = 0
     status = index < len(content)
     while status is True:
@@ -232,7 +233,7 @@ class Linter(object):
         self.first_export = True
         self.current_keyword = None
 
-    def readWhitespace(self, content=None, index=None):
+    def readWhitespace(self, content=None, index=None) -> bool:
         status, index_increase, line_increase, char_number, last_newline_increase, error = readWhitespace(content, index)
         # update error message
         if error is not None: # pragma: no cover
@@ -253,7 +254,7 @@ class Linter(object):
             break
         return status
 
-    def readScope(self, starter, closer):
+    def readScope(self, starter, closer) -> typing.Tuple[bool, list]:
         Logger.write().debug('Attempting to read content between matching `%s` and `%s`' % (starter, closer))
         current_char = self.contents[self.index]
         start_line_number = self.line_number
@@ -297,7 +298,7 @@ class Linter(object):
         end -= 1
         return (status, self.contents[start:end])
 
-    def readFromCharacterSetUntilCharacter(self, char_set, terminate_char):
+    def readFromCharacterSetUntilCharacter(self, char_set, terminate_char) -> bool:
         status, read_count = readFromCharSetUntilCharFromContent(char_set, terminate_char, self.contents, self.index)
         self.index += read_count
         self.char_number += read_count
@@ -306,7 +307,7 @@ class Linter(object):
             self.error = 'Encountered `%s` before `%s` at line: %i, index: %i' % (current_char, terminate_char, self.line_number, self.char_number)
         return status
 
-    def readQuotedString(self):
+    def readQuotedString(self) -> bool:
         status = True
         while status is True:
             status = self.readString('"')
@@ -323,7 +324,7 @@ class Linter(object):
             break
         return status
 
-    def readString(self, string_value, optional=False):
+    def readString(self, string_value, optional=False) -> bool:
         status, read_count = readStringFromContent(string_value, self.contents, self.index)
         if status is True:
             self.index += read_count
@@ -333,7 +334,7 @@ class Linter(object):
                 self.error = 'Expected `%s` at line %i, index: %i' % (string_value, self.line_number, self.char_number)
         return status
 
-    def findCharacterBeforeCharacter(self, expected_char, unexpected_char):
+    def findCharacterBeforeCharacter(self, expected_char, unexpected_char) -> bool:
         status = True
         unexpected_index = self.contents[self.index:].find(unexpected_char)
         expected_index = self.contents[self.index:].find(expected_char)
@@ -347,7 +348,7 @@ class Linter(object):
             self.index += expected_index
         return status
 
-    def validateIf(self, scope_contents, index): # pylint: disable=too-many-branches
+    def validateIf(self, scope_contents, index) -> typing.Tuple[bool, int]: # pylint: disable=too-many-branches
         status = True
         while status is True:
             should_try_reading_assignment = True
@@ -411,7 +412,7 @@ class Linter(object):
             break
         return (status, index)
 
-    def validateFor(self, scope_contents, index):
+    def validateFor(self, scope_contents, index) -> typing.Tuple[bool, int]:
         status = True
         while status is True:
             # read `for`
@@ -454,7 +455,7 @@ class Linter(object):
             break
         return (status, index)
 
-    def readSettingScopeContent(self, scope_contents, original_index):
+    def readSettingScopeContent(self, scope_contents, original_index) -> bool:
         status = True
         offset = original_index
         index = original_index - offset
@@ -480,7 +481,7 @@ class Linter(object):
             should_advance = index < len(scope_contents)
         return status
 
-    def validateComment(self):
+    def validateComment(self) -> bool:
         old_index = self.index
         eol_index = self.contents[self.index:].find('\n')
         if eol_index == -1:
@@ -489,7 +490,7 @@ class Linter(object):
         self.char_number += self.index - old_index
         return True
 
-    def validateExport(self):
+    def validateExport(self) -> bool:
         status = True
         while status is True:
             status = self.has_finished_exports is False
@@ -513,7 +514,7 @@ class Linter(object):
             break
         return status
 
-    def validateInclude(self):
+    def validateInclude(self) -> bool:
         status = True
         while status is True:
             status = self.has_finished_includes is False
@@ -545,7 +546,7 @@ class Linter(object):
             break
         return status
 
-    def validateSetting(self): # pylint: disable=too-many-branches
+    def validateSetting(self) -> bool: # pylint: disable=too-many-branches
         status = True
         while status is True:
             self.current_keyword = Keyword.Constants._setting
@@ -596,7 +597,7 @@ class Linter(object):
             break
         return status
 
-    def validates(self): # pylint: disable=too-many-branches,too-many-statements
+    def validates(self) -> bool: # pylint: disable=too-many-branches,too-many-statements
         should_advance = len(self.contents) > 0
         status = True
         while should_advance is True and status is True:

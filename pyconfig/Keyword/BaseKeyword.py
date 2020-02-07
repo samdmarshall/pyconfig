@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -40,7 +40,7 @@ class BaseKeyword(object):
     def __eq__(self, other): # pylint: disable=no-self-use ; # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
-    def serialize(self): # pylint: disable=no-self-use ; # pragma: no cover
+    def serialize(self) -> str: # pylint: disable=no-self-use ; # pragma: no cover
         raise Exception('Please subclass this class and implement this method')
 
     def consumePath(self, constant, parsed_item=None): # pylint: disable=no-self-use ; # pragma: no cover
@@ -50,11 +50,11 @@ class BaseKeyword(object):
             result = parsed_item[1][1:-1]
         return result
 
-    def consume(self, parsed_item=None): # pragma: no cover
+    def consume(self, parsed_item=None) -> None: # pragma: no cover
         parsed_item = list() if parsed_item is None else parsed_item
 
         self.__parsed_item = parsed_item
 
-    def deserialize(self, xcconfig_line=''): # pylint: disable=no-self-use ; # pragma: no cover
+    def deserialize(self, xcconfig_line='') -> None: # pylint: disable=no-self-use ; # pragma: no cover
         _unused = xcconfig_line
         raise Exception('Please subclass this class and implement this method')

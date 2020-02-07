@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,10 +29,11 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import typing
 from ..Helpers.Logger import Logger
 
-def LocateParentWithPath(start_file_path, parent_item):
-    parent_path = start_file_path
+def LocateParentWithPath(start_file_path: str, parent_item: str) -> typing.Optional[str]:
+    parent_path: typing.Optional[str] = start_file_path
     search_file_path = os.path.join(start_file_path, parent_item)
     if start_file_path == '/':
         parent_path = None
@@ -40,21 +41,21 @@ def LocateParentWithPath(start_file_path, parent_item):
         parent_path = LocateParentWithPath(os.path.dirname(start_file_path), parent_item)
     return parent_path
 
-def locateWorkingDirectoryForPath(file_path):
+def locateWorkingDirectoryForPath(file_path: str) -> str:
     working_path = file_path
     if os.path.isfile(file_path):
         fs_path = os.path.dirname(file_path)
         working_path = os.path.normpath(os.path.join(os.getcwd(), fs_path))
     return working_path
 
-def locateDirectories(root, dirs):
+def locateDirectories(root: str, dirs: list) -> list:
     found_configs = list()
     for dir_name in dirs:
         relative_path = os.path.join(root, dir_name)
         found_configs.extend(locateConfigs(relative_path))
     return found_configs
 
-def locateFiles(root, files):
+def locateFiles(root: str, files: list) -> list:
     found_configs = list()
     for file_name in files:
         relative_path = os.path.join(root, file_name)
@@ -65,7 +66,7 @@ def locateFiles(root, files):
             found_configs.append(full_path)
     return found_configs
 
-def locateConfigs(fs_path):
+def locateConfigs(fs_path: str) -> list:
     found_configs = list()
     for root, dirs, files in os.walk(fs_path, followlinks=True):
         found_configs.extend(locateDirectories(root, dirs))

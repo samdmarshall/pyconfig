@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,14 +29,18 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import logging
+import typing
 
 class Singleton(type):
-    _instances = {}
+    _instances: typing.Dict[typing.Any, typing.Any] = dict()
 
     def __call__(cls, *args, **kwargs): # pragma: no cover
         if cls not in cls._instances.keys():
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
+
+LOGGER_NAME = 'com.pewpewthespells.py.logging_helper'
 
 #These are the sequences need to get colored ouput
 RESET_SEQ = '\033[0m'
@@ -66,7 +70,7 @@ class ColoredFormatter(logging.Formatter):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color
 
-    def format(self, record): # pragma: no cover
+    def format(self, record) -> str: # pragma: no cover
         levelname = record.levelname
         if self.use_color and levelname in LEVELS:
             levelname_color = LEVELS[levelname] + levelname + RESET_SEQ
@@ -75,7 +79,7 @@ class ColoredFormatter(logging.Formatter):
 
 class Logger(object):
     __metaclass__ = Singleton
-    _internal_logger = None
+    _internal_logger = logging.Logger('')
     _debug_logging = False
     _use_ansi_codes = False
 
@@ -83,15 +87,15 @@ class Logger(object):
         pass
 
     @staticmethod
-    def enableDebugLogger(is_debug_logger=False):
+    def enableDebugLogger(is_debug_logger=False) -> None:
         Logger._debug_logging = is_debug_logger
 
     @staticmethod
-    def disableANSI(disable_ansi=False):
+    def disableANSI(disable_ansi=False) -> None:
         Logger._use_ansi_codes = not disable_ansi
 
     @staticmethod
-    def setupLogger():
+    def setupLogger() -> None:
         Logger._internal_logger = logging.getLogger('com.pewpewthespells.py.logging_helper')
 
         level = logging.DEBUG if Logger._debug_logging else logging.INFO
@@ -114,22 +118,22 @@ class Logger(object):
         Logger._internal_logger.addHandler(handler)
 
     @staticmethod
-    def isVerbose(verbose_logging=False):
-        if Logger._internal_logger is None: # pragma: no cover
+    def isVerbose(verbose_logging=False) -> None:
+        if Logger._internal_logger.name is not LOGGER_NAME: # pragma: no cover
             Logger.setupLogger()
         if not verbose_logging:
             Logger._internal_logger.setLevel(logging.WARNING)
 
     @staticmethod
-    def isSilent(should_quiet=False):
-        if Logger._internal_logger is None: # pragma: no cover
+    def isSilent(should_quiet=False) -> None:
+        if Logger._internal_logger.name is not LOGGER_NAME: # pragma: no cover
             Logger.setupLogger()
         if should_quiet:
             logging_filter = logging.Filter(name='com.pewpewthespells.py.logging_helper.shut_up')
             Logger._internal_logger.addFilter(logging_filter)
 
     @staticmethod
-    def write():
-        if Logger._internal_logger is None: # pragma: no cover
+    def write() -> logging.Logger:
+        if Logger._internal_logger.name is not LOGGER_NAME: # pragma: no cover
             Logger.setupLogger()
         return Logger._internal_logger

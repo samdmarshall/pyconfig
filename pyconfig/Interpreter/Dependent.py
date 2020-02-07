@@ -1,4 +1,4 @@
-# Copyright (c) 2016, Samantha Marshall (http://pewpewthespells.com)
+# Copyright (c) 2016-2020, Samantha Marshall (http://pewpewthespells.com)
 # All rights reserved.
 #
 # https://github.com/samdmarshall/pyconfig
@@ -29,13 +29,14 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import typing
 from ..Keyword             import ExportKeyword
 from ..Keyword             import IncludeKeyword
 from ..Keyword             import Constants
 from ..Keyword             import Resolver
 from ..Helpers.Logger      import Logger
 
-def findParents(graph, current_config):
+def findParents(graph, current_config) -> list:
     included_configs = list()
     for config in graph:
         if config.exportName() == current_config.include_path:
@@ -63,32 +64,30 @@ class DependentNode(object):
         self.config = parsed_contents
         self.name = name
 
-    def chainParents(self):
+    def chainParents(self) -> list:
         # needs to include the current name or we will never get any elements
         chain = [self.name]
         for parent in self.parents:
             chain = parent.chainParents() + chain
         return chain
 
-    def importChain(self):
+    def importChain(self) -> list:
         parents = self.chainParents()
         chain = parents + [self.name] # don't include children as they will resolve on their own.
-        chain_set = set()
         # uniquing the list that was created
-        chain = [link for link in chain if not (link in chain_set or chain_set.add(link))]
-        return chain
+        return list(set(chain))
 
-    def filterContentsByType(self, class_type):
+    def filterContentsByType(self, class_type) -> list:
         results = [node for node in self.config if isinstance(node, class_type)]
         return results
 
-    def exportPath(self):
+    def exportPath(self) -> str:
         base_path = os.path.dirname(self.name)
         export_file = self.exportName()
         export_path = os.path.normpath(os.path.join(base_path, export_file))
         return export_path
 
-    def exportName(self):
+    def exportName(self) -> str:
         xcconfig_name = ''
         exported_name_info = None
         export_info_array = self.filterContentsByType(ExportKeyword.ExportKeyword)
@@ -100,7 +99,7 @@ class DependentNode(object):
             xcconfig_name = file_name + '.xcconfig'
         return xcconfig_name
 
-    def resolvePaths(self, graph):
+    def resolvePaths(self, graph) -> None:
         config_includes_array = self.filterContentsByType(IncludeKeyword.IncludeKeyword)
         for parent_config in config_includes_array:
             included_config_array = findParents(graph, parent_config)
